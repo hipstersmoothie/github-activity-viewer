@@ -42,7 +42,15 @@ async function getRepoInfo(data: GitHubFeedEvent[]) {
   const repos: Repo[] = [];
 
   data.forEach((event) => {
+    if (repos.find(r => r.name === event.repo.name)) {
+      return;
+    }
+
     if (event.type === "WatchEvent") {
+      repos.push(event.repo);
+    } else if (event.type === "ForkEvent") {
+      repos.push(event.repo);
+    } else if (event.type === "ReleaseEvent") {
       repos.push(event.repo);
     }
   });
@@ -50,7 +58,6 @@ async function getRepoInfo(data: GitHubFeedEvent[]) {
   const query = repos
     .map((repo) => {
       const [owner, name] = repo.name.split("/");
-      console.log(repo)
       return gql`
         ${queryId(repo)}: repository(owner: "${owner}", name: "${name}") {
           description
@@ -77,7 +84,7 @@ async function getRepoInfo(data: GitHubFeedEvent[]) {
     const result = await graphqlWithAuth<RepoInfoMap>(fullQuery);
     return result;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {};
   }
 }

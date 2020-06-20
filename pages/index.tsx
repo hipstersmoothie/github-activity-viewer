@@ -87,6 +87,11 @@ const useUser = () => {
   return "hipstersmoothie";
 };
 
+const useRepoInfo = (repo: Repo) => {
+  const { repoInfo } = React.useContext(DataContext);
+  return { ...repo, ...repoInfo[queryId(repo)] };
+};
+
 const isGithubEvent = (
   value: GitHubFeedEvent | Repo
 ): value is GitHubFeedEvent => "type" in value;
@@ -314,21 +319,37 @@ const Events = <T extends GitHubFeedEvent | Repo>({
   );
 };
 
-const ForkEvent = ({ event }: { event: ForkEventType }) => (
-  <Event event={event}>
-    <Box>
-      <ActorLink {...event.actor} />{" "}
-      <span>
-        forked <RepoLink repo={event.repo} />
-      </span>
-    </Box>
-    <Since date={event.created_at} />
-  </Event>
-);
+const ForkEvent = ({ event }: { event: ForkEventType }) => {
+  const repo = useRepoInfo(event.repo);
+  const [showPopover, showPopoverSet] = React.useState(false);
+
+  return (
+    <Relative
+      onMouseEnter={() => showPopoverSet(true)}
+      onMouseLeave={() => showPopoverSet(false)}
+    >
+      <Event event={event}>
+        <Box>
+          <ActorLink {...event.actor} />{" "}
+          <span>
+            forked <RepoLink repo={event.repo} />
+          </span>
+        </Box>
+        <Since date={event.created_at} />
+      </Event>
+      <Popover open={showPopover} caret="top" width="100%">
+        <Popover.Content mt={2} width="100%">
+          <RepoDescription repo={repo} />
+        </Popover.Content>
+      </Popover>
+    </Relative>
+  );
+};
 
 console.log(theme);
 
 const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
+  const repo = useRepoInfo(event.repo);
   const [showPopover, showPopoverSet] = React.useState(false);
 
   return (
@@ -359,6 +380,10 @@ const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
           <Text>
             <Markdown>{event.payload.release.body}</Markdown>
           </Text>
+
+          <CardDivider my={4} />
+
+          <RepoDescription repo={repo} />
         </Popover.Content>
       </Popover>
     </Relative>
@@ -383,14 +408,15 @@ const Language = ({
   </Flex>
 );
 
-const WatchEvent = ({
+const RepoDescription = ({
   repo,
-  users,
+  users = [],
+  ...props
 }: {
   repo: ExtendedRepo;
-  users: Actor[];
-}) => (
-  <Flex flexDirection="column" mb={4}>
+  users?: Actor[];
+} & React.ComponentProps<typeof Flex>) => (
+  <Flex flexDirection="column" {...props}>
     <RepoLink repo={repo} mb={1} />
     <Text mb={2} color="gray.7">
       {repo.description}
@@ -402,7 +428,9 @@ const WatchEvent = ({
         )}
         <Flex alignItems="center" color="gray.6">
           <StarIcon size="small" mr={1} />
-          <Text>{repo.stargazers.totalCount}</Text>
+          <Text>
+            {repo.stargazers.totalCount.toLocaleString()}
+          </Text>
         </Flex>
       </Flex>
 
@@ -535,9 +563,10 @@ const WatchEvents = ({ events }: { events: GitHubFeedEvent[] }) => {
       eventComponent={(p) => {
         const users = groupedByProject.get(p.event.name);
         return (
-          <WatchEvent
+          <RepoDescription
             repo={{ ...p.event, ...repoInfo[queryId(p.event)] }}
             users={users}
+            mb={4}
           />
         );
       }}
