@@ -1059,6 +1059,11 @@
     postcss "7.0.32"
     purgecss "^2.3.0"
 
+"@github/g-emoji-element@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@github/g-emoji-element/-/g-emoji-element-1.1.4.tgz#f398f00767c1431fe992d5d4abe74a33513b8e7f"
+  integrity sha512-K1dpssye0i+S7VR52bjeNJGNXIO6cXSvnJvS0s1ELEKvvyTAb5wR+eGhrErgHOSXQJ1/8Ox4hD5pH2GM4S5k/g==
+
 "@jest/types@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-24.9.0.tgz#63cb26cb7500d069e5a389441a7c6ab5e909fc59"
@@ -3579,6 +3584,11 @@ function-bind@^1.1.1:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
 
+gemoji@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/gemoji/-/gemoji-5.0.1.tgz#4cea541c735b74ec82edd56c2d46538cd54f355d"
+  integrity sha512-7yV9K8JdiK+h2M4YDnf/8bunJKYvs0t0p8eKh7zexVSuXddRG9Ue18ZViKOZljISk57DE64X19gvJfHZmhggGg==
+
 get-nonce@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/get-nonce/-/get-nonce-1.0.1.tgz#fdf3f0278073820d2ce9426c18f07481b1e0cdf3"
@@ -3595,6 +3605,11 @@ get-value@^2.0.3, get-value@^2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
+
+gh-emoji@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/gh-emoji/-/gh-emoji-0.2.5.tgz#a6755eba4f9c2af24a473c27a4963433286bbeff"
+  integrity sha1-pnVeuk+cKvJKRzwnpJY0Myhrvv8=
 
 glob-parent@^3.1.0:
   version "3.1.0"

@@ -1,8 +1,8 @@
 import { BaseStyles } from "@primer/components";
 
-const MyApp = ({ Component, pageProps }) =>(
+const MyApp = ({ Component, pageProps }) => (
   <BaseStyles>
-    <Component {...pageProps} />{" "}
+    <Component {...pageProps} />
   </BaseStyles>
 )
 

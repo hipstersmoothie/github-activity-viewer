@@ -3,6 +3,7 @@ import Head from "next/head";
 import ago from "s-ago";
 import Markdown from "markdown-to-jsx";
 import fetch from "isomorphic-fetch";
+import toEmoji from "gemoji/name-to-emoji";
 
 import {
   Avatar,
@@ -47,6 +48,10 @@ const DataContext = React.createContext<{
 }>({
   repoInfo: {},
 });
+
+const renderEmoji = (str: string) =>
+  str &&
+  str.replace(/:([^:]*):/g, (_, val) => toEmoji[val] || val);
 
 const IGNORE_USERS = ["renovate"];
 
@@ -193,18 +198,21 @@ const RepoLink = ({ repo: { full_name, name }, ...props }: RepoLinkProps) => (
 const Card = ({
   title,
   children,
+  ...props
 }: {
   children: React.ReactNode;
   title: React.ReactNode;
-}) => (
-  <BorderBox px={4} py={3} width="100%" backgroundColor="white">
-    <Heading fontSize={4} fontWeight="bold" mb={5}>
-      {title}
-    </Heading>
+} & Omit<React.ComponentProps<typeof BorderBox>, "title">) => {
+  return (
+    <BorderBox px={4} py={3} width="100%" backgroundColor="white" {...props}>
+      <Heading fontSize={4} fontWeight="bold" mb={5}>
+        {title}
+      </Heading>
 
-    {children}
-  </BorderBox>
-);
+      {children}
+    </BorderBox>
+  );
+};
 
 const CardDivider = (props: React.ComponentProps<typeof Box>) => (
   <Box
@@ -251,6 +259,7 @@ const Events = <T extends GitHubFeedEvent | Repo>({
   filterComponent,
   shownFilter = () => true,
   showCount = 5,
+  ...props
 }: {
   events: T[];
   eventComponent: React.ComponentType<{ event: T }>;
@@ -258,7 +267,7 @@ const Events = <T extends GitHubFeedEvent | Repo>({
   filterComponent?: React.ReactNode;
   shownFilter?: (event: T) => boolean;
   showCount?: number;
-}) => {
+} & Omit<React.ComponentProps<typeof BorderBox>, "title">) => {
   const [expanded, expandedSet] = React.useState(false);
   const toggleExpanded = () => expandedSet(!expanded);
   const { fromOtherRepos, fromUsersRepos } = useUserRepoEvents(events);
@@ -275,7 +284,7 @@ const Events = <T extends GitHubFeedEvent | Repo>({
   );
 
   return (
-    <Card title={<CardTitle title={title} count={events.length} />}>
+    <Card title={<CardTitle title={title} count={events.length} />} {...props}>
       {fromUsersRepos.length > 0 && (
         <>
           <Heading fontSize={2} mb={4}>
@@ -392,7 +401,7 @@ const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
           </Heading>
 
           <Text>
-            <Markdown>{event.payload.release.body}</Markdown>
+            <Markdown>{renderEmoji(event.payload.release.body)}</Markdown>
           </Text>
 
           <CardDivider my={4} />
@@ -433,7 +442,7 @@ const RepoDescription = ({
   <Flex flexDirection="column" {...props}>
     <RepoLink repo={repo} mb={1} />
     <Text mb={2} color="gray.7">
-      {repo.description}
+      {renderEmoji(repo.description)}
     </Text>
     <Flex alignItems="center" justifyContent="space-between">
       <Flex>
@@ -510,7 +519,13 @@ const LanguageFilter = ({
   );
 };
 
-const WatchEvents = ({ events }: { events: GitHubFeedEvent[] }) => {
+const WatchEvents = ({
+  events,
+  ...props
+}: { events: GitHubFeedEvent[] } & Omit<
+  React.ComponentProps<typeof BorderBox>,
+  "title"
+>) => {
   const { repoInfo } = React.useContext(DataContext);
   const [
     languageFilter,
@@ -553,6 +568,7 @@ const WatchEvents = ({ events }: { events: GitHubFeedEvent[] }) => {
 
   return (
     <Events
+      {...props}
       title="Recently Starred"
       showCount={4}
       events={sortedProjects}
@@ -620,8 +636,10 @@ const GithubActivityViewer = (props: EventMap) => (
     px={4}
     py={3}
     gridGap={6}
-    gridTemplateColumns={["repeat(1, auto)", "repeat(4, auto)"]}
+    gridTemplateColumns={["repeat(1, auto)", "1fr 2fr"]}
     alignItems="start"
+    maxWidth={1600}
+    mx="auto"
   >
     <Grid gridGap={6}>
       <Events
