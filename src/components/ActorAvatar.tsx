@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Avatar, Link } from "@primer/components";
-import { Actor } from "../types";
+import { Actor } from "../utils/types";
 
 interface ActorAvatarProps
   extends Omit<React.ComponentProps<typeof Link>, "href"> {

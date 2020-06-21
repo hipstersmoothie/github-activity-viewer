@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import fetch from "isomorphic-fetch";
 
-import { theme, Grid, Box } from "@primer/components";
+import { theme, Grid, Flex } from "@primer/components";
 
 import {
   GitHubFeedEvent,
@@ -60,7 +60,7 @@ const useFeeds = () => {
   return { feeds, repoInfo };
 };
 
-const GithubActivityViewer = (props: EventMap) => (
+const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
   <Grid
     px={4}
     py={3}
@@ -68,7 +68,6 @@ const GithubActivityViewer = (props: EventMap) => (
     gridTemplateColumns={["repeat(1, auto)", "1fr 2fr"]}
     alignItems="start"
     maxWidth={1600}
-    mx="auto"
   >
     <Grid gridGap={6}>
       <Events
@@ -83,12 +82,17 @@ const GithubActivityViewer = (props: EventMap) => (
         showCount={9}
       />
     </Grid>
-    <WatchEvents events={props.WatchEvent} />
+    <WatchEvents events={props.WatchEvent} pageHeight={props.pageHeight} />
   </Grid>
 );
 
 export default function Home() {
   const { feeds, repoInfo } = useFeeds();
+  const [clientHeight, clientHeightSet] = React.useState<number | undefined>();
+
+  React.useEffect(() => {
+    clientHeightSet(document.body.clientHeight);
+  }, []);
 
   return (
     <DataContext.Provider value={{ repoInfo }}>
@@ -97,9 +101,16 @@ export default function Home() {
         <link rel="icon" href="/favicon-dark.png" />
       </Head>
 
-      <Box sx={{ backgroundColor: "gray.1", minHeight: "100vh" }}>
-        {feeds ? <GithubActivityViewer {...feeds} /> : <Spinner />}
-      </Box>
+      <Flex
+        justifyContent="center"
+        sx={{ backgroundColor: "gray.1", minHeight: "100vh" }}
+      >
+        {feeds ? (
+          <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
+        ) : (
+          <Spinner />
+        )}
+      </Flex>
     </DataContext.Provider>
   );
 }

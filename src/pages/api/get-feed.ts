@@ -87,8 +87,7 @@ async function getRepoInfo(data: GitHubFeedEvent[]) {
     const result = await graphqlWithAuth<RepoInfoMap>(fullQuery);
     return result;
   } catch (error) {
-    console.log(error);
-    return {};
+    return error.data;
   }
 }
 

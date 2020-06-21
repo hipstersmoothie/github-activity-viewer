@@ -94,13 +94,13 @@ export interface LanguageType {
 }
 
 export interface ExtendedRepoData {
-  description: string;
-  url: string;
-  updatedAt: string;
-  languages: {
+  description?: string;
+  url?: string;
+  updatedAt?: string;
+  languages?: {
     edges: LanguageType[];
   };
-  stargazers: {
+  stargazers?: {
     totalCount: number;
   };
 }

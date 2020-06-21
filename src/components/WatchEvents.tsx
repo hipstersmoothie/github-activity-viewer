@@ -12,6 +12,8 @@ import { RepoDescription } from "./RepoDescription";
 const ALL_LANGUAGE = {
   node: { color: DEFAULT_LANGUAGE_COLOR, name: "All" },
 };
+const WRAPPER_HEIGHT = 406;
+const ROW_HEIGHT = 108;
 
 const LanguageFilter = ({
   languages,
@@ -70,8 +72,9 @@ const LanguageFilter = ({
 
 export const WatchEvents = ({
   events,
+  pageHeight,
   ...props
-}: { events: GitHubFeedEvent[] } & Omit<
+}: { events: GitHubFeedEvent[]; pageHeight: number } & Omit<
   React.ComponentProps<typeof BorderBox>,
   "title"
 >) => {
@@ -119,7 +122,7 @@ export const WatchEvents = ({
     <Events
       {...props}
       title="Recently Starred"
-      showCount={4}
+      showCount={Math.floor((pageHeight - WRAPPER_HEIGHT) / ROW_HEIGHT)}
       events={sortedProjects}
       filterComponent={
         <LanguageFilter
