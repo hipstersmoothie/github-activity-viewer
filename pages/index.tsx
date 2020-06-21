@@ -48,6 +48,8 @@ const DataContext = React.createContext<{
   repoInfo: {},
 });
 
+const IGNORE_USERS = ["renovate"];
+
 const useFeeds = () => {
   const [feeds, feedsSet] = React.useState<EventMap | undefined>();
   const [repoInfo, repoInfoSet] = React.useState<RepoInfoMap>({});
@@ -72,6 +74,10 @@ const useFeeds = () => {
         };
 
         res.events.forEach((event) => {
+          if (IGNORE_USERS.includes(event.actor.display_login)) {
+            return;
+          }
+
           map[event.type].push(event);
         });
 
@@ -84,7 +90,13 @@ const useFeeds = () => {
 };
 
 const useUser = () => {
-  return "hipstersmoothie";
+  return {
+    status: "my website is hot garbage.",
+    name: "Andrew Lisowski",
+    display_login: "hipstersmoothie",
+    login: "hipstersmoothie",
+    avatar_url: "https://avatars3.githubusercontent.com/u/1192452",
+  };
 };
 
 const useRepoInfo = (repo: Repo) => {
@@ -100,14 +112,14 @@ const isRepo = (value: GitHubFeedEvent | Repo): value is Repo =>
   "name" in value;
 
 const useUserRepoEvents = <T extends GitHubFeedEvent | Repo>(events: T[]) => {
-  const user = useUser();
+  const { login } = useUser();
   const fromUsersRepos: T[] = [];
   const fromOtherRepos: T[] = [];
 
   events.forEach((event) => {
     if (
-      (isGithubEvent(event) && event.repo.name.split("/")[0] === user) ||
-      (isRepo(event) && event.name.split("/")[0] === user)
+      (isGithubEvent(event) && event.repo.name.split("/")[0] === login) ||
+      (isRepo(event) && event.name.split("/")[0] === login)
     ) {
       fromUsersRepos.push(event);
     } else {
@@ -238,12 +250,14 @@ const Events = <T extends GitHubFeedEvent | Repo>({
   title,
   filterComponent,
   shownFilter = () => true,
+  showCount = 5,
 }: {
   events: T[];
   eventComponent: React.ComponentType<{ event: T }>;
   title: React.ReactNode;
-  filterComponent: React.ReactNode;
-  shownFilter: (event: T) => boolean;
+  filterComponent?: React.ReactNode;
+  shownFilter?: (event: T) => boolean;
+  showCount?: number;
 }) => {
   const [expanded, expandedSet] = React.useState(false);
   const toggleExpanded = () => expandedSet(!expanded);
@@ -252,7 +266,7 @@ const Events = <T extends GitHubFeedEvent | Repo>({
   const filteredRepos = fromOtherRepos.filter(shownFilter);
   const shownRepos = expanded
     ? filteredRepos
-    : filteredRepos.slice(0, 5).filter(shownFilter);
+    : filteredRepos.slice(0, showCount).filter(shownFilter);
   const shownTitle = (
     <Flex alignItems="center" justifyContent="space-between" mb={4}>
       <Heading fontSize={2}>On Other Repos</Heading>
@@ -284,7 +298,7 @@ const Events = <T extends GitHubFeedEvent | Repo>({
         <EventComponent event={event} />
       ))}
 
-      {shownRepos.length >= 5 && (
+      {shownRepos.length >= showCount && (
         <>
           <CardDivider mt={5} />
 
@@ -428,9 +442,7 @@ const RepoDescription = ({
         )}
         <Flex alignItems="center" color="gray.6">
           <StarIcon size="small" mr={1} />
-          <Text>
-            {repo.stargazers.totalCount.toLocaleString()}
-          </Text>
+          <Text>{repo.stargazers.totalCount.toLocaleString()}</Text>
         </Flex>
       </Flex>
 
@@ -458,41 +470,43 @@ const LanguageFilter = ({
     .filter((lang) => !search || lang.node.name.toLowerCase().includes(search));
 
   return (
-    <SelectMenu>
-      <Button as="summary">
-        <Language language={languageFilter || ALL_LANGUAGE} />
-      </Button>
-      <SelectMenu.Modal>
-        <SelectMenu.Header>Languages</SelectMenu.Header>
+    <Relative display="flex" justifyContent="flex-end">
+      <SelectMenu>
+        <Button as="summary">
+          <Language language={languageFilter || ALL_LANGUAGE} />
+        </Button>
+        <SelectMenu.Modal align="right">
+          <SelectMenu.Header>Languages</SelectMenu.Header>
 
-        <SelectMenu.Filter
-          placeholder="Filter languages"
-          aria-label="Filter Languages"
-          value={search}
-          onChange={(e) => searchSet(e.target.value.toLowerCase())}
-        />
+          <SelectMenu.Filter
+            placeholder="Filter languages"
+            aria-label="Filter Languages"
+            value={search}
+            onChange={(e) => searchSet(e.target.value.toLowerCase())}
+          />
 
-        <SelectMenu.List>
-          {!search && (
-            <SelectMenu.Item
-              as="button"
-              onClick={() => languageFilterSet(null)}
-            >
-              <Language language={ALL_LANGUAGE} />
-            </SelectMenu.Item>
-          )}
-          {sortedLanguages.map((language) => (
-            <SelectMenu.Item
-              as="button"
-              key={language.node.name}
-              onClick={() => languageFilterSet(language)}
-            >
-              <Language language={language} />
-            </SelectMenu.Item>
-          ))}
-        </SelectMenu.List>
-      </SelectMenu.Modal>
-    </SelectMenu>
+          <SelectMenu.List>
+            {!search && (
+              <SelectMenu.Item
+                as="button"
+                onClick={() => languageFilterSet(null)}
+              >
+                <Language language={ALL_LANGUAGE} />
+              </SelectMenu.Item>
+            )}
+            {sortedLanguages.map((language) => (
+              <SelectMenu.Item
+                as="button"
+                key={language.node.name}
+                onClick={() => languageFilterSet(language)}
+              >
+                <Language language={language} />
+              </SelectMenu.Item>
+            ))}
+          </SelectMenu.List>
+        </SelectMenu.Modal>
+      </SelectMenu>
+    </Relative>
   );
 };
 
@@ -540,6 +554,7 @@ const WatchEvents = ({ events }: { events: GitHubFeedEvent[] }) => {
   return (
     <Events
       title="Recently Starred"
+      showCount={4}
       events={sortedProjects}
       filterComponent={
         <LanguageFilter
@@ -574,30 +589,60 @@ const WatchEvents = ({ events }: { events: GitHubFeedEvent[] }) => {
   );
 };
 
+const CreateEvent = ({ event }: { event: GitHubFeedEvent }) => {
+  const repo = useRepoInfo(event.repo);
+  const [showPopover, showPopoverSet] = React.useState(false);
+
+  return (
+    <Relative
+      onMouseEnter={() => showPopoverSet(true)}
+      onMouseLeave={() => showPopoverSet(false)}
+    >
+      <Event event={event}>
+        <Box>
+          <ActorLink {...event.actor} />{" "}
+          <span>
+            created <RepoLink repo={event.repo} />
+          </span>
+        </Box>
+      </Event>
+      <Popover open={showPopover} caret="top" width="100%">
+        <Popover.Content mt={2} width="100%">
+          <RepoDescription repo={repo} />
+        </Popover.Content>
+      </Popover>
+    </Relative>
+  );
+};
+
 const GithubActivityViewer = (props: EventMap) => (
   <Grid
     px={4}
     py={3}
     gridGap={6}
-    gridTemplateColumns={["repeat(1, auto)", "repeat(3, auto)"]}
+    gridTemplateColumns={["repeat(1, auto)", "repeat(4, auto)"]}
     alignItems="start"
   >
+    <Grid gridGap={6}>
+      <Events
+        events={props.ReleaseEvent}
+        eventComponent={ReleaseEvent}
+        title="Releases"
+      />
+      <Events
+        events={props.CreateEvent.filter((e) => e.payload.ref_type !== "tag")}
+        eventComponent={CreateEvent}
+        title="New Repos"
+        showCount={9}
+      />
+    </Grid>
     <WatchEvents events={props.WatchEvent} />
-    <Events
-      events={props.ReleaseEvent}
-      eventComponent={ReleaseEvent}
-      title="Releases"
-    />
-    <Events
-      events={props.ForkEvent}
-      eventComponent={ForkEvent}
-      title="New Forks"
-    />
   </Grid>
 );
 
 export default function Home() {
   const { feeds, repoInfo } = useFeeds();
+  console.log(feeds);
 
   return (
     <DataContext.Provider value={{ repoInfo }}>

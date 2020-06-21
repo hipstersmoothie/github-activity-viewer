@@ -9,6 +9,7 @@ import {
   GetFeedResponse,
   RepoInfoMap,
   queryId,
+  EventType,
 } from "../../src/types";
 
 const octokit = new Octokit({
@@ -40,19 +41,21 @@ function gql(
 
 async function getRepoInfo(data: GitHubFeedEvent[]) {
   const repos: Repo[] = [];
+  const eventsToAddRepoInfoFor: EventType[] = [
+    "WatchEvent",
+    "ForkEvent",
+    "ReleaseEvent",
+    "CreateEvent",
+  ]
 
   data.forEach((event) => {
     if (repos.find(r => r.name === event.repo.name)) {
       return;
     }
 
-    if (event.type === "WatchEvent") {
+    if (eventsToAddRepoInfoFor.includes(event.type)) {
       repos.push(event.repo);
-    } else if (event.type === "ForkEvent") {
-      repos.push(event.repo);
-    } else if (event.type === "ReleaseEvent") {
-      repos.push(event.repo);
-    }
+    } 
   });
 
   const query = repos
