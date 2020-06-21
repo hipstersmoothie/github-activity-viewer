@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import fetch from "isomorphic-fetch";
 
-import { theme, Grid } from "@primer/components";
+import { theme, Grid, Box } from "@primer/components";
 
 import {
   GitHubFeedEvent,
@@ -97,9 +97,9 @@ export default function Home() {
         <link rel="icon" href="/favicon-dark.png" />
       </Head>
 
-      <main style={{ background: theme.colors.gray[1], minHeight: "100vh" }}>
+      <Box sx={{ backgroundColor: "gray.1", minHeight: "100vh" }}>
         {feeds ? <GithubActivityViewer {...feeds} /> : <Spinner />}
-      </main>
+      </Box>
     </DataContext.Provider>
   );
 }

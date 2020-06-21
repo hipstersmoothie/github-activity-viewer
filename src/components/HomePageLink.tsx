@@ -1,15 +1,15 @@
 import React from "react";
-import { Link, theme } from "@primer/components";
-import { Repo, Actor } from "../types";
+import { Link } from "@primer/components";
+import { Repo, Actor } from "../utils/types";
 
 const HomePageLink = (props: React.ComponentProps<typeof Link>) => (
   <Link
-    color={theme.colors.bodytext}
+    color="bodytext"
     fontWeight="bold"
     sx={{
       ":hover": {
         textDecoration: "none",
-        color: theme.colors.blue[5],
+        color: "blue.5",
       },
     }}
     {...props}

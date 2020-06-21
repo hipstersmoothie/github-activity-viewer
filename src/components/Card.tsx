@@ -13,7 +13,7 @@ export const CardDivider = (props: React.ComponentProps<typeof Box>) => (
   <Box
     {...props}
     mx={-4}
-    sx={{ borderBottom: `1px solid ${theme.colors.border.gray}` }}
+    sx={{ borderBottom: "1px solid", borderColor: "border.gray" }}
   />
 );
 
