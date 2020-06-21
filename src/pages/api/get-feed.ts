@@ -8,9 +8,9 @@ import {
   Repo,
   GetFeedResponse,
   RepoInfoMap,
-  queryId,
   EventType,
-} from "../../src/types";
+} from "../../utils/types";
+import { queryId } from "../../utils/queryId";
 
 const octokit = new Octokit({
   auth: process.env.GH_TOKEN,

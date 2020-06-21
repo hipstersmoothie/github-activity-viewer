@@ -113,6 +113,3 @@ export interface GetFeedResponse {
   events: GitHubFeedEvent[];
   repoInfo: RepoInfoMap;
 }
-
-export const queryId = (repo: Repo) =>
-  `id_${repo.id}_${repo.name.split("/")[0].replace(/-/g, "_")}`;
