@@ -3,6 +3,8 @@ require("dotenv").config();
 import { NextApiRequest, NextApiResponse } from "next";
 import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";
+import jwt from "next-auth/jwt";
+
 import {
   GitHubFeedEvent,
   Repo,
@@ -11,15 +13,6 @@ import {
   EventType,
 } from "../../utils/types";
 import { queryId } from "../../utils/queryId";
-
-const octokit = new Octokit({
-  auth: process.env.GH_TOKEN,
-});
-const graphqlWithAuth = graphql.defaults({
-  headers: {
-    authorization: `token ${process.env.GH_TOKEN}`,
-  },
-});
 
 /** Just constructs the template string. Used for syntax highlighting in VSCode */
 function gql(
@@ -39,23 +32,26 @@ function gql(
   return str.join("");
 }
 
-async function getRepoInfo(data: GitHubFeedEvent[]) {
+async function getRepoInfo(
+  graphqlWithAuth: typeof graphql,
+  data: GitHubFeedEvent[]
+) {
   const repos: Repo[] = [];
   const eventsToAddRepoInfoFor: EventType[] = [
     "WatchEvent",
     "ForkEvent",
     "ReleaseEvent",
     "CreateEvent",
-  ]
+  ];
 
   data.forEach((event) => {
-    if (repos.find(r => r.name === event.repo.name)) {
+    if (repos.find((r) => r.name === event.repo.name)) {
       return;
     }
 
     if (eventsToAddRepoInfoFor.includes(event.type)) {
       repos.push(event.repo);
-    } 
+    }
   });
 
   const query = repos
@@ -92,9 +88,18 @@ async function getRepoInfo(data: GitHubFeedEvent[]) {
 }
 
 export default async (
-  _: NextApiRequest,
+  req: NextApiRequest,
   res: NextApiResponse<GetFeedResponse>
 ) => {
+  const token = await jwt.getJwt({ req, secret: process.env.GITHUB_SECRET });
+  const octokit = new Octokit({
+    auth: token.account.accessToken,
+  });
+  const graphqlWithAuth = graphql.defaults({
+    headers: {
+      authorization: `token ${token.account.accessToken}`,
+    },
+  });
   const user = await octokit.users.getAuthenticated();
   const result: GitHubFeedEvent[] = await octokit.paginate(
     octokit.activity.listReceivedEventsForUser,
@@ -102,10 +107,11 @@ export default async (
       username: user.data.login,
     }
   );
-  const repoInfo = await getRepoInfo(result);
+  const repoInfo = await getRepoInfo(graphqlWithAuth, result);
 
   res.json({
     events: result,
     repoInfo,
+    user: user.data,
   });
 };

@@ -3,6 +3,7 @@ import { theme, Flex, BorderBox, Heading, Box, Text } from "@primer/components";
 import { GitHubFeedEvent, Repo } from "../utils/types";
 import { ActorAvatar } from "./ActorAvatar";
 import { Card, CardDivider, CardTitle } from "../components/Card";
+import { DataContext } from "../contexts/data";
 
 export const Event = ({
   event,
@@ -19,13 +20,8 @@ export const Event = ({
 );
 
 const useUser = () => {
-  return {
-    status: "my website is hot garbage.",
-    name: "Andrew Lisowski",
-    display_login: "hipstersmoothie",
-    login: "hipstersmoothie",
-    avatar_url: "https://avatars3.githubusercontent.com/u/1192452",
-  };
+  const { user } = React.useContext(DataContext);
+  return user;
 };
 
 const isGithubEvent = (

@@ -1,8 +1,11 @@
 import React from "react";
 import Head from "next/head";
 import fetch from "isomorphic-fetch";
+import { useSession } from "next-auth/client";
+import { RestEndpointMethodTypes } from "@octokit/rest";
+import Router from 'next/router'
 
-import { theme, Grid, Flex } from "@primer/components";
+import { Grid, Flex } from "@primer/components";
 
 import {
   GitHubFeedEvent,
@@ -22,6 +25,10 @@ type EventMap = Record<EventType, GitHubFeedEvent[]>;
 const IGNORE_USERS = ["renovate"];
 
 const useFeeds = () => {
+  const [user, userSet] = React.useState<
+    | RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"]
+    | undefined
+  >();
   const [feeds, feedsSet] = React.useState<EventMap | undefined>();
   const [repoInfo, repoInfoSet] = React.useState<RepoInfoMap>({});
 
@@ -53,11 +60,12 @@ const useFeeds = () => {
         });
 
         repoInfoSet(res.repoInfo);
+        userSet(res.user);
         feedsSet(map);
       });
   }, []);
 
-  return { feeds, repoInfo };
+  return { feeds, repoInfo, user };
 };
 
 const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
@@ -82,12 +90,13 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
         showCount={9}
       />
     </Grid>
+
     <WatchEvents events={props.WatchEvent} pageHeight={props.pageHeight} />
   </Grid>
 );
 
-export default function Home() {
-  const { feeds, repoInfo } = useFeeds();
+function App() {
+  const { feeds, repoInfo, user } = useFeeds();
   const [clientHeight, clientHeightSet] = React.useState<number | undefined>();
 
   React.useEffect(() => {
@@ -95,7 +104,7 @@ export default function Home() {
   }, []);
 
   return (
-    <DataContext.Provider value={{ repoInfo }}>
+    <DataContext.Provider value={{ repoInfo, user }}>
       <Head>
         <title>GitHub Activity</title>
         <link rel="icon" href="/favicon-dark.png" />
@@ -113,4 +122,19 @@ export default function Home() {
       </Flex>
     </DataContext.Provider>
   );
+}
+
+export default function Home() {
+  const [session, loading] = useSession();
+
+  if (loading) {
+    return null;
+  }
+
+  if (!session) {
+    Router.push('/api/auth/signin');
+    return null;
+  }
+
+  return <App />;
 }

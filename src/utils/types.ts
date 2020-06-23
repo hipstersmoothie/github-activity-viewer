@@ -1,3 +1,5 @@
+import { RestEndpointMethodTypes } from "@octokit/rest";
+
 export interface Actor {
   id: number;
   login: string;
@@ -112,4 +114,5 @@ export type RepoInfoMap = Record<string, ExtendedRepoData>;
 export interface GetFeedResponse {
   events: GitHubFeedEvent[];
   repoInfo: RepoInfoMap;
+  user: RestEndpointMethodTypes['users']['getAuthenticated']["response"]["data"]
 }
