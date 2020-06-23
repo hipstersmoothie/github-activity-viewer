@@ -1,11 +1,12 @@
 {
   "name": "github-activity-viewer",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "release": "auto shipit -vv"
   },
   "dependencies": {
     "@octokit/graphql": "^4.5.1",
@@ -29,9 +30,22 @@
     "tailwindcss": "^1.4.6"
   },
   "devDependencies": {
+    "@auto-it/git-tag": "^9.39.0",
+    "@auto-it/released": "^9.39.0",
     "@types/react": "^16.9.38",
+    "auto": "^9.39.0",
     "postcss-flexbugs-fixes": "^4.2.1",
     "postcss-preset-env": "^6.7.0",
     "typescript": "^3.9.5"
+  },
+  "auto": {
+    "owner": "hipstersmoothie",
+    "repo": "github-activity-viewer",
+    "name": "Andrew Lisowski",
+    "email": "lisowski54@gmail.com",
+    "plugins": [
+      "git-tag",
+      "released"
+    ]
   }
 }

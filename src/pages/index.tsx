@@ -84,7 +84,7 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
         title="Releases"
       />
       <Events
-        events={props.CreateEvent.filter((e) => e.payload.ref_type !== "tag")}
+        events={props.CreateEvent.filter((e) => e.payload.ref_type === "repository")}
         eventComponent={CreateEvent}
         title="New Repos"
         showCount={9}
