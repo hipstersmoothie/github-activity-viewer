@@ -1,3 +1,15 @@
+# v0.0.6 (Tue Jun 23 2020)
+
+#### 🐛 Bug Fix
+
+- add some types [#1](https://github.com/hipstersmoothie/github-activity-viewer/pull/1) ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.5 (Tue Jun 23 2020)
 
 #### ⚠️ Pushed to `master`
