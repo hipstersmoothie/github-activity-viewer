@@ -23,6 +23,3 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn release
-
-      - name: Vercel Action
-        uses: amondnet/vercel-action@v19.0.1+1
