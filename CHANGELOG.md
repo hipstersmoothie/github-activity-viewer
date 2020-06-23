@@ -1,3 +1,15 @@
+# v0.0.8 (Tue Jun 23 2020)
+
+#### ⚠️ Pushed to `master`
+
+- fix server url ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.7 (Tue Jun 23 2020)
 
 #### ⚠️ Pushed to `master`
