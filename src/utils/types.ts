@@ -41,6 +41,7 @@ export type EventType =
   | "CreateEvent"
   | "IssueCommentEvent"
   | "IssuesEvent"
+  | "CommitCommentEvent"
   | "ForkEvent"
   | "DeleteEvent"
   | "PublicEvent"

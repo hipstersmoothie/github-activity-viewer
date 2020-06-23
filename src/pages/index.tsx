@@ -3,7 +3,7 @@ import Head from "next/head";
 import fetch from "isomorphic-fetch";
 import { useSession } from "next-auth/client";
 import { RestEndpointMethodTypes } from "@octokit/rest";
-import Router from 'next/router'
+import Router from "next/router";
 
 import { Grid, Flex } from "@primer/components";
 
@@ -33,7 +33,7 @@ const useFeeds = () => {
   const [repoInfo, repoInfoSet] = React.useState<RepoInfoMap>({});
 
   React.useEffect(() => {
-    fetch("http://localhost:3000/api/get-feed")
+    fetch(`${process.env.SITE || "http://localhost:3000/"}api/get-feed`)
       .then((res) => res.json())
       .then((res: GetFeedResponse) => {
         const map: EventMap = {
@@ -43,6 +43,7 @@ const useFeeds = () => {
           PullRequestEvent: [],
           PullRequestReviewCommentEvent: [],
           CreateEvent: [],
+          CommitCommentEvent: [],
           IssueCommentEvent: [],
           IssuesEvent: [],
           ForkEvent: [],
@@ -56,7 +57,11 @@ const useFeeds = () => {
             return;
           }
 
-          map[event.type].push(event);
+          if (map[event.type]) {
+            map[event.type].push(event);
+          } else {
+            console.log(event.type)
+          }
         });
 
         repoInfoSet(res.repoInfo);
@@ -84,7 +89,9 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
         title="Releases"
       />
       <Events
-        events={props.CreateEvent.filter((e) => e.payload.ref_type === "repository")}
+        events={props.CreateEvent.filter(
+          (e) => e.payload.ref_type === "repository"
+        )}
         eventComponent={CreateEvent}
         title="New Repos"
         showCount={8}
@@ -132,7 +139,7 @@ export default function Home() {
   }
 
   if (!session) {
-    Router.push('/api/auth/signin');
+    Router.push("/api/auth/signin");
     return null;
   }
 
