@@ -1,3 +1,15 @@
+# v0.0.10 (Tue Jun 23 2020)
+
+#### ⚠️ Pushed to `master`
+
+- better spinner ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.9 (Tue Jun 23 2020)
 
 #### ⚠️ Pushed to `master`
