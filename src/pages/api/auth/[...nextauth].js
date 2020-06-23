@@ -6,7 +6,6 @@ const options = {
 
   secret: process.env.GITHUB_SECRET,
 
-  // Configure one or more authentication providers
   providers: [
     Providers.GitHub({
       clientId: process.env.GITHUB_ID,
