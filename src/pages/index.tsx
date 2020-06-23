@@ -119,7 +119,7 @@ function App() {
 
       <Flex
         justifyContent="center"
-        sx={{ backgroundColor: "gray.1", minHeight: "100vh" }}
+        sx={{ backgroundColor: feeds ? "gray.1" : "gray.2", minHeight: "100vh" }}
       >
         {feeds ? (
           <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
