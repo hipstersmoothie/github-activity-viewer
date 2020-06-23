@@ -87,7 +87,7 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
         events={props.CreateEvent.filter((e) => e.payload.ref_type === "repository")}
         eventComponent={CreateEvent}
         title="New Repos"
-        showCount={9}
+        showCount={8}
       />
     </Grid>
 
