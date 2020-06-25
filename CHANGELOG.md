@@ -1,3 +1,15 @@
+# v0.0.12 (Thu Jun 25 2020)
+
+#### ⚠️ Pushed to `master`
+
+- add swr ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.11 (Thu Jun 25 2020)
 
 #### ⚠️ Pushed to `master`
