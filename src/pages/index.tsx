@@ -1,76 +1,70 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Head from "next/head";
 import fetch from "isomorphic-fetch";
 import { useSession } from "next-auth/client";
-import { RestEndpointMethodTypes } from "@octokit/rest";
 import Router from "next/router";
+import useSWR from "swr";
 
 import { Grid, Flex } from "@primer/components";
 
-import {
-  GitHubFeedEvent,
-  EventType,
-  GetFeedResponse,
-  RepoInfoMap,
-} from "../utils/types";
+import { GitHubFeedEvent, EventType, GetFeedResponse } from "../utils/types";
 import { WatchEvents } from "../components/WatchEvents";
 import { Events } from "../components/Event";
 import { ReleaseEvent } from "../components/ReleaseEvent";
 import { CreateEvent } from "../components/CreateEvent";
 import { DataContext } from "../contexts/data";
-import { Spinner } from "../components/Spinner";
+import { FullPageSpinner } from "../components/Spinner";
 
 type EventMap = Record<EventType, GitHubFeedEvent[]>;
 
 const IGNORE_USERS = ["renovate"];
 
 const useFeeds = () => {
-  const [user, userSet] = React.useState<
-    | RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"]
-    | undefined
-  >();
-  const [feeds, feedsSet] = React.useState<EventMap | undefined>();
-  const [repoInfo, repoInfoSet] = React.useState<RepoInfoMap>({});
+  const { data } = useSWR(
+    "/api/get-feed",
+    async (pathname: string) => {
+      return fetch(`${process.env.SITE || "http://localhost:3000"}${pathname}`)
+        .then((res) => res.json())
+        .then((res: GetFeedResponse) => {
+          const map: EventMap = {
+            ReleaseEvent: [],
+            WatchEvent: [],
+            PushEvent: [],
+            PullRequestEvent: [],
+            PullRequestReviewCommentEvent: [],
+            CreateEvent: [],
+            CommitCommentEvent: [],
+            IssueCommentEvent: [],
+            IssuesEvent: [],
+            ForkEvent: [],
+            DeleteEvent: [],
+            PublicEvent: [],
+            MemberEvent: [],
+          };
 
-  React.useEffect(() => {
-    fetch(`${process.env.SITE || "http://localhost:3000/"}api/get-feed`)
-      .then((res) => res.json())
-      .then((res: GetFeedResponse) => {
-        const map: EventMap = {
-          ReleaseEvent: [],
-          WatchEvent: [],
-          PushEvent: [],
-          PullRequestEvent: [],
-          PullRequestReviewCommentEvent: [],
-          CreateEvent: [],
-          CommitCommentEvent: [],
-          IssueCommentEvent: [],
-          IssuesEvent: [],
-          ForkEvent: [],
-          DeleteEvent: [],
-          PublicEvent: [],
-          MemberEvent: [],
-        };
+          res.events.forEach((event) => {
+            if (IGNORE_USERS.includes(event.actor.display_login)) {
+              return;
+            }
 
-        res.events.forEach((event) => {
-          if (IGNORE_USERS.includes(event.actor.display_login)) {
-            return;
-          }
+            if (map[event.type]) {
+              map[event.type].push(event);
+            } else {
+              console.log(event.type);
+            }
+          });
 
-          if (map[event.type]) {
-            map[event.type].push(event);
-          } else {
-            console.log(event.type)
-          }
+          return {
+            repoInfo: res.repoInfo,
+            user: res.user,
+            feeds: map,
+          };
         });
+    },
+    { suspense: true }
+  );
 
-        repoInfoSet(res.repoInfo);
-        userSet(res.user);
-        feedsSet(map);
-      });
-  }, []);
-
-  return { feeds, repoInfo, user };
+  return data || ({} as Partial<typeof data>);
 };
 
 const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
@@ -112,20 +106,14 @@ function App() {
 
   return (
     <DataContext.Provider value={{ repoInfo, user }}>
-      <Head>
-        <title>GitHub Activity</title>
-        <link rel="icon" href="/favicon-dark.png" />
-      </Head>
-
       <Flex
         justifyContent="center"
-        sx={{ backgroundColor: feeds ? "gray.1" : "gray.2", minHeight: "100vh" }}
+        sx={{
+          backgroundColor: "gray.1",
+          minHeight: "100vh",
+        }}
       >
-        {feeds ? (
-          <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
-        ) : (
-          <Spinner />
-        )}
+        <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
       </Flex>
     </DataContext.Provider>
   );
@@ -143,5 +131,15 @@ export default function Home() {
     return null;
   }
 
-  return <App />;
+  return (
+    <>
+      <Head>
+        <title>GitHub Activity</title>
+        <link rel="icon" href="/favicon-dark.png" />
+      </Head>
+      <Suspense fallback={<FullPageSpinner />}>
+        <App />
+      </Suspense>
+    </>
+  );
 }

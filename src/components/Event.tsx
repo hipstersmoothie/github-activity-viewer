@@ -102,7 +102,7 @@ export const Events = <T extends GitHubFeedEvent | Repo>({
       {filterComponent && fromUsersRepos.length === 0 && shownTitle}
 
       {shownRepos.map((event) => (
-        <EventComponent event={event} />
+        <EventComponent key={`event-${event.id}`} event={event} />
       ))}
 
       {shownRepos.length >= showCount && (

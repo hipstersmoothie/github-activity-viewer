@@ -71,9 +71,7 @@ export const Spinner = () => (
       <Text color="white" fontSize={5} fontWeight="bold" mt={2} mb={1}>
         Loading your activity...
       </Text>
-      <Text color="white">
-        (This might take a minute)
-      </Text>
+      <Text color="white">(This might take a minute)</Text>
     </Flex>
 
     <style>{`
@@ -102,4 +100,16 @@ export const Spinner = () => (
       }
     `}</style>
   </>
+);
+
+export const FullPageSpinner = () => (
+  <Flex
+    justifyContent="center"
+    sx={{
+      backgroundColor: "gray.2",
+      minHeight: "100vh",
+    }}
+  >
+    <Spinner />
+  </Flex>
 );
