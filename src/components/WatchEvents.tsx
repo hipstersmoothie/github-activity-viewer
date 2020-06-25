@@ -1,6 +1,13 @@
 import React from "react";
 
-import { BorderBox, SelectMenu, Button, Relative } from "@primer/components";
+import {
+  BorderBox,
+  SelectMenu,
+  Button,
+  Relative,
+  Text,
+  Box,
+} from "@primer/components";
 import { GitHubFeedEvent, Repo, Actor, LanguageType } from "../utils/types";
 import { DEFAULT_LANGUAGE_COLOR } from "../utils/constants";
 import { DataContext } from "../contexts/data";
@@ -70,6 +77,17 @@ const LanguageFilter = ({
   );
 };
 
+const Section = ({ children }: { children: React.ReactNode }) => (
+  <Box
+    my={6}
+    pb={2}
+    sx={{ borderBottom: "1px solid", borderColor: "gray.3" }}
+    color="gray.5"
+  >
+    <Text>{children}</Text>
+  </Box>
+);
+
 export const WatchEvents = ({
   events,
   pageHeight,
@@ -86,6 +104,7 @@ export const WatchEvents = ({
   const groupedByProject = new Map<string, Actor[]>();
   const projects: Repo[] = [];
   const languages: LanguageType[] = [];
+  const lastSeen = localStorage.getItem("github-activity-last-seen");
 
   events.forEach((event) => {
     if (groupedByProject.has(event.repo.name)) {
@@ -117,6 +136,22 @@ export const WatchEvents = ({
     (a, b) =>
       groupedByProject.get(b.name).length - groupedByProject.get(a.name).length
   );
+  const firstWithOneStar = sortedProjects.find(p => groupedByProject.get(p.name).length === 1);
+
+  const storageId = (repo: Repo) => {
+    const users = groupedByProject.get(repo.name);
+    return `${repo.id}-${users.map((u) => u.display_login).join("-")}`;
+  };
+
+  // Remember the latest repo seen
+  React.useEffect(() => {
+    const first = sortedProjects.find((p) => {
+      const users = groupedByProject.get(p.name);
+      return users.length === 1;
+    });
+
+    localStorage.setItem("github-activity-last-seen", storageId(first));
+  }, []);
 
   return (
     <Events
@@ -145,12 +180,24 @@ export const WatchEvents = ({
       }}
       eventComponent={(p) => {
         const users = groupedByProject.get(p.event.name);
+
         return (
-          <RepoDescription
-            repo={{ ...p.event, ...repoInfo[queryId(p.event)] }}
-            users={users}
-            mb={4}
-          />
+          <>
+            {users.length > 1 && p.event.name === sortedProjects[0].name && (
+              <Section>Trending Among People you Follow</Section>
+            )}
+            {users.length === 1 && firstWithOneStar.name === p.event.name && lastSeen !== storageId(p.event) && (
+              <Section>Starred</Section>
+            )}
+            {lastSeen === storageId(p.event) && (
+              <Section>Seen previously...</Section>
+            )}
+            <RepoDescription
+              repo={{ ...p.event, ...repoInfo[queryId(p.event)] }}
+              users={users}
+              mb={4}
+            />
+          </>
         );
       }}
     />
