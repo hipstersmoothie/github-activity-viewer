@@ -150,6 +150,10 @@ export const WatchEvents = ({
       return users.length === 1;
     });
 
+    if (!first) {
+      return;
+    }
+
     localStorage.setItem("github-activity-last-seen", storageId(first));
   }, []);
 
