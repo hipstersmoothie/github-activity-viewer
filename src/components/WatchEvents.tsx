@@ -15,6 +15,7 @@ import { queryId } from "../utils/queryId";
 import { Events } from "./Event";
 import { Language } from "./Language";
 import { RepoDescription } from "./RepoDescription";
+import { useWindowFocus } from "../hooks/useWindowFocus";
 
 const ALL_LANGUAGE = {
   node: { color: DEFAULT_LANGUAGE_COLOR, name: "All" },
@@ -105,6 +106,7 @@ export const WatchEvents = ({
   const projects: Repo[] = [];
   const languages: LanguageType[] = [];
   const lastSeen = localStorage.getItem("github-activity-last-seen");
+  const windowFocus = useWindowFocus();
 
   events.forEach((event) => {
     if (groupedByProject.has(event.repo.name)) {
@@ -154,7 +156,9 @@ export const WatchEvents = ({
       return;
     }
 
-    localStorage.setItem("github-activity-last-seen", storageId(first));
+    if (windowFocus) {
+      localStorage.setItem("github-activity-last-seen", storageId(first));
+    }
   }, []);
 
   return (

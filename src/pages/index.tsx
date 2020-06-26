@@ -14,25 +14,14 @@ import { ReleaseEvent } from "../components/ReleaseEvent";
 import { CreateEvent } from "../components/CreateEvent";
 import { DataContext } from "../contexts/data";
 import { FullPageSpinner } from "../components/Spinner";
+import { useWindowFocus } from "../hooks/useWindowFocus";
 
 type EventMap = Record<EventType, GitHubFeedEvent[]>;
 
 const IGNORE_USERS = ["renovate"];
 
 const useFeeds = () => {
-  const [refreshWhenHidden, refreshWhenHiddenSet] = React.useState(false);
-
-  React.useEffect(() => {
-    const toggleRefreshWhenHidden = () =>
-      refreshWhenHiddenSet(!refreshWhenHidden);
-
-    window.addEventListener("visibilitychange", toggleRefreshWhenHidden, false);
-
-    return () => {
-      window.removeEventListener("visibilitychange", toggleRefreshWhenHidden);
-    };
-  });
-
+  const windowFocus = useWindowFocus();
   const { data } = useSWR(
     "/api/get-feed",
     async (pathname: string) => {
@@ -78,8 +67,8 @@ const useFeeds = () => {
       suspense: true,
       // Refresh every 5 minutes in the background but not when window is focused
       revalidateOnFocus: false,
-      refreshWhenHidden,
-      refreshInterval: refreshWhenHidden ? 5 * 60 * 1000 : undefined,
+      refreshWhenHidden: !windowFocus,
+      refreshInterval: !windowFocus ? 5 * 60 * 1000 : undefined,
     }
   );
 
