@@ -64,8 +64,8 @@ const LanguageFilter = ({
             )}
             {sortedLanguages.map((language) => (
               <SelectMenu.Item
-                as="button"
                 key={language.node.name}
+                as="button"
                 onClick={() => languageFilterSet(language)}
               >
                 <Language language={language} />
@@ -134,11 +134,14 @@ export const WatchEvents = ({
     }
   });
 
-  const sortedProjects = projects.sort(
+  projects.sort(
     (a, b) =>
       groupedByProject.get(b.name).length - groupedByProject.get(a.name).length
   );
-  const firstWithOneStar = sortedProjects.find(p => groupedByProject.get(p.name).length === 1);
+
+  const firstWithOneStar = projects.find(
+    (p) => groupedByProject.get(p.name).length === 1
+  );
 
   const storageId = (repo: Repo) => {
     const users = groupedByProject.get(repo.name);
@@ -147,7 +150,7 @@ export const WatchEvents = ({
 
   // Remember the latest repo seen
   React.useEffect(() => {
-    const first = sortedProjects.find((p) => {
+    const first = projects.find((p) => {
       const users = groupedByProject.get(p.name);
       return users.length === 1;
     });
@@ -159,14 +162,16 @@ export const WatchEvents = ({
     if (windowFocus) {
       localStorage.setItem("github-activity-last-seen", storageId(first));
     }
-  }, []);
+    // Only windowFocus is a dep because we actually want the stale values for all 
+    // other potential deps.
+  }, [windowFocus]);
 
   return (
     <Events
       {...props}
       title="Recently Starred"
       showCount={Math.floor((pageHeight - WRAPPER_HEIGHT) / ROW_HEIGHT)}
-      events={sortedProjects}
+      events={projects}
       filterComponent={
         <LanguageFilter
           languages={languages}
@@ -191,12 +196,12 @@ export const WatchEvents = ({
 
         return (
           <>
-            {users.length > 1 && p.event.name === sortedProjects[0].name && (
+            {users.length > 1 && p.event.name === projects[0].name && (
               <Section>Trending Among People you Follow</Section>
             )}
-            {users.length === 1 && firstWithOneStar.name === p.event.name && lastSeen !== storageId(p.event) && (
-              <Section>Starred</Section>
-            )}
+            {users.length === 1 &&
+              firstWithOneStar.name === p.event.name &&
+              lastSeen !== storageId(p.event) && <Section>Starred</Section>}
             {lastSeen === storageId(p.event) && (
               <Section>Seen previously...</Section>
             )}

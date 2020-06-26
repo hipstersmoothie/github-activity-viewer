@@ -1,6 +1,7 @@
 import React from "react";
-import { RepoInfoMap } from "../utils/types";
 import { RestEndpointMethodTypes } from "@octokit/rest";
+
+import { RepoInfoMap } from "../utils/types";
 
 export const DataContext = React.createContext<{
   repoInfo: RepoInfoMap | null;

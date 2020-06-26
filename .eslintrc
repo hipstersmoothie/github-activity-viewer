@@ -1,0 +1,8 @@
+{
+  "extends": "@design-systems",
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "camelcase": 0,
+    "jsdoc/require-jsdoc": 0
+  }
+}

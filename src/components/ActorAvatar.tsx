@@ -5,10 +5,13 @@ import { Actor } from "../utils/types";
 
 interface ActorAvatarProps
   extends Omit<React.ComponentProps<typeof Link>, "href"> {
+  /** The size of the avatar */
   size?: number;
+  /** The user to display an avatar for */
   actor: Actor;
 }
 
+/** Display an avatar for a user */
 export const ActorAvatar = ({
   actor,
   size = 32,

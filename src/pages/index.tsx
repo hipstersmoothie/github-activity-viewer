@@ -52,6 +52,7 @@ const useFeeds = () => {
             if (map[event.type]) {
               map[event.type].push(event);
             } else {
+              // eslint-disable-next-line no-console
               console.log(event.type);
             }
           });
@@ -68,7 +69,7 @@ const useFeeds = () => {
       // Refresh every 5 minutes in the background but not when window is focused
       revalidateOnFocus: false,
       refreshWhenHidden: !windowFocus,
-      refreshInterval: !windowFocus ? 5 * 60 * 1000 : undefined,
+      refreshInterval: windowFocus ? undefined : 5 * 60 * 1000,
     }
   );
 
@@ -104,7 +105,7 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
   </Grid>
 );
 
-function App() {
+const App = () => {
   const { feeds, repoInfo, user } = useFeeds();
   const [clientHeight, clientHeightSet] = React.useState<number | undefined>();
 
@@ -125,9 +126,9 @@ function App() {
       </Flex>
     </DataContext.Provider>
   );
-}
+};
 
-export default function Home() {
+const Home = () => {
   const [session, loading] = useSession();
 
   if (loading) {
@@ -150,4 +151,6 @@ export default function Home() {
       </Suspense>
     </>
   );
-}
+};
+
+export default Home;

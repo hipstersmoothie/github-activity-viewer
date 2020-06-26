@@ -1,9 +1,10 @@
 import React from "react";
 import { theme, Flex, BorderBox, Heading, Box, Text } from "@primer/components";
+
+import { DataContext } from "../contexts/data";
 import { GitHubFeedEvent, Repo } from "../utils/types";
 import { ActorAvatar } from "./ActorAvatar";
-import { Card, CardDivider, CardTitle } from "../components/Card";
-import { DataContext } from "../contexts/data";
+import { Card, CardDivider, CardTitle } from "./Card";
 
 export const Event = ({
   event,

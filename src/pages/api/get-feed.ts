@@ -1,9 +1,8 @@
-require("dotenv").config();
-
 import { NextApiRequest, NextApiResponse } from "next";
 import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";
 import jwt from "next-auth/jwt";
+import dotenv from 'dotenv'
 
 import {
   GitHubFeedEvent,
@@ -13,6 +12,8 @@ import {
   EventType,
 } from "../../utils/types";
 import { queryId } from "../../utils/queryId";
+
+dotenv.config();
 
 /** Just constructs the template string. Used for syntax highlighting in VSCode */
 function gql(
