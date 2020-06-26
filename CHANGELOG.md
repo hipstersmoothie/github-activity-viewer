@@ -1,3 +1,15 @@
+# v0.0.14 (Fri Jun 26 2020)
+
+#### ⚠️ Pushed to `master`
+
+- Refresh every 5 minutes in the background but not when window is focused ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.13 (Thu Jun 25 2020)
 
 #### ⚠️ Pushed to `master`
