@@ -20,6 +20,19 @@ type EventMap = Record<EventType, GitHubFeedEvent[]>;
 const IGNORE_USERS = ["renovate"];
 
 const useFeeds = () => {
+  const [refreshWhenHidden, refreshWhenHiddenSet] = React.useState(false);
+
+  React.useEffect(() => {
+    const toggleRefreshWhenHidden = () =>
+      refreshWhenHiddenSet(!refreshWhenHidden);
+
+    window.addEventListener("visibilitychange", toggleRefreshWhenHidden, false);
+
+    return () => {
+      window.removeEventListener("visibilitychange", toggleRefreshWhenHidden);
+    };
+  });
+
   const { data } = useSWR(
     "/api/get-feed",
     async (pathname: string) => {
@@ -61,7 +74,13 @@ const useFeeds = () => {
           };
         });
     },
-    { suspense: true }
+    {
+      suspense: true,
+      // Refresh every 5 minutes in the background but not when window is focused
+      revalidateOnFocus: false,
+      refreshWhenHidden,
+      refreshInterval: refreshWhenHidden ? 5 * 60 * 1000 : undefined,
+    }
   );
 
   return data || ({} as Partial<typeof data>);

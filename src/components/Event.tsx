@@ -90,7 +90,7 @@ export const Events = <T extends GitHubFeedEvent | Repo>({
           </Heading>
 
           {fromUsersRepos.map((event) => (
-            <EventComponent event={event} />
+            <EventComponent key={`event-${event.id}`} event={event} />
           ))}
 
           <CardDivider my={5} />
