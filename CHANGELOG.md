@@ -1,3 +1,15 @@
+# v0.0.16 (Fri Jun 26 2020)
+
+#### ⚠️ Pushed to `master`
+
+- add lint, fix hook dep ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.15 (Fri Jun 26 2020)
 
 #### ⚠️ Pushed to `master`
