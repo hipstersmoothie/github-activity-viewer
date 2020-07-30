@@ -1,3 +1,15 @@
+# v0.0.17 (Thu Jul 30 2020)
+
+#### ⚠️ Pushed to `master`
+
+- use correct part of repo name for key ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.16 (Fri Jun 26 2020)
 
 #### ⚠️ Pushed to `master`
