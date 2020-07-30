@@ -1,4 +1,5 @@
 import { Repo } from "./types";
 
-export const queryId = (repo: Repo) =>
-  `id_${repo.id}_${repo.name.split("/")[0].replace(/-/g, "_")}`;
+const sanitize = (name: string) => name.split("/")[1].replace(/[-.]/g, "_");
+
+export const queryId = (repo: Repo) => `id_${repo.id}_${sanitize(repo.name)}`;
