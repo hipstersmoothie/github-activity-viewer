@@ -53,9 +53,11 @@ const useFeeds = () => {
               map[event.type].push(event);
             } else {
               // eslint-disable-next-line no-console
-              console.log(event.type);
+              console.log("Missing event bucket: ", event.type);
             }
           });
+
+          console.log(map);
 
           return {
             repoInfo: res.repoInfo,
@@ -76,34 +78,41 @@ const useFeeds = () => {
   return data || ({} as Partial<typeof data>);
 };
 
-const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => (
-  <Grid
-    px={4}
-    py={3}
-    gridGap={6}
-    gridTemplateColumns={["repeat(1, auto)", "1fr 2fr"]}
-    alignItems="start"
-    maxWidth={1600}
-  >
-    <Grid gridGap={6}>
-      <Events
-        events={props.ReleaseEvent}
-        eventComponent={ReleaseEvent}
-        title="Releases"
-      />
-      <Events
-        events={props.CreateEvent.filter(
-          (e) => e.payload.ref_type === "repository"
-        )}
-        eventComponent={CreateEvent}
-        title="New Repos"
-        showCount={8}
-      />
-    </Grid>
+const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => {
+  const newRepoEvents = [
+    ...props.CreateEvent.filter((e) => e.payload.ref_type === "repository"),
+    ...props.PublicEvent,
+  ].sort((a, b) => {
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
 
-    <WatchEvents events={props.WatchEvent} pageHeight={props.pageHeight} />
-  </Grid>
-);
+  return (
+    <Grid
+      px={4}
+      py={3}
+      gridGap={6}
+      gridTemplateColumns={["repeat(1, auto)", "1fr 2fr"]}
+      alignItems="start"
+      maxWidth={1600}
+    >
+      <Grid gridGap={6}>
+        <Events
+          events={props.ReleaseEvent}
+          eventComponent={ReleaseEvent}
+          title="Releases"
+        />
+        <Events
+          events={newRepoEvents}
+          eventComponent={CreateEvent}
+          title="New Repos"
+          showCount={8}
+        />
+      </Grid>
+
+      <WatchEvents events={props.WatchEvent} pageHeight={props.pageHeight} />
+    </Grid>
+  );
+};
 
 const App = () => {
   const { feeds, repoInfo, user } = useFeeds();
