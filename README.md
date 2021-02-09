@@ -1,4 +1,5 @@
-// TODO: setup deploy
-// TODO: setup work dashboard
-// TODO: package into chrome extension
-// TODO: cache data for quick first load
+// add sidebar
+  // TODO: setup work dashboard
+  // your events (what you starred, etc)
+  // Find followers from the intersections of your followers followers
+
