@@ -106,7 +106,7 @@ export const Events = <T extends GitHubFeedEvent | Repo>({
         <EventComponent key={`event-${event.id}`} event={event} />
       ))}
 
-      {shownRepos.length >= showCount && (
+      {filteredRepos.length > showCount && (
         <>
           <CardDivider mt={5} />
 
