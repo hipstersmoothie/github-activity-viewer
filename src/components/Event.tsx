@@ -1,8 +1,7 @@
 import React from "react";
-import { theme, Flex, BorderBox, Heading, Box, Text } from "@primer/components";
+import { theme, Flex, BorderBox, Box, Text } from "@primer/components";
 
-import { DataContext } from "../contexts/data";
-import { GitHubFeedEvent, Repo } from "../utils/types";
+import { GitHubFeedEvent } from "../utils/types";
 import { ActorAvatar } from "./ActorAvatar";
 import { Card, CardDivider, CardTitle } from "./Card";
 
@@ -20,93 +19,37 @@ export const Event = ({
   </Flex>
 );
 
-const useUser = () => {
-  const { user } = React.useContext(DataContext);
-  return user;
-};
-
-const isGithubEvent = (
-  value: GitHubFeedEvent | Repo
-): value is GitHubFeedEvent => "type" in value;
-
-const isRepo = (value: GitHubFeedEvent | Repo): value is Repo =>
-  "name" in value;
-
-const useUserRepoEvents = <T extends GitHubFeedEvent | Repo>(events: T[]) => {
-  const { login } = useUser();
-  const fromUsersRepos: T[] = [];
-  const fromOtherRepos: T[] = [];
-
-  events.forEach((event) => {
-    if (
-      (isGithubEvent(event) && event.repo.name.split("/")[0] === login) ||
-      (isRepo(event) && event.name.split("/")[0] === login)
-    ) {
-      fromUsersRepos.push(event);
-    } else {
-      fromOtherRepos.push(event);
-    }
-  });
-
-  return { fromUsersRepos, fromOtherRepos };
-};
-
-export const Events = <T extends GitHubFeedEvent | Repo>({
-  events,
-  eventComponent: EventComponent,
+export const GridCard = <T extends any>({
   title,
-  filterComponent,
   shownFilter = () => true,
   showCount = 5,
+  rows,
+  staticRows,
   ...props
 }: {
-  events: T[];
-  eventComponent: React.ComponentType<{ event: T }>;
   title: React.ReactNode;
-  filterComponent?: React.ReactNode;
   shownFilter?: (event: T) => boolean;
   showCount?: number;
+  rows: T[];
+  staticRows: React.ReactNode;
 } & Omit<React.ComponentProps<typeof BorderBox>, "title">) => {
   const [expanded, expandedSet] = React.useState(false);
   const toggleExpanded = () => expandedSet(!expanded);
-  const { fromOtherRepos, fromUsersRepos } = useUserRepoEvents(events);
-
-  const filteredRepos = fromOtherRepos.filter(shownFilter);
+  const filteredRows = rows.filter(shownFilter);
   const shownRepos = expanded
-    ? filteredRepos
-    : filteredRepos.slice(0, showCount).filter(shownFilter);
-  const shownTitle = (
-    <Flex alignItems="center" justifyContent="space-between" mb={4}>
-      <Heading fontSize={2}>On Other Repos</Heading>
-      {filterComponent}
-    </Flex>
-  );
+    ? filteredRows
+    : filteredRows.slice(0, showCount).filter(shownFilter);
 
   return (
-    <Card title={<CardTitle title={title} count={events.length} />} {...props}>
-      {fromUsersRepos.length > 0 && (
-        <>
-          <Heading fontSize={2} mb={4}>
-            On Your Repos
-          </Heading>
+    <Card
+      title={<CardTitle title={title} count={React.Children.count(rows)} />}
+      {...props}
+    >
+      {staticRows}
 
-          {fromUsersRepos.map((event) => (
-            <EventComponent key={`event-${event.id}`} event={event} />
-          ))}
+      {shownRepos}
 
-          <CardDivider my={5} />
-
-          {shownTitle}
-        </>
-      )}
-
-      {filterComponent && fromUsersRepos.length === 0 && shownTitle}
-
-      {shownRepos.map((event) => (
-        <EventComponent key={`event-${event.id}`} event={event} />
-      ))}
-
-      {filteredRepos.length > showCount && (
+      {filteredRows.length > showCount && (
         <>
           <CardDivider mt={5} />
 

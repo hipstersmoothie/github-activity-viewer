@@ -1,21 +1,25 @@
 import React from "react";
 
 import {
-  BorderBox,
+  Box,
+  Text,
   SelectMenu,
   Button,
   Relative,
-  Text,
-  Box,
+  Flex,
+  Heading,
+  BorderBox,
 } from "@primer/components";
+
+import { CardDivider } from "./Card";
 import { GitHubFeedEvent, Repo, Actor, LanguageType } from "../utils/types";
 import { DEFAULT_LANGUAGE_COLOR } from "../utils/constants";
 import { DataContext } from "../contexts/data";
 import { queryId } from "../utils/queryId";
-import { Events } from "./Event";
 import { Language } from "./Language";
 import { RepoDescription } from "./RepoDescription";
 import { useWindowFocus } from "../hooks/useWindowFocus";
+import { GridCard } from "./Event";
 
 const ALL_LANGUAGE = {
   node: { color: DEFAULT_LANGUAGE_COLOR, name: "All" },
@@ -89,10 +93,40 @@ const Section = ({ children }: { children: React.ReactNode }) => (
   </Box>
 );
 
+const useUser = () => {
+  const { user } = React.useContext(DataContext);
+  return user;
+};
+
+const isGithubEvent = (
+  value: GitHubFeedEvent | Repo
+): value is GitHubFeedEvent => "type" in value;
+
+const isRepo = (value: GitHubFeedEvent | Repo): value is Repo =>
+  "name" in value;
+
+const useUserRepoEvents = <T extends GitHubFeedEvent | Repo>(events: T[]) => {
+  const { login } = useUser();
+  const fromUsersRepos: T[] = [];
+  const fromOtherRepos: T[] = [];
+
+  events.forEach((event) => {
+    if (
+      (isGithubEvent(event) && event.repo.name.split("/")[0] === login) ||
+      (isRepo(event) && event.name.split("/")[0] === login)
+    ) {
+      fromUsersRepos.push(event);
+    } else {
+      fromOtherRepos.push(event);
+    }
+  });
+
+  return { fromUsersRepos, fromOtherRepos };
+};
+
 export const WatchEvents = ({
   events,
   pageHeight,
-  ...props
 }: { events: GitHubFeedEvent[]; pageHeight: number } & Omit<
   React.ComponentProps<typeof BorderBox>,
   "title"
@@ -162,57 +196,94 @@ export const WatchEvents = ({
     if (windowFocus) {
       localStorage.setItem("github-activity-last-seen", storageId(first));
     }
-    // Only windowFocus is a dep because we actually want the stale values for all 
+    // Only windowFocus is a dep because we actually want the stale values for all
     // other potential deps.
   }, [windowFocus]);
 
-  return (
-    <Events
-      {...props}
-      title="Recently Starred"
-      showCount={Math.floor((pageHeight - WRAPPER_HEIGHT) / ROW_HEIGHT)}
-      events={projects}
-      filterComponent={
-        <LanguageFilter
-          languages={languages}
-          languageFilter={languageFilter}
-          languageFilterSet={languageFilterSet}
+  const { fromOtherRepos, fromUsersRepos } = useUserRepoEvents(projects);
+
+  const RepoRenderer = (repo: Repo) => {
+    const users = groupedByProject.get(repo.name);
+
+    return (
+      <>
+        {users.length > 1 && repo.name === projects[0].name && (
+          <Section>Trending Among People you Follow</Section>
+        )}
+        {users.length === 1 &&
+          firstWithOneStar.name === repo.name &&
+          lastSeen !== storageId(repo) && <Section>Starred</Section>}
+        {lastSeen === storageId(repo) && <Section>Seen previously...</Section>}
+
+        <RepoDescription
+          repo={{ ...repo, ...repoInfo[queryId(repo)] }}
+          users={users}
+          mb={4}
         />
-      }
-      shownFilter={(repo: Repo) => {
-        const info = repoInfo[queryId(repo)];
+      </>
+    );
+  };
 
-        if (!languageFilter) {
-          return true;
-        }
+  // TOP TITLE SPACE + CONTAINER PADDING
+  const containerHeight = 32 + 68;
+  const yourReposHeight = fromUsersRepos.length
+    ? // YOUR_REPOS_TITLE + YOUR_REPOS_HEIGHT + DIVIDER
+      48 + fromUsersRepos.length * ROW_HEIGHT + 65
+    : 0;
+  const otherReposTitleHeight = 140;
 
-        return (
-          info.languages.edges.length &&
-          info.languages.edges[0].node.name === languageFilter.node.name
-        );
-      }}
-      eventComponent={(p) => {
-        const users = groupedByProject.get(p.event.name);
+  return (
+    <GridCard
+      title="Recently Starred"
+      showCount={Math.floor(
+        (pageHeight -
+          containerHeight -
+          yourReposHeight -
+          otherReposTitleHeight) /
+          ROW_HEIGHT
+      )}
+      staticRows={
+        <>
+          {fromUsersRepos.length > 0 && (
+            <>
+              <Heading fontSize={2} mb={4}>
+                On Your Repos
+              </Heading>
 
-        return (
-          <>
-            {users.length > 1 && p.event.name === projects[0].name && (
-              <Section>Trending Among People you Follow</Section>
-            )}
-            {users.length === 1 &&
-              firstWithOneStar.name === p.event.name &&
-              lastSeen !== storageId(p.event) && <Section>Starred</Section>}
-            {lastSeen === storageId(p.event) && (
-              <Section>Seen previously...</Section>
-            )}
-            <RepoDescription
-              repo={{ ...p.event, ...repoInfo[queryId(p.event)] }}
-              users={users}
-              mb={4}
+              {fromUsersRepos.map((repo) => (
+                <RepoRenderer key={`repo-${repo.id}`} {...repo} />
+              ))}
+
+              <CardDivider my={5} />
+            </>
+          )}
+
+          <Flex alignItems="center" justifyContent="space-between" mb={4}>
+            <Heading fontSize={2}>On Other Repos</Heading>
+            <LanguageFilter
+              languages={languages}
+              languageFilter={languageFilter}
+              languageFilterSet={languageFilterSet}
             />
-          </>
-        );
-      }}
+          </Flex>
+        </>
+      }
+      rows={fromOtherRepos
+        .filter((repo) => {
+          if (!languageFilter) {
+            return true;
+          }
+
+          const info = repoInfo[queryId(repo)];
+
+          return (
+            info.languages.edges.length &&
+            info.languages.edges[0].node.name === languageFilter.node.name
+          );
+        })
+        .map((repo) => (
+          <RepoRenderer key={repo.id} {...repo} />
+        ))}
     />
   );
 };

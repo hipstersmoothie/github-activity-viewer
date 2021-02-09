@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";
 import jwt from "next-auth/jwt";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 
 import {
   GitHubFeedEvent,
@@ -10,6 +10,7 @@ import {
   GetFeedResponse,
   RepoInfoMap,
   EventType,
+  Actor,
 } from "../../utils/types";
 import { queryId } from "../../utils/queryId";
 
@@ -88,6 +89,38 @@ async function getRepoInfo(
   }
 }
 
+async function getRecentFollowers(
+  graphqlWithAuth: typeof graphql,
+  login: string
+) {
+  const query = gql`
+    {
+      user(login: "${login}") {
+        followers(first: 10) {
+          nodes {
+            login
+            id
+            avatarUrl
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    const result = await graphqlWithAuth<{
+      user: { followers: { nodes: Actor[] } };
+    }>(query);
+    return result.user.followers.nodes.map((node) => ({
+      ...node,
+      display_login: node.login,
+      avatar_url: (node as any).avatarUrl,
+    }));
+  } catch (error) {
+    return error.data;
+  }
+}
+
 export default async (
   req: NextApiRequest,
   res: NextApiResponse<GetFeedResponse>
@@ -109,10 +142,15 @@ export default async (
     }
   );
   const repoInfo = await getRepoInfo(graphqlWithAuth, result);
+  const recentFollowers = await getRecentFollowers(
+    graphqlWithAuth,
+    user.data.login
+  );
 
   res.json({
     events: result,
     repoInfo,
     user: user.data,
+    recentFollowers,
   });
 };

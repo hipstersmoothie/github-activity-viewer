@@ -7,14 +7,22 @@ import useSWR from "swr";
 
 import { Grid, Flex } from "@primer/components";
 
-import { GitHubFeedEvent, EventType, GetFeedResponse } from "../utils/types";
+import {
+  GitHubFeedEvent,
+  EventType,
+  GetFeedResponse,
+  Actor,
+  ReleaseEventType,
+} from "../utils/types";
 import { WatchEvents } from "../components/WatchEvents";
-import { Events } from "../components/Event";
+import { GridCard } from "../components/Event";
 import { ReleaseEvent } from "../components/ReleaseEvent";
 import { CreateEvent } from "../components/CreateEvent";
 import { DataContext } from "../contexts/data";
 import { FullPageSpinner } from "../components/Spinner";
 import { useWindowFocus } from "../hooks/useWindowFocus";
+import { ActorLink } from "../components/HomePageLink";
+import { ActorAvatar } from "../components/ActorAvatar";
 
 type EventMap = Record<EventType, GitHubFeedEvent[]>;
 
@@ -57,12 +65,11 @@ const useFeeds = () => {
             }
           });
 
-          console.log(map);
-
           return {
             repoInfo: res.repoInfo,
             user: res.user,
             feeds: map,
+            recentFollowers: res.recentFollowers,
           };
         });
     },
@@ -78,7 +85,9 @@ const useFeeds = () => {
   return data || ({} as Partial<typeof data>);
 };
 
-const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => {
+const GithubActivityViewer = (
+  props: EventMap & { pageHeight: number; recentFollowers: Actor[] }
+) => {
   const newRepoEvents = [
     ...props.CreateEvent.filter((e) => e.payload.ref_type === "repository"),
     ...props.PublicEvent,
@@ -96,16 +105,29 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => {
       maxWidth={1600}
     >
       <Grid gridGap={6}>
-        <Events
-          events={props.ReleaseEvent}
-          eventComponent={ReleaseEvent}
+        <GridCard
           title="Releases"
+          showCount={8}
+          rows={props.ReleaseEvent.map((event) => (
+            <ReleaseEvent key={event.id} event={event as ReleaseEventType} />
+          ))}
         />
-        <Events
-          events={newRepoEvents}
-          eventComponent={CreateEvent}
+        <GridCard
           title="New Repos"
           showCount={8}
+          rows={newRepoEvents.map((event) => (
+            <CreateEvent key={event.id} event={event} />
+          ))}
+        />
+        <GridCard
+          title="New Followers"
+          showCount={5}
+          rows={props.recentFollowers.map((follower) => (
+            <Flex key={follower.id} alignItems="baseline" mb={3} {...props}>
+              <ActorAvatar actor={follower} mr={3} />
+              <ActorLink {...follower} />
+            </Flex>
+          ))}
         />
       </Grid>
 
@@ -115,7 +137,7 @@ const GithubActivityViewer = (props: EventMap & { pageHeight: number }) => {
 };
 
 const App = () => {
-  const { feeds, repoInfo, user } = useFeeds();
+  const { feeds, repoInfo, user, recentFollowers } = useFeeds();
   const [clientHeight, clientHeightSet] = React.useState<number | undefined>();
 
   React.useEffect(() => {
@@ -131,7 +153,11 @@ const App = () => {
           minHeight: "100vh",
         }}
       >
-        <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
+        <GithubActivityViewer
+          pageHeight={clientHeight}
+          recentFollowers={recentFollowers}
+          {...feeds}
+        />
       </Flex>
     </DataContext.Provider>
   );

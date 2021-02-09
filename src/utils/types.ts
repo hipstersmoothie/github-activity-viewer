@@ -115,5 +115,6 @@ export type RepoInfoMap = Record<string, ExtendedRepoData>;
 export interface GetFeedResponse {
   events: GitHubFeedEvent[];
   repoInfo: RepoInfoMap;
-  user: RestEndpointMethodTypes['users']['getAuthenticated']["response"]["data"]
+  user: RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"];
+  recentFollowers: Actor[];
 }
