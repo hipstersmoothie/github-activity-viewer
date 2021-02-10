@@ -12,7 +12,7 @@ import { useFeeds } from "../hooks/useFeeds";
 const active = "user";
 
 const App = () => {
-  const { feeds, repoInfo, user, recentFollowers } = useFeeds(active);
+  const { feeds, repoInfo, user } = useFeeds(active);
   const [clientHeight, clientHeightSet] = React.useState<number | undefined>();
 
   React.useEffect(() => {
@@ -23,7 +23,6 @@ const App = () => {
     <DataContext.Provider value={{ repoInfo, user }}>
       <GithubActivityViewer
         pageHeight={clientHeight}
-        recentFollowers={recentFollowers}
         {...feeds}
       />
     </DataContext.Provider>

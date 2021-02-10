@@ -11,7 +11,7 @@ import { ActorLink } from "./HomePageLink";
 import { ActorAvatar } from "./ActorAvatar";
 
 export const GithubActivityViewer = (
-  props: EventMap & { pageHeight: number; recentFollowers: Actor[] }
+  props: EventMap & { pageHeight: number; recentFollowers?: Actor[] }
 ) => {
   const newRepoEvents = [
     ...props.CreateEvent.filter((e) => e.payload.ref_type === "repository"),
@@ -44,16 +44,18 @@ export const GithubActivityViewer = (
             <CreateEvent key={event.id} event={event} />
           ))}
         />
-        <GridCard
-          title="New Followers"
-          showCount={5}
-          rows={props.recentFollowers.map((follower) => (
-            <Flex key={follower.id} alignItems="baseline" mb={3} {...props}>
-              <ActorAvatar actor={follower} mr={3} />
-              <ActorLink {...follower} />
-            </Flex>
-          ))}
-        />
+        {props.recentFollowers && (
+          <GridCard
+            title="New Followers"
+            showCount={5}
+            rows={props.recentFollowers.map((follower) => (
+              <Flex key={follower.id} alignItems="baseline" mb={3} {...props}>
+                <ActorAvatar actor={follower} mr={3} />
+                <ActorLink {...follower} />
+              </Flex>
+            ))}
+          />
+        )}
       </Grid>
 
       <WatchEvents events={props.WatchEvent} pageHeight={props.pageHeight} />
