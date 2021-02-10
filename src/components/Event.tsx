@@ -31,7 +31,7 @@ export const GridCard = <T extends any>({
   shownFilter?: (event: T) => boolean;
   showCount?: number;
   rows: T[];
-  staticRows: React.ReactNode;
+  staticRows?: React.ReactNode;
 } & Omit<React.ComponentProps<typeof BorderBox>, "title">) => {
   const [expanded, expandedSet] = React.useState(false);
   const toggleExpanded = () => expandedSet(!expanded);

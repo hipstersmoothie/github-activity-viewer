@@ -136,7 +136,9 @@ export default async (
   });
   const user = await octokit.users.getAuthenticated();
   const result: GitHubFeedEvent[] = await octokit.paginate(
-    octokit.activity.listReceivedEventsForUser,
+    req.query.active === "following"
+      ? octokit.activity.listReceivedEventsForUser
+      : octokit.activity.listEventsForAuthenticatedUser,
     {
       username: user.data.login,
     }

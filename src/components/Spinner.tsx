@@ -108,6 +108,7 @@ export const FullPageSpinner = () => (
     sx={{
       backgroundColor: "gray.2",
       minHeight: "100vh",
+      width: '100%'
     }}
   >
     <Spinner />

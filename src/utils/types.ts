@@ -118,3 +118,5 @@ export interface GetFeedResponse {
   user: RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"];
   recentFollowers: Actor[];
 }
+
+export type EventMap = Record<EventType, GitHubFeedEvent[]>;

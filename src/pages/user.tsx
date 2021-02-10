@@ -6,10 +6,10 @@ import Router from "next/router";
 import { DataContext } from "../contexts/data";
 import { FullPageSpinner } from "../components/Spinner";
 import { SidebarLayout } from "../components/Sidebar";
-import { useFeeds } from "../hooks/useFeeds";
 import { GithubActivityViewer } from "../components/GithubActivityViewer";
+import { useFeeds } from "../hooks/useFeeds";
 
-const active = "following";
+const active = "user";
 
 const App = () => {
   const { feeds, repoInfo, user, recentFollowers } = useFeeds(active);
