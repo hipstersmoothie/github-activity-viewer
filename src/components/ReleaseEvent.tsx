@@ -32,7 +32,7 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
   );
 
   return (
-    <PopperPopover trigger={trigger}>
+    <PopperPopover interactive trigger={trigger}>
       <Heading fontSize={3}>
         {event.payload.release.name || event.payload.release.tag_name}
       </Heading>

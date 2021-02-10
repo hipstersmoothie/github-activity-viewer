@@ -6,6 +6,7 @@ import maxSize from "popper-max-size-modifier";
 interface PopperPopoverProps {
   trigger: React.ReactNode;
   children: React.ReactNode;
+  interactive?: boolean;
 }
 
 // Create your own apply modifier that adds the styles to the state
@@ -28,7 +29,11 @@ const applyMaxSize = {
   },
 };
 
-const PopperPopover = ({ trigger, children }: PopperPopoverProps) => {
+const PopperPopover = ({
+  trigger,
+  children,
+  interactive,
+}: PopperPopoverProps) => {
   const shouldHide = React.useRef<boolean>();
   const [showPopover, showPopoverSet] = React.useState(false);
   const [referenceElement, setReferenceElement] = React.useState(null);
@@ -52,7 +57,19 @@ const PopperPopover = ({ trigger, children }: PopperPopoverProps) => {
     <>
       <div
         ref={setReferenceElement}
-        onMouseEnter={() => {
+        onFocus={() => {
+          if (showPopover) {
+            return;
+          }
+
+          shouldHide.current = false;
+          showPopoverSet(true);
+        }}
+        onMouseOver={() => {
+          if (showPopover) {
+            return;
+          }
+
           shouldHide.current = false;
           showPopoverSet(true);
         }}
@@ -79,9 +96,17 @@ const PopperPopover = ({ trigger, children }: PopperPopoverProps) => {
           }}
           {...attributes.popper}
           onMouseEnter={() => {
+            if (!interactive) {
+              return;
+            }
+
             shouldHide.current = false;
           }}
           onMouseLeave={() => {
+            if (!interactive) {
+              return;
+            }
+
             shouldHide.current = true;
             requestAnimationFrame(() => {
               if (shouldHide.current !== false) {
