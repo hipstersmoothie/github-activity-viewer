@@ -13,9 +13,9 @@ export const Event = ({
   event: GitHubFeedEvent;
   children: React.ReactNode;
 } & React.ComponentProps<typeof Flex>) => (
-  <Flex key={event.id} alignItems="baseline" mb={3} {...props}>
+  <Flex key={event.id} alignItems="baseline" {...props}>
     <ActorAvatar actor={event.actor} mr={3} />
-    <div>{children}</div>
+    <Box pb={3}>{children}</Box>
   </Flex>
 );
 
