@@ -4,8 +4,6 @@ export interface Actor {
   id: number;
   login: string;
   display_login: string;
-  gravatar_id: string;
-  url: string;
   avatar_url: string;
 }
 
@@ -27,7 +25,6 @@ export interface Payload {
 export interface Org {
   id: number;
   login: string;
-  gravatar_id: string;
   url: string;
   avatar_url: string;
 }
@@ -117,6 +114,32 @@ export interface GetFeedResponse {
   repoInfo: RepoInfoMap;
   user: RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"];
   recentFollowers: Actor[];
+}
+
+export interface TrendingActorData {
+  login: string;
+  id: number;
+  avatarUrl: string;
+  name?: string;
+  bioHTML?: string;
+  company?: string;
+  location?: string;
+  twitterUsername?: string;
+  followers: {
+    totalCount: number;
+  };
+  status?: {
+    emojiHTML: string;
+    message: string;
+  };
+}
+
+export interface TrendingActor extends Actor, TrendingActorData {
+  newFollowers: Actor[];
+}
+
+export interface GetTrendingFollowersResponse {
+  trendingInNetwork: TrendingActor[];
 }
 
 export type EventMap = Record<EventType, GitHubFeedEvent[]>;

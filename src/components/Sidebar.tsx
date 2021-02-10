@@ -2,7 +2,7 @@
 
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { ZapIcon, PersonIcon } from "@primer/octicons-react";
+import { ZapIcon, PersonIcon, PeopleIcon } from "@primer/octicons-react";
 import { Flex, Sticky, theme, Tooltip } from "@primer/components";
 
 import { FullPageSpinner } from "./Spinner";
@@ -45,7 +45,7 @@ const SideBarItem = ({
   );
 };
 
-export type SidebarActive = "/" | "/user";
+export type SidebarActive = "/" | "/user" | "/discover";
 
 export const SidebarLayout = ({
   children,
@@ -75,8 +75,19 @@ export const SidebarLayout = ({
           <SideBarItem label="Feed" href="/" active={active === "/"}>
             <ZapIcon />
           </SideBarItem>
-          <SideBarItem label="User" href="/user" active={active === "/user"}>
+          <SideBarItem
+            label="User Events"
+            href="/user"
+            active={active === "/user"}
+          >
             <PersonIcon />
+          </SideBarItem>
+          <SideBarItem
+            label="Discover Followers"
+            href="/discover"
+            active={active === "/discover"}
+          >
+            <PeopleIcon />
           </SideBarItem>
         </Flex>
       </Sticky>

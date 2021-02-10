@@ -1,8 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";
-import jwt from "next-auth/jwt";
-import dotenv from "dotenv";
 
 import {
   GitHubFeedEvent,
@@ -13,26 +10,8 @@ import {
   Actor,
 } from "../../utils/types";
 import { queryId } from "../../utils/queryId";
-
-dotenv.config();
-
-/** Just constructs the template string. Used for syntax highlighting in VSCode */
-function gql(
-  staticParts: TemplateStringsArray,
-  ...dynamicParts: (string | number)[]
-) {
-  const str = [];
-
-  for (let i = 0; i < staticParts.length; i++) {
-    str.push(staticParts[i]);
-
-    if (dynamicParts[i]) {
-      str.push(dynamicParts[i]);
-    }
-  }
-
-  return str.join("");
-}
+import { authenticateOctokit } from "../../utils/octokit";
+import { gql } from "../../utils/gql";
 
 async function getRepoInfo(
   graphqlWithAuth: typeof graphql,
@@ -125,15 +104,8 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<GetFeedResponse>
 ) => {
-  const token = await jwt.getJwt({ req, secret: process.env.GITHUB_SECRET });
-  const octokit = new Octokit({
-    auth: token.account.accessToken,
-  });
-  const graphqlWithAuth = graphql.defaults({
-    headers: {
-      authorization: `token ${token.account.accessToken}`,
-    },
-  });
+  const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
+
   const user = await octokit.users.getAuthenticated();
   const result: GitHubFeedEvent[] = await octokit.paginate(
     req.query.active === "following"
