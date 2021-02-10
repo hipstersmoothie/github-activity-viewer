@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Popover } from "@primer/components";
+import { Box } from "@primer/components";
 import { GitHubFeedEvent } from "../utils/types";
 
 import { ActorLink, RepoLink } from "./HomePageLink";
@@ -24,9 +24,7 @@ export const CreateEvent = ({ event }: { event: GitHubFeedEvent }) => {
 
   return (
     <PopperPopover trigger={trigger}>
-      <Popover.Content mt={2} width="100%">
-        <RepoDescription repo={repo} />
-      </Popover.Content>
+      <RepoDescription repo={repo} />
     </PopperPopover>
   );
 };

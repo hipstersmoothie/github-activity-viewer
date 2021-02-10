@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Link, Heading, Box, Text, Popover } from "@primer/components";
+import { Link, Heading, Box, Text } from "@primer/components";
 import Markdown from "markdown-to-jsx";
 
 import { ReleaseEventType } from "../utils/types";
@@ -33,19 +33,17 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
 
   return (
     <PopperPopover trigger={trigger}>
-      <Popover.Content width="100%">
-        <Heading fontSize={3}>
-          {event.payload.release.name || event.payload.release.tag_name}
-        </Heading>
+      <Heading fontSize={3}>
+        {event.payload.release.name || event.payload.release.tag_name}
+      </Heading>
 
-        <Text>
-          <Markdown>{renderEmoji(event.payload.release.body)}</Markdown>
-        </Text>
+      <Text>
+        <Markdown>{renderEmoji(event.payload.release.body)}</Markdown>
+      </Text>
 
-        <CardDivider my={4} />
+      <CardDivider my={4} />
 
-        <RepoDescription repo={repo} />
-      </Popover.Content>
+      <RepoDescription repo={repo} />
     </PopperPopover>
   );
 };
