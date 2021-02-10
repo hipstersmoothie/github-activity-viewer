@@ -82,7 +82,7 @@ export const Spinner = () => (
         animation-duration: 1s;
         animation-iteration-count: infinite;
         animation-timing-function: ease-out;
-        fill: ${theme.colors.gray[3]};
+        fill: ${theme.colors.gray[1]};
       }
       
       #octo #part1 { animation-delay: 0.000s }
@@ -106,7 +106,7 @@ export const FullPageSpinner = () => (
   <Flex
     justifyContent="center"
     sx={{
-      backgroundColor: "gray.2",
+      backgroundColor: "gray.3",
       minHeight: "100vh",
       width: '100%'
     }}

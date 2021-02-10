@@ -1,11 +1,7 @@
-import React, { Suspense } from "react";
+import React from "react";
 import Head from "next/head";
-import { useSession } from "next-auth/client";
-import Router from "next/router";
 
 import { DataContext } from "../contexts/data";
-import { FullPageSpinner } from "../components/Spinner";
-import { SidebarLayout } from "../components/Sidebar";
 import { GithubActivityViewer } from "../components/GithubActivityViewer";
 import { useFeeds } from "../hooks/useFeeds";
 
@@ -13,7 +9,7 @@ const active = "user";
 
 const App = () => {
   const { feeds, repoInfo, user } = useFeeds(active);
-  const [clientHeight, clientHeightSet] = React.useState<number | undefined>();
+  const [clientHeight, clientHeightSet] = React.useState<number>();
 
   React.useEffect(() => {
     clientHeightSet(document.body.clientHeight);
@@ -21,39 +17,18 @@ const App = () => {
 
   return (
     <DataContext.Provider value={{ repoInfo, user }}>
-      <GithubActivityViewer
-        pageHeight={clientHeight}
-        {...feeds}
-      />
+      <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
     </DataContext.Provider>
   );
 };
 
-const Home = () => {
-  const [session, loading] = useSession();
+const UserPage = () => (
+  <>
+    <Head>
+      <title>User Activity</title>
+    </Head>
+    <App />
+  </>
+);
 
-  if (loading) {
-    return null;
-  }
-
-  if (!session) {
-    Router.push("/api/auth/signin");
-    return null;
-  }
-
-  return (
-    <>
-      <Head>
-        <title>GitHub Activity</title>
-        <link rel="icon" href="/favicon-dark.png" />
-      </Head>
-      <SidebarLayout active={active}>
-        <Suspense fallback={<FullPageSpinner />}>
-          <App />
-        </Suspense>
-      </SidebarLayout>
-    </>
-  );
-};
-
-export default Home;
+export default UserPage;
