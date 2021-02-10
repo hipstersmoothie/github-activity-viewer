@@ -53,9 +53,11 @@ const PopperPopover = ({ trigger, children }: PopperPopoverProps) => {
       <div
         ref={setReferenceElement}
         onMouseEnter={() => {
+          shouldHide.current = false;
           showPopoverSet(true);
         }}
         onMouseLeave={() => {
+          shouldHide.current = true;
           requestAnimationFrame(() => {
             if (shouldHide.current !== false) {
               hide();
@@ -73,7 +75,7 @@ const PopperPopover = ({ trigger, children }: PopperPopoverProps) => {
           style={{
             ...styles.popper,
             zIndex: 1,
-            width: "min(80vw, 400px)",
+            width: `max(min(80vw, 400px), ${referenceElement.clientWidth}px)`,
           }}
           {...attributes.popper}
           onMouseEnter={() => {
@@ -81,6 +83,11 @@ const PopperPopover = ({ trigger, children }: PopperPopoverProps) => {
           }}
           onMouseLeave={() => {
             shouldHide.current = true;
+            requestAnimationFrame(() => {
+              if (shouldHide.current !== false) {
+                hide();
+              }
+            });
           }}
         >
           <Popover
