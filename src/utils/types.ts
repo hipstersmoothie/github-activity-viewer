@@ -138,8 +138,31 @@ export interface TrendingActor extends Actor, TrendingActorData {
   newFollowers: Actor[];
 }
 
-export interface GetTrendingFollowersResponse {
-  trendingInNetwork: TrendingActor[];
-}
+
 
 export type EventMap = Record<EventType, GitHubFeedEvent[]>;
+
+export interface PinnedItemBase {
+  name: string;
+  url: string;
+  description?: string;
+  stargazerCount: number;
+}
+
+export interface PinnedItemRepo extends PinnedItemBase {
+  forkCount: number;
+  languages: {
+    edges: { node: { name: string } }[];
+  };
+}
+
+export interface PinnedItemsResponse {
+  pinnedItems: (PinnedItemBase | PinnedItemRepo)[];
+}
+
+export type FeaturedTrendingUser = TrendingActor & PinnedItemsResponse;
+
+export interface GetTrendingFollowersResponse {
+  trendingInNetwork: TrendingActor[];
+  featuredUser: FeaturedTrendingUser;
+}

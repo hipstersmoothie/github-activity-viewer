@@ -4,6 +4,7 @@ import { graphql } from "@octokit/graphql";
 
 import {
   GetTrendingFollowersResponse,
+  PinnedItemsResponse,
   TrendingActor,
   TrendingActorData,
 } from "../../utils/types";
@@ -96,10 +97,54 @@ async function getRecentFollowers(
       (a, b) => b.newFollowers.length - a.newFollowers.length
     );
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return error.data;
   }
 }
+
+const getFeaturedUserInfo = async (
+  graphqlWithAuth: typeof graphql,
+  login: string
+) => {
+  const query = gql`
+    {
+      user(login: "${login}") {
+        pinnedItems(first: 6) {
+          edges {
+            node {
+              ... on Gist {
+                name
+                url
+                description
+                stargazerCount
+              }
+              ... on Repository {
+                name
+                url
+                description
+                stargazerCount
+                forkCount
+                languages(first: 1) {
+                  edges {
+                    node {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  try {
+    return await graphqlWithAuth<PinnedItemsResponse>(query);
+  } catch (error) {
+    return error.data;
+  }
+};
 
 export default async (
   req: NextApiRequest,
@@ -110,7 +155,23 @@ export default async (
   const result = await octokit.paginate(octokit.users.listFollowingForUser, {
     username: user.data.login,
   });
-  const trendingInNetwork = await getRecentFollowers(graphqlWithAuth, result);
+  const recentFollowers: TrendingActor[] = await getRecentFollowers(
+    graphqlWithAuth,
+    result
+  );
+  const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
+    (actor) => actor.login !== user.data.login
+  );
+  const featuredUserInfo = await getFeaturedUserInfo(
+    graphqlWithAuth,
+    featuredUser.login
+  );
 
-  res.json({ trendingInNetwork });
+  res.json({
+    trendingInNetwork,
+    featuredUser: {
+      ...featuredUser,
+      ...featuredUserInfo,
+    },
+  });
 };
