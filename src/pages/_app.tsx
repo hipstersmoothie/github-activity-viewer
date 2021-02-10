@@ -5,6 +5,8 @@ import { useSession } from "next-auth/client";
 import Router from "next/router";
 import { SidebarActive, SidebarLayout } from "../components/Sidebar";
 
+import "../css/main.css";
+
 const MyApp = ({ Component, pageProps }) => {
   const [session, loading] = useSession();
 

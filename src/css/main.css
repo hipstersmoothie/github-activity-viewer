@@ -1,0 +1,15 @@
+.tooltip-wrapper[data-popper-placement^="right"] .tooltip-arrow {
+  left: 0px;
+}
+
+.tooltip-wrapper[data-popper-placement^="left"] .tooltip-arrow {
+  right: 0px;
+}
+
+.tooltip-wrapper[data-popper-placement^="top"] .tooltip-arrow {
+  bottom: 0px;
+}
+
+.tooltip-wrapper[data-popper-placement^="bottom"] .tooltip-arrow {
+  top: 0px;
+}
