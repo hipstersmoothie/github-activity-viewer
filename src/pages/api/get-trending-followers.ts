@@ -4,7 +4,7 @@ import { graphql } from "@octokit/graphql";
 
 import {
   GetTrendingFollowersResponse,
-  PinnedItemsResponse,
+  PinnedAndContributionsItemsResponse,
   TrendingActor,
   TrendingActorData,
 } from "../../utils/types";
@@ -82,6 +82,9 @@ async function getRecentFollowers(
             ...user,
             avatar_url: user.avatarUrl,
             display_login: user.login,
+            isAuthenticatedUserFollowing: following.some(
+              (f) => f.login === user.login
+            ),
             newFollowers: [
               {
                 ...actor,
@@ -109,6 +112,35 @@ const getFeaturedUserInfo = async (
   const query = gql`
     {
       user(login: "${login}") {
+        contributionsCollection {
+          pullRequestContributions(orderBy: {direction: DESC}, first: 100) {
+            edges {
+              node {
+                pullRequest {
+                  title
+                  url
+                  bodyHTML
+                  number
+                  labels(first: 10) {
+                    nodes {
+                      name
+                      color
+                      description
+                    }
+                  }
+                  repository {
+                    description
+                    nameWithOwner
+                    url
+                    stargazerCount
+                    forkCount
+                  }
+                }
+              }
+            }
+          }
+        }
+
         pinnedItems(first: 6) {
           edges {
             node {
@@ -128,6 +160,7 @@ const getFeaturedUserInfo = async (
                   edges {
                     node {
                       name
+                      color
                     }
                   }
                 }
@@ -140,10 +173,27 @@ const getFeaturedUserInfo = async (
   `;
 
   try {
-    return await graphqlWithAuth<PinnedItemsResponse>(query);
-  } catch (error) {
-    return error.data;
-  }
+    const data = await graphqlWithAuth<{
+      user: PinnedAndContributionsItemsResponse;
+    }>(query);
+
+    const seenRepos = new Set<string>();
+
+    return {
+      pinnedItems: data.user.pinnedItems.edges.map((e) => e.node),
+      recentContributions: data.user.contributionsCollection.pullRequestContributions.edges
+        .map((e) => e.node.pullRequest)
+        .filter((e) => {
+          if (seenRepos.has(e.repository.url)) {
+            return false;
+          }
+
+          seenRepos.add(e.repository.url);
+          return true;
+        })
+        .slice(0, 10),
+    };
+  } catch (error) {}
 };
 
 export default async (
@@ -160,7 +210,7 @@ export default async (
     result
   );
   const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
-    (actor) => actor.login !== user.data.login
+    (actor) => actor.login !== user.data.login && actor.newFollowers.length >= 2
   );
   const featuredUserInfo = await getFeaturedUserInfo(
     graphqlWithAuth,

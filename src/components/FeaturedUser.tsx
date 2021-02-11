@@ -1,5 +1,17 @@
+/* eslint-disable react/no-danger */
 import React from "react";
-import { Avatar, Box, Flex, Text, Link } from "@primer/components";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Text,
+  Link,
+  Grid,
+  BorderBox,
+  LabelGroup,
+  Label,
+} from "@primer/components";
+import { GitMergeIcon, RepoIcon } from "@primer/styled-octicons";
 
 import {
   TrendingUserProfileInfo,
@@ -7,6 +19,10 @@ import {
 } from "./TrendingUser";
 import { Card } from "./Card";
 import { FeaturedTrendingUser } from "../utils/types";
+import { renderEmoji } from "../utils/renderEmoji";
+import { Language } from "./Language";
+import { StarCount } from "./StarCount";
+import PopperPopover from "./Popover";
 
 export const FeaturedUser = (props: FeaturedTrendingUser) => {
   const featuredUserProfileLink = (
@@ -23,7 +39,7 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
   return (
     <Card title="Featured User" width="100%">
       <Box pr={4}>
-        <Flex alignItems="center">
+        <Flex alignItems="center" mb={6}>
           <Avatar
             size={180}
             sx={{ borderRadius: "100%" }}
@@ -65,6 +81,136 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
             <TrendingUserFollowerInfo {...props} />
           </Flex>
         </Flex>
+
+        <Text as="h3" fontSize={20} fontWeight="bold" mb={3}>
+          Recent Pull Requests
+        </Text>
+
+        <Grid gridTemplateColumns="max-content auto auto" mb={6}>
+          {props.recentContributions.map((contribution) => {
+            const trigger = (
+              <Link
+                muted
+                target="blank"
+                rel="noreferrer"
+                href={contribution.url}
+              >
+                <Text color="gray.9" mr={4}>
+                  {contribution.title}
+                </Text>
+              </Link>
+            );
+
+            return (
+              <React.Fragment key={contribution.url}>
+                <Link
+                  muted
+                  target="blank"
+                  rel="noreferrer"
+                  href={contribution.url}
+                >
+                  <Flex alignItems="center">
+                    <Flex
+                      color="purple.5"
+                      alignItems="center"
+                      justifyContent="center"
+                      mr={2}
+                    >
+                      <GitMergeIcon />
+                    </Flex>
+                    <Text color="black" mr={4} fontWeight="bold">
+                      #{contribution.number}
+                    </Text>
+                  </Flex>
+                </Link>
+                {contribution.bodyHTML ||
+                contribution.labels.nodes.length !== 0 ? (
+                  <PopperPopover maxWidth={600} trigger={trigger}>
+                    <Flex alignItems="center" justifyContent="space-between">
+                      <LabelGroup>
+                        {contribution.labels.nodes.map((label) => (
+                          <Label key={label.name} color={label.color}>
+                            {label.name}
+                          </Label>
+                        ))}
+                      </LabelGroup>
+                    </Flex>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: contribution.bodyHTML,
+                      }}
+                    />
+                  </PopperPopover>
+                ) : (
+                  trigger
+                )}
+                <Box sx={{ textAlign: "right" }}>
+                  <Link
+                    muted
+                    target="blank"
+                    rel="noreferrer"
+                    href={contribution.repository.url}
+                  >
+                    {contribution.repository.nameWithOwner}
+                  </Link>
+                </Box>
+              </React.Fragment>
+            );
+          })}
+        </Grid>
+
+        {props.pinnedItems && props.pinnedItems.length && (
+          <>
+            <Text as="h3" fontSize={20} fontWeight="bold" mb={3}>
+              Pinned
+            </Text>
+
+            <Grid gridTemplateColumns="1fr 1fr" gridGap={3}>
+              {props.pinnedItems.map((pinned) => (
+                <BorderBox key={pinned.url} p={3} height="100%">
+                  <Flex
+                    flexDirection="column"
+                    justifyContent="space-between"
+                    height="100%"
+                  >
+                    <div>
+                      <Flex alignItems="center" mb={2}>
+                        <Flex
+                          alignItems="center"
+                          justifyContent="center"
+                          mr={1}
+                          color="gray."
+                          pt="2px"
+                        >
+                          <RepoIcon />
+                        </Flex>
+                        <Link href={pinned.url} target="blank" rel="noreferrer">
+                          <Text fontWeight="bold">{pinned.name}</Text>
+                        </Link>
+                      </Flex>
+                      <Text as="p" color="gray.7" m={0}>
+                        {renderEmoji(pinned.description)}
+                      </Text>
+                    </div>
+
+                    <Flex mt={3}>
+                      {"languages" in pinned &&
+                        pinned.languages.edges.length !== 0 && (
+                          <Language
+                            language={pinned.languages.edges[0]}
+                            mr={3}
+                          />
+                        )}
+                      {pinned.stargazerCount && (
+                        <StarCount stargazers={pinned.stargazerCount} />
+                      )}
+                    </Flex>
+                  </Flex>
+                </BorderBox>
+              ))}
+            </Grid>
+          </>
+        )}
       </Box>
     </Card>
   );

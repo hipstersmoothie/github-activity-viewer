@@ -135,10 +135,9 @@ export interface TrendingActorData {
 }
 
 export interface TrendingActor extends Actor, TrendingActorData {
+  isAuthenticatedUserFollowing: boolean;
   newFollowers: Actor[];
 }
-
-
 
 export type EventMap = Record<EventType, GitHubFeedEvent[]>;
 
@@ -152,15 +151,48 @@ export interface PinnedItemBase {
 export interface PinnedItemRepo extends PinnedItemBase {
   forkCount: number;
   languages: {
-    edges: { node: { name: string } }[];
+    edges: LanguageType[];
   };
 }
 
-export interface PinnedItemsResponse {
-  pinnedItems: (PinnedItemBase | PinnedItemRepo)[];
+export interface RecentPullRequest {
+  title: string;
+  url: string;
+  bodyHTML: string;
+  number: number;
+  labels: {
+    nodes: {
+      name: string;
+      color: string;
+      description?: string;
+    }[];
+  };
+  repository: {
+    description?: string;
+    nameWithOwner: string;
+    url: string;
+    stargazerCount: number;
+    forkCount: number;
+  };
 }
 
-export type FeaturedTrendingUser = TrendingActor & PinnedItemsResponse;
+export interface PinnedAndContributionsItemsResponse {
+  pinnedItems: { edges: { node: PinnedItemBase | PinnedItemRepo }[] };
+  contributionsCollection: {
+    pullRequestContributions: {
+      edges: {
+        node: {
+          pullRequest: RecentPullRequest;
+        };
+      }[];
+    };
+  };
+}
+
+export type FeaturedTrendingUser = TrendingActor & {
+  pinnedItems: (PinnedItemBase | PinnedItemRepo)[];
+  recentContributions: RecentPullRequest[];
+};
 
 export interface GetTrendingFollowersResponse {
   trendingInNetwork: TrendingActor[];

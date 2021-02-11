@@ -21,6 +21,8 @@ export const ActorAvatar = ({
   <Link
     {...linkProps}
     title={actor.display_login}
+    target="_blank"
+    rel="noopener"
     href={`https://github.com/${actor.display_login}`}
     style={{ ...style, borderRadius: "50%", overflow: "hidden", flex: "none" }}
   >

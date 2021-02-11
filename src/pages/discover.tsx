@@ -23,7 +23,7 @@ const App = () => {
       <FeaturedUser {...featuredUser} />
       <GridCard
         title="Trending In Network"
-        showCount={12}
+        showCount={18}
         rows={trendingInNetwork.map((trendingUser) => (
           <TrendingUser key={trendingUser.id} {...trendingUser} />
         ))}

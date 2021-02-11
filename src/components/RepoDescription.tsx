@@ -7,6 +7,7 @@ import { RepoLink } from "./HomePageLink";
 import { renderEmoji } from "../utils/renderEmoji";
 import { ActorAvatar } from "./ActorAvatar";
 import { Language } from "./Language";
+import { StarCount } from "./StarCount";
 
 export const RepoDescription = ({
   repo,
@@ -28,10 +29,7 @@ export const RepoDescription = ({
             <Language language={repo.languages.edges[0]} mr={4} />
           )}
           {repo.stargazers && (
-            <Flex alignItems="center" color="gray.6">
-              <StarIcon size="small" mr={1} />
-              <Text>{repo.stargazers.totalCount.toLocaleString()}</Text>
-            </Flex>
+            <StarCount stargazers={repo.stargazers.totalCount} />
           )}
         </Flex>
 

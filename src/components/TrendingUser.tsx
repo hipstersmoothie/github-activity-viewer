@@ -137,7 +137,16 @@ export const TrendingUser = (trendingUser: TrendingActor) => {
             <ActorAvatar actor={trendingUser} mr={3} />
             <ActorLink {...trendingUser} />
           </Flex>
-          <CounterLabel>{trendingUser.newFollowers.length}</CounterLabel>
+          <CounterLabel
+            color={
+              trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.8"
+            }
+            backgroundColor={
+              trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.2"
+            }
+          >
+            {trendingUser.newFollowers.length}
+          </CounterLabel>
         </Flex>
       }
     >

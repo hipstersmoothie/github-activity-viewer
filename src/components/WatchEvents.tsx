@@ -24,7 +24,6 @@ import { GridCard } from "./Event";
 const ALL_LANGUAGE = {
   node: { color: DEFAULT_LANGUAGE_COLOR, name: "All" },
 };
-const WRAPPER_HEIGHT = 406;
 const ROW_HEIGHT = 108;
 
 const LanguageFilter = ({
