@@ -87,6 +87,7 @@ async function getRecentFollowers(
             company
             location
             name
+            websiteUrl
             twitterUsername
             followers {
               totalCount

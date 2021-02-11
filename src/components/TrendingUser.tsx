@@ -11,6 +11,7 @@ import {
   theme,
 } from "@primer/components";
 import {
+  LinkIcon,
   LocationIcon,
   OrganizationIcon,
   PeopleIcon,
@@ -34,7 +35,7 @@ const DataIcon = ({
       <Flex mr={2} justifyContent="center" alignItems="center">
         {icon}
       </Flex>
-      <Text as="p" color="gray.7" fontSize={14} m={0}>
+      <Text as="p" color="gray.6" fontSize={14} m={0}>
         {children}
       </Text>
     </Flex>
@@ -63,13 +64,27 @@ const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
 };
 
 export const TrendingUserProfileInfo = (
-  props: Pick<TrendingActor, "company" | "location" | "twitterUsername">
+  props: Pick<
+    TrendingActor,
+    "company" | "location" | "twitterUsername" | "websiteUrl"
+  >
 ) => {
   return (
     <>
       {props.company && (
         <DataIcon mt={3} mb={2} icon={<OrganizationIcon size={16} />}>
-          {props.company}
+          {props.company.startsWith("@") ? (
+            <Link
+              muted
+              target="_blank"
+              rel="noopener"
+              href={`https://github.com/${props.company.replace("@", "")}`}
+            >
+              {props.company}
+            </Link>
+          ) : (
+            props.company
+          )}
         </DataIcon>
       )}
 
@@ -83,9 +98,21 @@ export const TrendingUserProfileInfo = (
         </DataIcon>
       )}
 
-      {props.twitterUsername && (
+      {props.websiteUrl && (
         <DataIcon
           mt={props.company || props.location ? 2 : 3}
+          mb={2}
+          icon={<LinkIcon size={16} />}
+        >
+          <Link muted target="_blank" rel="noopener" href={props.websiteUrl}>
+            {props.websiteUrl}
+          </Link>
+        </DataIcon>
+      )}
+
+      {props.twitterUsername && (
+        <DataIcon
+          mt={props.company || props.location || props.websiteUrl ? 2 : 3}
           mb={2}
           icon={
             <svg

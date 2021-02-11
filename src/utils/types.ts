@@ -123,6 +123,7 @@ export interface TrendingActorData {
   name?: string;
   bioHTML?: string;
   company?: string;
+  websiteUrl?: string;
   location?: string;
   twitterUsername?: string;
   followers: {
