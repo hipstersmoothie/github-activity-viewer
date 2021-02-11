@@ -200,28 +200,34 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<GetTrendingFollowersResponse>
 ) => {
-  const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
-  const user = await octokit.users.getAuthenticated();
-  const result = await octokit.paginate(octokit.users.listFollowingForUser, {
-    username: user.data.login,
-  });
-  const recentFollowers: TrendingActor[] = await getRecentFollowers(
-    graphqlWithAuth,
-    result
-  );
-  const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
-    (actor) => actor.login !== user.data.login && actor.newFollowers.length >= 2
-  );
-  const featuredUserInfo = await getFeaturedUserInfo(
-    graphqlWithAuth,
-    featuredUser.login
-  );
+  try {
+    const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
+    const user = await octokit.users.getAuthenticated();
+    const result = await octokit.paginate(octokit.users.listFollowingForUser, {
+      username: user.data.login,
+    });
+    const recentFollowers: TrendingActor[] = await getRecentFollowers(
+      graphqlWithAuth,
+      result
+    );
+    const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
+      (actor) =>
+        actor.login !== user.data.login && actor.newFollowers.length >= 2
+    );
+    const featuredUserInfo = await getFeaturedUserInfo(
+      graphqlWithAuth,
+      featuredUser.login
+    );
 
-  res.json({
-    trendingInNetwork,
-    featuredUser: {
-      ...featuredUser,
-      ...featuredUserInfo,
-    },
-  });
+    res.json({
+      trendingInNetwork,
+      featuredUser: {
+        ...featuredUser,
+        ...featuredUserInfo,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.end()
+  }
 };
