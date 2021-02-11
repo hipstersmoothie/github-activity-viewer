@@ -1,3 +1,16 @@
+# v0.0.26 (Thu Feb 11 2021)
+
+#### ⚠️ Pushed to `master`
+
+- better link colors ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add website and github org links ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.25 (Thu Feb 11 2021)
 
 #### ⚠️ Pushed to `master`
