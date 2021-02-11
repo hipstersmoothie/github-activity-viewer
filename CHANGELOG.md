@@ -1,3 +1,15 @@
+# v0.0.19 (Thu Feb 11 2021)
+
+#### ⚠️ Pushed to `master`
+
+- try to debug ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.18 (Thu Feb 11 2021)
 
 #### ⚠️ Pushed to `master`
