@@ -41,6 +41,7 @@ const PopperPopover = ({
   maxWidth = 400,
 }: PopperPopoverProps) => {
   const shouldHide = React.useRef<boolean>();
+  const showTimeout = React.useRef<number>();
   const [showPopover, showPopoverSet] = React.useState(false);
   const [referenceElement, setReferenceElement] = React.useState(null);
   const [popperElement, setPopperElement] = React.useState(null);
@@ -50,6 +51,15 @@ const PopperPopover = ({
   });
   const computedPlacement = attributes.popper?.["data-popper-placement"];
   const hide = React.useCallback(() => showPopoverSet(false), [showPopoverSet]);
+  const show = () => {
+    if (showTimeout.current) {
+      return;
+    }
+
+    showTimeout.current = setTimeout(() => {
+      showPopoverSet(true);
+    }, 300);
+  };
 
   React.useEffect(() => {
     document.addEventListener("scroll", hide);
@@ -72,7 +82,7 @@ const PopperPopover = ({
           }
 
           shouldHide.current = false;
-          showPopoverSet(true);
+          show();
         }}
         onMouseOver={() => {
           if (showPopover) {
@@ -80,10 +90,12 @@ const PopperPopover = ({
           }
 
           shouldHide.current = false;
-          showPopoverSet(true);
+          show();
         }}
         onMouseLeave={() => {
           shouldHide.current = true;
+          clearTimeout(showTimeout.current);
+          showTimeout.current = undefined;
           requestAnimationFrame(() => {
             if (shouldHide.current !== false) {
               hide();
