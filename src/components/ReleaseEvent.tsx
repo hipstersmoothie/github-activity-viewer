@@ -33,6 +33,10 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
 
   return (
     <PopperPopover interactive trigger={trigger}>
+      <RepoDescription repo={repo} />
+
+      <CardDivider my={4} />
+
       <Heading fontSize={3}>
         {event.payload.release.name || event.payload.release.tag_name}
       </Heading>
@@ -40,10 +44,6 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
       <Text>
         <Markdown>{renderEmoji(event.payload.release.body)}</Markdown>
       </Text>
-
-      <CardDivider my={4} />
-
-      <RepoDescription repo={repo} />
     </PopperPopover>
   );
 };
