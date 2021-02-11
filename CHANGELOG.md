@@ -1,3 +1,16 @@
+# v0.0.24 (Thu Feb 11 2021)
+
+#### ⚠️ Pushed to `master`
+
+- add delay to showing popover ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- remove tailwind ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.23 (Thu Feb 11 2021)
 
 #### ⚠️ Pushed to `master`
