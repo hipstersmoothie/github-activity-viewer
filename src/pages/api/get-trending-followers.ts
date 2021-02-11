@@ -192,7 +192,6 @@ const getFeaturedUserInfo = async (
           return true;
         })
         .slice(0, 10),
-
     };
   } catch (error) {}
 };
@@ -201,46 +200,34 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<GetTrendingFollowersResponse>
 ) => {
-  try {
-    const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
-    console.log("1");
-    const user = await octokit.users.getAuthenticated();
-    console.log("2");
-    const result = await octokit.paginate(octokit.users.listFollowingForUser, {
-      username: user.data.login,
-    });
-    console.log("3");
-    const recentFollowers: TrendingActor[] = await getRecentFollowers(
-      graphqlWithAuth,
-      result
-    );
-    console.log("4", user);
-    const followersWithoutUser = recentFollowers.filter(
-      (actor) => actor.login !== user.data.login
-    );
-    const filteredFollowers = followersWithoutUser.filter(
-      (actor) => actor.newFollowers.length >= 2
-    );
-    const [featuredUser, ...trendingInNetwork] = filteredFollowers.length
-      ? filteredFollowers
-      : followersWithoutUser;
-    console.log("5");
-    const featuredUserInfo = await getFeaturedUserInfo(
-      graphqlWithAuth,
-      featuredUser.login
-    );
-    console.log("6");
+  const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
+  const user = await octokit.users.getAuthenticated();
+  const result = await octokit.paginate(octokit.users.listFollowingForUser, {
+    username: user.data.login,
+  });
+  const recentFollowers: TrendingActor[] = await getRecentFollowers(
+    graphqlWithAuth,
+    result
+  );
+  const followersWithoutUser = recentFollowers.filter(
+    (actor) => actor.login !== user.data.login
+  );
+  const filteredFollowers = followersWithoutUser.filter(
+    (actor) => actor.newFollowers.length >= 2
+  );
+  const [featuredUser, ...trendingInNetwork] = filteredFollowers.length
+    ? filteredFollowers
+    : followersWithoutUser;
+  const featuredUserInfo = await getFeaturedUserInfo(
+    graphqlWithAuth,
+    featuredUser.login
+  );
 
-    res.json({
-      trendingInNetwork,
-      featuredUser: {
-        ...featuredUser,
-        ...featuredUserInfo,
-      },
-    });
-    console.log("7");
-  } catch (error) {
-    console.log(error);
-    res.end();
-  }
+  res.json({
+    trendingInNetwork,
+    featuredUser: {
+      ...featuredUser,
+      ...featuredUserInfo,
+    },
+  });
 };

@@ -35,8 +35,7 @@
     "react-popper": "^2.2.4",
     "s-ago": "^2.2.0",
     "styled-components": "^5.1.1",
-    "swr": "^0.2.3",
-    "tailwindcss": "^1.4.6"
+    "swr": "^0.2.3"
   },
   "devDependencies": {
     "@auto-it/git-tag": "^9.39.0",
