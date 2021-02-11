@@ -21,6 +21,7 @@ async function getRecentFollowers(
       return gql`
       ${userQueryId(user)}: user(login: "${user.login}") {
         following(first: 3) {
+          totalCount
           nodes {
             login
             id
@@ -52,6 +53,7 @@ async function getRecentFollowers(
         string,
         {
           following: {
+            totalCount: number;
             nodes: TrendingActorData[];
           };
         }
@@ -67,6 +69,19 @@ async function getRecentFollowers(
         return;
       }
 
+      let weight = 1;
+
+      // We cant sort by date followed so we have to assign weight to infrequent followers
+      if (users.following.totalCount < 10) {
+        weight = 0.1;
+      } else if (users.following.totalCount < 100) {
+        weight = 0.5;
+      } else if (users.following.totalCount > 600) {
+        weight = 3;
+      }else if (users.following.totalCount > 300) {
+        weight = 2;
+      }
+
       users.following.nodes.forEach((user) => {
         const trendingActor = trendingActors.find(
           (a) => userQueryId(a) === userQueryId(user)
@@ -75,11 +90,13 @@ async function getRecentFollowers(
         if (trendingActor) {
           trendingActor.newFollowers.push({
             ...actor,
+            weight,
             display_login: actor.login,
           });
         } else {
           trendingActors.push({
             ...user,
+            weight: 1,
             avatar_url: user.avatarUrl,
             display_login: user.login,
             isAuthenticatedUserFollowing: following.some(
@@ -88,6 +105,7 @@ async function getRecentFollowers(
             newFollowers: [
               {
                 ...actor,
+                weight,
                 display_login: actor.login,
               },
             ],
@@ -96,9 +114,12 @@ async function getRecentFollowers(
       });
     });
 
-    return trendingActors.sort(
-      (a, b) => b.newFollowers.length - a.newFollowers.length
-    );
+    return trendingActors
+      .map((actor) => ({
+        ...actor,
+        weight: actor.newFollowers.reduce((all, item) => all + item.weight, 0),
+      }))
+      .sort((a, b) => b.weight - a.weight);
   } catch (error) {
     console.log(error);
     return error.data;
@@ -213,7 +234,7 @@ export default async (
     (actor) => actor.login !== user.data.login
   );
   const filteredFollowers = followersWithoutUser.filter(
-    (actor) => actor.newFollowers.length >= 2
+    (actor) => actor.newFollowers.length >= 2 || actor.weight > 1
   );
   const [featuredUser, ...trendingInNetwork] = filteredFollowers.length
     ? filteredFollowers

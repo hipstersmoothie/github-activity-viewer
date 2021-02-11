@@ -119,7 +119,7 @@ export const TrendingUserFollowerInfo = (props: TrendingActor) => {
       </DataIcon>
       <AvatarStack alignRight>
         {props.newFollowers.map((user) => (
-          <ActorAvatar key={user.id} actor={user} size={20} />
+          <ActorAvatar key={user.id} showTooltip actor={user} size={20} />
         ))}
       </AvatarStack>
     </Flex>

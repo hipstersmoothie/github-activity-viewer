@@ -136,7 +136,8 @@ export interface TrendingActorData {
 
 export interface TrendingActor extends Actor, TrendingActorData {
   isAuthenticatedUserFollowing: boolean;
-  newFollowers: Actor[];
+  newFollowers: (Actor & { weight: number })[];
+  weight: number;
 }
 
 export type EventMap = Record<EventType, GitHubFeedEvent[]>;

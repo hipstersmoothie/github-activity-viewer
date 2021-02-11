@@ -36,7 +36,7 @@ export const RepoDescription = ({
         {users.length > 0 && (
           <AvatarStack alignRight>
             {users.map((user) => (
-              <ActorAvatar key={user.id} actor={user} size={20} />
+              <ActorAvatar key={user.id} showTooltip actor={user} size={20} />
             ))}
           </AvatarStack>
         )}
