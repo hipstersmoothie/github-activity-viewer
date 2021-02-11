@@ -202,22 +202,28 @@ export default async (
 ) => {
   try {
     const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
+    console.log("1");
     const user = await octokit.users.getAuthenticated();
+    console.log("2");
     const result = await octokit.paginate(octokit.users.listFollowingForUser, {
       username: user.data.login,
     });
+    console.log("3");
     const recentFollowers: TrendingActor[] = await getRecentFollowers(
       graphqlWithAuth,
       result
     );
+    console.log("4");
     const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
       (actor) =>
         actor.login !== user.data.login && actor.newFollowers.length >= 2
     );
+    console.log("5");
     const featuredUserInfo = await getFeaturedUserInfo(
       graphqlWithAuth,
       featuredUser.login
     );
+    console.log("6");
 
     res.json({
       trendingInNetwork,
@@ -226,8 +232,9 @@ export default async (
         ...featuredUserInfo,
       },
     });
+    console.log("7");
   } catch (error) {
     console.log(error);
-    res.end()
+    res.end();
   }
 };
