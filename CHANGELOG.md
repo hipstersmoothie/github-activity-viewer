@@ -1,3 +1,18 @@
+# v0.0.25 (Thu Feb 11 2021)
+
+#### ⚠️ Pushed to `master`
+
+- put repo at the top of Release Popper ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- new featured user ever 24hrs and fallback to top repos if no pinned repos ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- better popper placement and re use trending follower component ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- tooltips ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.24 (Thu Feb 11 2021)
 
 #### ⚠️ Pushed to `master`
