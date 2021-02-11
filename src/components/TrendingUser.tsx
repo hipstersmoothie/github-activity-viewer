@@ -166,16 +166,33 @@ export const TrendingUserProfileInfo = (
 };
 
 export const TrendingUserFollowerInfo = (
-  props: Pick<TrendingActor, "followers" | "newFollowers">
+  props: Pick<TrendingActor, "followers" | "newFollowers" | "login">
 ) => {
   return (
     <Flex mt={4} justifyContent="space-between" alignItems="center">
-      <DataIcon icon={<PeopleIcon size={18} />}>
-        <Text as="span" fontWeight="bolder">
-          {props.followers.totalCount}
-        </Text>
-        <Text as="span"> Followers</Text>
-      </DataIcon>
+      <Link
+        target="_blank"
+        rel="noreferrer"
+        href={`https://github.com/${props.login}?tab=followers`}
+        sx={{
+          color: "gray.7",
+          ":hover": {
+            color: "blue.5",
+            textDecoration: "none",
+          },
+          ":hover *": {
+            color: "blue.5",
+          },
+        }}
+      >
+        <DataIcon icon={<PeopleIcon size={18} />}>
+          <Text as="span" fontWeight="bolder">
+            {props.followers.totalCount}
+          </Text>
+          <Text as="span"> Followers</Text>
+        </DataIcon>
+      </Link>
+
       <AvatarStack alignRight>
         {props.newFollowers.map((user) => (
           <ActorAvatar key={user.id} showTooltip actor={user} size={20} />
