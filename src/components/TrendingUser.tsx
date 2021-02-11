@@ -35,7 +35,7 @@ const DataIcon = ({
       <Flex mr={2} justifyContent="center" alignItems="center">
         {icon}
       </Flex>
-      <Text as="p" color="gray.6" fontSize={14} m={0}>
+      <Text as="p" color="gray.7" fontSize={14} m={0}>
         {children}
       </Text>
     </Flex>
@@ -75,10 +75,16 @@ export const TrendingUserProfileInfo = (
         <DataIcon mt={3} mb={2} icon={<OrganizationIcon size={16} />}>
           {props.company.startsWith("@") ? (
             <Link
-              muted
               target="_blank"
               rel="noopener"
               href={`https://github.com/${props.company.replace("@", "")}`}
+              sx={{
+                color: "gray.7",
+                ":hover": {
+                  color: "blue.5",
+                  textDecoration: "none",
+                },
+              }}
             >
               {props.company}
             </Link>
@@ -104,7 +110,18 @@ export const TrendingUserProfileInfo = (
           mb={2}
           icon={<LinkIcon size={16} />}
         >
-          <Link muted target="_blank" rel="noopener" href={props.websiteUrl}>
+          <Link
+            target="_blank"
+            rel="noopener"
+            href={props.websiteUrl}
+            sx={{
+              color: "gray.7",
+              ":hover": {
+                color: "blue.5",
+                textDecoration: "none",
+              },
+            }}
+          >
             {props.websiteUrl}
           </Link>
         </DataIcon>
@@ -129,10 +146,16 @@ export const TrendingUserProfileInfo = (
           }
         >
           <Link
-            muted
             target="_blank"
             rel="noreferrer"
             href={`https://twitter.com/${props.twitterUsername}`}
+            sx={{
+              color: "gray.7",
+              ":hover": {
+                color: "blue.5",
+                textDecoration: "none",
+              },
+            }}
           >
             {props.twitterUsername}
           </Link>
