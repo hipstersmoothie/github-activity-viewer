@@ -3,11 +3,12 @@ import { usePopper } from "react-popper";
 import { Popover } from "@primer/components";
 import maxSize from "popper-max-size-modifier";
 
-interface PopperPopoverProps {
+export interface PopperPopoverProps {
   trigger: React.ReactNode;
   children: React.ReactNode;
   interactive?: boolean;
   maxWidth?: number;
+  placement?: "left" | "right";
 }
 
 // Create your own apply modifier that adds the styles to the state
@@ -39,15 +40,21 @@ const PopperPopover = ({
   children,
   interactive,
   maxWidth = 400,
+  placement = "right",
 }: PopperPopoverProps) => {
   const shouldHide = React.useRef<boolean>();
   const showTimeout = React.useRef<number>();
+  const hideTimeout = React.useRef<number>();
   const [showPopover, showPopoverSet] = React.useState(false);
   const [referenceElement, setReferenceElement] = React.useState(null);
   const [popperElement, setPopperElement] = React.useState(null);
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
-    placement: "bottom",
-    modifiers: [maxSize, applyMaxSize],
+    placement,
+    modifiers: [
+      { name: "offset", options: { offset: [0, 14] } },
+      maxSize,
+      applyMaxSize,
+    ],
   });
   const computedPlacement = attributes.popper?.["data-popper-placement"];
   const hide = React.useCallback(() => showPopoverSet(false), [showPopoverSet]);
@@ -76,12 +83,14 @@ const PopperPopover = ({
     <>
       <div
         ref={setReferenceElement}
+        style={{ width: "fit-content" }}
         onFocus={() => {
           if (showPopover) {
             return;
           }
 
           shouldHide.current = false;
+          clearTimeout(hideTimeout.current);
           show();
         }}
         onMouseOver={() => {
@@ -90,17 +99,18 @@ const PopperPopover = ({
           }
 
           shouldHide.current = false;
+          clearTimeout(hideTimeout.current);
           show();
         }}
         onMouseLeave={() => {
           shouldHide.current = true;
           clearTimeout(showTimeout.current);
           showTimeout.current = undefined;
-          requestAnimationFrame(() => {
+          hideTimeout.current = setTimeout(() => {
             if (shouldHide.current !== false) {
               hide();
             }
-          });
+          }, 300);
         }}
       >
         {trigger}
@@ -144,6 +154,8 @@ const PopperPopover = ({
             caret={
               (computedPlacement === "top" && "bottom") ||
               (computedPlacement === "bottom" && "top") ||
+              (computedPlacement === "left" && "right") ||
+              (computedPlacement === "right" && "left") ||
               undefined
             }
           >

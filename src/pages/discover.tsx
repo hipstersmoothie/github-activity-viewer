@@ -25,7 +25,11 @@ const App = () => {
         title="Trending In Network"
         showCount={18}
         rows={trendingInNetwork.map((trendingUser) => (
-          <TrendingUser key={trendingUser.id} {...trendingUser} />
+          <TrendingUser
+            key={trendingUser.id}
+            placement="left"
+            {...trendingUser}
+          />
         ))}
       />
     </Grid>

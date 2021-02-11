@@ -80,6 +80,21 @@ async function getRecentFollowers(
             login
             id
             avatarUrl
+            login
+            id
+            avatarUrl
+            bioHTML
+            company
+            location
+            name
+            twitterUsername
+            followers {
+              totalCount
+            }
+            status {
+							emojiHTML
+              message
+            }
           }
         }
       }

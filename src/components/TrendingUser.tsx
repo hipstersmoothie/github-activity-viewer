@@ -18,7 +18,7 @@ import {
 
 import { ActorAvatar } from "./ActorAvatar";
 import { ActorLink } from "./HomePageLink";
-import PopperPopover from "./Popover";
+import PopperPopover, { PopperPopoverProps } from "./Popover";
 import { TrendingActor } from "../utils/types";
 
 const DataIcon = ({
@@ -41,7 +41,7 @@ const DataIcon = ({
   );
 };
 
-const TrendingUserName = (props: TrendingActor) => {
+const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
   if (props.name) {
     return (
       <Flex as="p" mb={3} mt={0} alignItems="center">
@@ -62,7 +62,9 @@ const TrendingUserName = (props: TrendingActor) => {
   );
 };
 
-export const TrendingUserProfileInfo = (props: TrendingActor) => {
+export const TrendingUserProfileInfo = (
+  props: Pick<TrendingActor, "company" | "location" | "twitterUsername">
+) => {
   return (
     <>
       {props.company && (
@@ -108,7 +110,9 @@ export const TrendingUserProfileInfo = (props: TrendingActor) => {
   );
 };
 
-export const TrendingUserFollowerInfo = (props: TrendingActor) => {
+export const TrendingUserFollowerInfo = (
+  props: Pick<TrendingActor, "followers" | "newFollowers">
+) => {
   return (
     <Flex mt={4} justifyContent="space-between" alignItems="center">
       <DataIcon icon={<PeopleIcon size={18} />}>
@@ -126,61 +130,80 @@ export const TrendingUserFollowerInfo = (props: TrendingActor) => {
   );
 };
 
-export const TrendingUser = (trendingUser: TrendingActor) => {
+type OptionalUserData =
+  | "isAuthenticatedUserFollowing"
+  | "newFollowers"
+  | "followers"
+  | "weight"
+  | "avatarUrl";
+
+export const TrendingUser = (
+  trendingUser: Partial<Pick<TrendingActor, OptionalUserData>> &
+    Omit<TrendingActor, OptionalUserData> &
+    Pick<PopperPopoverProps, "placement">
+) => {
   return (
-    <PopperPopover
-      key={trendingUser.id}
-      interactive
-      trigger={
-        <Flex alignItems="baseline" justifyContent="space-between" mb={3}>
+    <Flex alignItems="baseline" justifyContent="space-between" mb={3}>
+      <PopperPopover
+        interactive
+        placement={trendingUser.placement}
+        trigger={
           <Flex alignItems="center">
             <ActorAvatar actor={trendingUser} mr={3} />
             <ActorLink {...trendingUser} />
           </Flex>
-          <CounterLabel
-            color={
-              trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.8"
-            }
-            backgroundColor={
-              trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.2"
-            }
+        }
+      >
+        {trendingUser.status && trendingUser.status.message && (
+          <Flex
+            alignItems="center"
+            px={4}
+            py={3}
+            m={-4}
+            mb={4}
+            sx={{ borderBottom: `1px solid ${theme.colors.gray[2]}` }}
           >
-            {trendingUser.newFollowers.length}
-          </CounterLabel>
-        </Flex>
-      }
-    >
-      {trendingUser.status && trendingUser.status.message && (
-        <Flex
-          alignItems="center"
-          px={4}
-          py={3}
-          m={-4}
-          mb={4}
-          sx={{ borderBottom: `1px solid ${theme.colors.gray[2]}` }}
-        >
-          <Box
-            mr={3}
-            dangerouslySetInnerHTML={{
-              __html: trendingUser.status.emojiHTML,
-            }}
+            <Box
+              mr={3}
+              dangerouslySetInnerHTML={{
+                __html: trendingUser.status.emojiHTML,
+              }}
+            />
+            <Text>{trendingUser.status.message}</Text>
+          </Flex>
+        )}
+
+        <TrendingUserName {...trendingUser} />
+
+        {trendingUser.bioHTML && (
+          <Text
+            as="p"
+            dangerouslySetInnerHTML={{ __html: trendingUser.bioHTML }}
           />
-          <Text>{trendingUser.status.message}</Text>
-        </Flex>
+        )}
+
+        <TrendingUserProfileInfo {...trendingUser} />
+
+        {trendingUser.newFollowers && trendingUser.followers && (
+          <TrendingUserFollowerInfo
+            {...trendingUser}
+            newFollowers={trendingUser.newFollowers}
+            followers={trendingUser.followers}
+          />
+        )}
+      </PopperPopover>
+      {trendingUser.newFollowers && (
+        <CounterLabel
+          color={
+            trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.8"
+          }
+          backgroundColor={
+            trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.2"
+          }
+        >
+          {trendingUser.newFollowers.length}
+        </CounterLabel>
       )}
-
-      <TrendingUserName {...trendingUser} />
-
-      {trendingUser.bioHTML && (
-        <Text
-          as="p"
-          dangerouslySetInnerHTML={{ __html: trendingUser.bioHTML }}
-        />
-      )}
-
-      <TrendingUserProfileInfo {...trendingUser} />
-
-      <TrendingUserFollowerInfo {...trendingUser} />
-    </PopperPopover>
+    </Flex>
   );
 };

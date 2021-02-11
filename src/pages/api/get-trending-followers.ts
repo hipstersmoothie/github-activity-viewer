@@ -74,12 +74,14 @@ async function getRecentFollowers(
       // We cant sort by date followed so we have to assign weight to infrequent followers
       if (users.following.totalCount < 10) {
         weight = 0.1;
+      } else if (users.following.totalCount < 65) {
+        weight = 0.3;
       } else if (users.following.totalCount < 100) {
         weight = 0.5;
       } else if (users.following.totalCount > 600) {
-        weight = 3;
+        weight = 1.5;
       }else if (users.following.totalCount > 300) {
-        weight = 2;
+        weight = 1.2;
       }
 
       users.following.nodes.forEach((user) => {

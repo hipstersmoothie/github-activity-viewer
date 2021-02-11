@@ -9,6 +9,7 @@ import { ReleaseEvent } from "./ReleaseEvent";
 import { CreateEvent } from "./CreateEvent";
 import { ActorLink } from "./HomePageLink";
 import { ActorAvatar } from "./ActorAvatar";
+import { TrendingUser } from "./TrendingUser";
 
 export const GithubActivityViewer = (
   props: EventMap & { pageHeight: number; recentFollowers?: Actor[] }
@@ -49,10 +50,7 @@ export const GithubActivityViewer = (
             title="New Followers"
             showCount={5}
             rows={props.recentFollowers.map((follower) => (
-              <Flex key={follower.id} alignItems="baseline" mb={3} {...props}>
-                <ActorAvatar actor={follower} mr={3} />
-                <ActorLink {...follower} />
-              </Flex>
+              <TrendingUser key={follower.id} {...follower} />
             ))}
           />
         )}
