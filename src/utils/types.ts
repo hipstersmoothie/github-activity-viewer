@@ -179,6 +179,7 @@ export interface RecentPullRequest {
 
 export interface PinnedAndContributionsItemsResponse {
   pinnedItems: { edges: { node: PinnedItemBase | PinnedItemRepo }[] };
+  repositories: { edges: { node: PinnedItemRepo }[] };
   contributionsCollection: {
     pullRequestContributions: {
       edges: {

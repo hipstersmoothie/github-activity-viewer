@@ -10532,6 +10532,11 @@ use-callback-ref@^1.2.1, use-callback-ref@^1.2.3:
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.4.tgz#d86d1577bfd0b955b6e04aaf5971025f406bea3c"
   integrity sha512-rXpsyvOnqdScyied4Uglsp14qzag1JIemLeTWGKbwpotWht57hbP78aNT+Q4wdFKQfQibbUX4fb6Qb4y11aVOQ==
 
+use-local-storage-state@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/use-local-storage-state/-/use-local-storage-state-9.0.2.tgz#77ace2fd72c8d17d3da5be74cf6aa3e25b6e321c"
+  integrity sha512-loNVFqrzfsNoNVtM/3RJbjKVhSgTX15vPC5Tcuk7oflF0nonldRivMGAgFU3toi9v6hfTT/x8M+o6ifDN2n0OQ==
+
 use-sidecar@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.0.2.tgz#e72f582a75842f7de4ef8becd6235a4720ad8af6"

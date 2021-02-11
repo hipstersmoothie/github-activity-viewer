@@ -44,7 +44,7 @@ const DataIcon = ({
 const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
   if (props.name) {
     return (
-      <Flex as="p" mb={3} mt={0} alignItems="center">
+      <Flex as="p" my={0} alignItems="center">
         <Text as="span" fontWeight="bold" mr={1}>
           {props.name}
         </Text>
@@ -56,7 +56,7 @@ const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
   }
 
   return (
-    <Text as="p" fontWeight="bold" mb={3} mt={0}>
+    <Text as="p" fontWeight="bold" my={0}>
       {props.login}
     </Text>
   );
@@ -68,19 +68,24 @@ export const TrendingUserProfileInfo = (
   return (
     <>
       {props.company && (
-        <DataIcon mb={2} icon={<OrganizationIcon size={16} />}>
+        <DataIcon mt={3} mb={2} icon={<OrganizationIcon size={16} />}>
           {props.company}
         </DataIcon>
       )}
 
       {props.location && (
-        <DataIcon mb={2} icon={<LocationIcon size={16} />}>
+        <DataIcon
+          mt={props.company ? 2 : 3}
+          mb={2}
+          icon={<LocationIcon size={16} />}
+        >
           {props.location}
         </DataIcon>
       )}
 
       {props.twitterUsername && (
         <DataIcon
+          mt={props.company || props.location ? 2 : 3}
           mb={2}
           icon={
             <svg
@@ -192,6 +197,7 @@ export const TrendingUser = (
           />
         )}
       </PopperPopover>
+
       {trendingUser.newFollowers && (
         <CounterLabel
           color={

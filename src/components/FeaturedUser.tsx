@@ -77,7 +77,9 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
               />
             )}
 
-            <TrendingUserProfileInfo {...props} />
+            <div>
+              <TrendingUserProfileInfo {...props} />
+            </div>
             <TrendingUserFollowerInfo {...props} />
           </Flex>
         </Flex>
@@ -159,7 +161,7 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
           })}
         </Grid>
 
-        {props.pinnedItems && props.pinnedItems.length && (
+        {props.pinnedItems && props.pinnedItems.length !== 0 && (
           <>
             <Text as="h3" fontSize={20} fontWeight="bold" mb={3}>
               Pinned
@@ -202,7 +204,10 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                           />
                         )}
                       {pinned.stargazerCount && (
-                        <StarCount stargazers={pinned.stargazerCount} />
+                        <StarCount
+                          stargazers={pinned.stargazerCount}
+                          repo={pinned.url}
+                        />
                       )}
                     </Flex>
                   </Flex>

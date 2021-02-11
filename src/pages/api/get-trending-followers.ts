@@ -80,7 +80,7 @@ async function getRecentFollowers(
         weight = 0.5;
       } else if (users.following.totalCount > 600) {
         weight = 1.5;
-      }else if (users.following.totalCount > 300) {
+      } else if (users.following.totalCount > 300) {
         weight = 1.2;
       }
 
@@ -164,6 +164,26 @@ const getFeaturedUserInfo = async (
           }
         }
 
+        repositories(orderBy: {field: STARGAZERS, direction: DESC}, first: 6, ownerAffiliations: OWNER) {
+          edges {
+            node {
+              name
+              url
+              description
+              stargazerCount
+              forkCount
+              languages(first: 1) {
+                edges {
+                  node {
+                    name
+                    color
+                  }
+                }
+              }
+            }
+          }
+        }
+
         pinnedItems(first: 6) {
           edges {
             node {
@@ -201,9 +221,13 @@ const getFeaturedUserInfo = async (
     }>(query);
 
     const seenRepos = new Set<string>();
+    const featuredRepos =
+      data.user.pinnedItems.edges.length > 0
+        ? data.user.pinnedItems.edges
+        : data.user.repositories.edges;
 
     return {
-      pinnedItems: data.user.pinnedItems.edges.map((e) => e.node),
+      pinnedItems: featuredRepos.map((e) => e.node),
       recentContributions: data.user.contributionsCollection.pullRequestContributions.edges
         .map((e) => e.node.pullRequest)
         .filter((e) => {
@@ -218,6 +242,11 @@ const getFeaturedUserInfo = async (
     };
   } catch (error) {}
 };
+
+interface QueryType {
+  previousFeaturedUser: string;
+  previousFeaturedUserDate: string;
+}
 
 export default async (
   req: NextApiRequest,
@@ -238,9 +267,25 @@ export default async (
   const filteredFollowers = followersWithoutUser.filter(
     (actor) => actor.newFollowers.length >= 2 || actor.weight > 1
   );
-  const [featuredUser, ...trendingInNetwork] = filteredFollowers.length
+  const followersToConsider = filteredFollowers.length
     ? filteredFollowers
     : followersWithoutUser;
+  const query = (req.query as unknown) as QueryType;
+  const hoursSincePreviousFeaturedUser =
+    (new Date().getTime() -
+      new Date(query.previousFeaturedUserDate).getTime()) /
+    (1000 * 60 * 60);
+  const featuredUser = followersToConsider.find((follower) => {
+    if (hoursSincePreviousFeaturedUser < 24) {
+      return follower.login === query.previousFeaturedUser;
+    }
+
+    return follower.login !== query.previousFeaturedUser;
+  });
+  const trendingInNetwork = followersToConsider.filter(
+    (f) => f.login !== featuredUser.login
+  );
+
   const featuredUserInfo = await getFeaturedUserInfo(
     graphqlWithAuth,
     featuredUser.login

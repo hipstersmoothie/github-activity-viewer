@@ -29,7 +29,10 @@ export const RepoDescription = ({
             <Language language={repo.languages.edges[0]} mr={4} />
           )}
           {repo.stargazers && (
-            <StarCount stargazers={repo.stargazers.totalCount} />
+            <StarCount
+              stargazers={repo.stargazers.totalCount}
+              repo={repo.url}
+            />
           )}
         </Flex>
 
