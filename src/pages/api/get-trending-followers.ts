@@ -191,7 +191,8 @@ const getFeaturedUserInfo = async (
           seenRepos.add(e.repository.url);
           return true;
         })
-        .slice(0, 10),
+        .slice(0, 10),gs
+
     };
   } catch (error) {}
 };
@@ -213,7 +214,7 @@ export default async (
       graphqlWithAuth,
       result
     );
-    console.log("4");
+    console.log("4", user);
     const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
       (actor) =>
         actor.login !== user.data.login && actor.newFollowers.length >= 2
