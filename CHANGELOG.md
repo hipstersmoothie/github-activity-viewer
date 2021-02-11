@@ -1,3 +1,31 @@
+# v0.0.18 (Thu Feb 11 2021)
+
+#### ⚠️ Pushed to `master`
+
+- finish following user page ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- working on featured usre ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- discover page working ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add sidebar labels ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add interactive prop ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix hiding moving out of the popper and match width if possible ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix poper hiding without timeouts ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- single popover visible ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- make popper elements better ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- dry baby ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- hide followers on user feed ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add user feed ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add todods ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- refactor event cards into gridcards ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix show more button showing when no more to show ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add repos made public to 'New Repos' card ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix local login ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.17 (Thu Jul 30 2020)
 
 #### ⚠️ Pushed to `master`
