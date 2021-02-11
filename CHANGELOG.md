@@ -1,3 +1,16 @@
+# v0.0.27 (Thu Feb 11 2021)
+
+#### ⚠️ Pushed to `master`
+
+- fix extra space in sparse RepoDescription ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add followers link ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.26 (Thu Feb 11 2021)
 
 #### ⚠️ Pushed to `master`
