@@ -191,8 +191,8 @@ const getFeaturedUserInfo = async (
           seenRepos.add(e.repository.url);
           return true;
         })
-        .slice(0, 10),gs
-
+        .slice(0, 10),
+      gs,
     };
   } catch (error) {}
 };
@@ -215,10 +215,15 @@ export default async (
       result
     );
     console.log("4", user);
-    const [featuredUser, ...trendingInNetwork] = recentFollowers.filter(
-      (actor) =>
-        actor.login !== user.data.login && actor.newFollowers.length >= 2
+    const followersWithoutUser = recentFollowers.filter(
+      (actor) => actor.login !== user.data.login
     );
+    const filteredFollowers = followersWithoutUser.filter(
+      (actor) => actor.newFollowers.length >= 2
+    );
+    const [featuredUser, ...trendingInNetwork] = filteredFollowers.length
+      ? filteredFollowers
+      : followersWithoutUser;
     console.log("5");
     const featuredUserInfo = await getFeaturedUserInfo(
       graphqlWithAuth,
