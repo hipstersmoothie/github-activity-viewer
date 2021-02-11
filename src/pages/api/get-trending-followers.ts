@@ -192,7 +192,7 @@ const getFeaturedUserInfo = async (
           return true;
         })
         .slice(0, 10),
-      gs,
+
     };
   } catch (error) {}
 };
