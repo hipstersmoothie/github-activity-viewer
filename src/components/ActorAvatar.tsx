@@ -22,42 +22,40 @@ export const ActorAvatar = ({
   sx,
   ...linkProps
 }: ActorAvatarProps) => {
-  console.log(linkProps);
-  const link = (
+  const avatar = (
+    <Avatar
+      src={actor.avatar_url}
+      alt={`@${actor.display_login}`}
+      size={size}
+    />
+  );
+
+  return (
     <Link
       {...linkProps}
-      className={showTooltip ? undefined : className}
-      sx={showTooltip ? undefined : sx}
+      className={className}
+      sx={sx}
       target="_blank"
       rel="noopener"
       href={`https://github.com/${actor.display_login}`}
       style={{
         ...style,
         borderRadius: "50%",
-        overflow: "hidden",
+        overflow: 'visible',
         flex: "none",
-        // display: "flex",
+        display: "flex",
       }}
     >
-      <Avatar
-        src={actor.avatar_url}
-        alt={`@${actor.display_login}`}
-        size={size}
-      />
+      {showTooltip ? (
+        <Tooltip
+          aria-label={actor.login}
+          sx={{ borderRadius: "50%", display: "flex", overflow: 'visible' }}
+        >
+          {avatar}
+        </Tooltip>
+      ) : (
+        avatar
+      )}
     </Link>
   );
-
-  if (showTooltip) {
-    return (
-      <Tooltip
-        aria-label={actor.login}
-        className={className}
-        sx={{ ...sx, borderRadius: "50%" }}
-      >
-        {link}
-      </Tooltip>
-    );
-  }
-
-  return link;
 };
