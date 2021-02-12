@@ -1,5 +1,5 @@
 import React from "react";
-import { usePopper } from "react-popper";
+import { usePopper, Modifier } from "react-popper";
 import { Popover } from "@primer/components";
 import maxSize from "popper-max-size-modifier";
 
@@ -12,20 +12,23 @@ export interface PopperPopoverProps {
 }
 
 // Create your own apply modifier that adds the styles to the state
-const applyMaxSize = {
+const applyMaxSize: Modifier<"applyMaxSize"> = {
   name: "applyMaxSize",
   enabled: true,
-  phase: "afterMain" as const,
+  phase: "afterMain",
   requires: ["maxSize"],
   fn({ state }) {
     // The `maxSize` modifier provides this data
-    const { width, height } = state.modifiersData.maxSize;
+    const { width, height } = state.modifiersData["maxSize"];
 
     if (height < state.elements.popper.clientHeight) {
       // eslint-disable-next-line no-param-reassign
-      state.styles.popper = {
-        ...state.styles.popper,
+      state.styles["popper"] = {
+        ...state.styles["popper"],
         maxWidth: `${width}px`,
+        // SHHHH: doing sneaky things to get styles to child elements
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         popperContent: {
           overflow: "auto",
         },
@@ -43,11 +46,13 @@ const PopperPopover = ({
   placement = "right",
 }: PopperPopoverProps) => {
   const shouldHide = React.useRef<boolean>();
-  const showTimeout = React.useRef<number>();
-  const hideTimeout = React.useRef<number>();
+  const showTimeout = React.useRef<ReturnType<typeof setTimeout>>();
+  const hideTimeout = React.useRef<ReturnType<typeof setTimeout>>();
   const [showPopover, showPopoverSet] = React.useState(false);
-  const [referenceElement, setReferenceElement] = React.useState(null);
-  const [popperElement, setPopperElement] = React.useState(null);
+  const [referenceElement, setReferenceElement] = React.useState<
+    HTMLDivElement
+  >();
+  const [popperElement, setPopperElement] = React.useState<HTMLDivElement>();
   const { styles, attributes } = usePopper(referenceElement, popperElement, {
     placement,
     modifiers: [
@@ -56,7 +61,7 @@ const PopperPopover = ({
       applyMaxSize,
     ],
   });
-  const computedPlacement = attributes.popper?.["data-popper-placement"];
+  const computedPlacement = attributes["popper"]?.["data-popper-placement"];
   const hide = React.useCallback(() => showPopoverSet(false), [showPopoverSet]);
   const show = () => {
     if (showTimeout.current) {
@@ -76,13 +81,14 @@ const PopperPopover = ({
     };
   }, [hide]);
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const { popperContent, ...popperStyles } = styles.popper;
 
   return (
     <>
       <div
-        ref={setReferenceElement}
+        ref={(ref) => ref && setReferenceElement(ref)}
         style={{ width: "fit-content" }}
         onFocus={() => {
           if (showPopover) {
@@ -90,7 +96,11 @@ const PopperPopover = ({
           }
 
           shouldHide.current = false;
-          clearTimeout(hideTimeout.current);
+
+          if (hideTimeout.current) {
+            clearTimeout(hideTimeout.current);
+          }
+
           show();
         }}
         onMouseOver={() => {
@@ -99,12 +109,20 @@ const PopperPopover = ({
           }
 
           shouldHide.current = false;
-          clearTimeout(hideTimeout.current);
+
+          if (hideTimeout.current) {
+            clearTimeout(hideTimeout.current);
+          }
+
           show();
         }}
         onMouseLeave={() => {
           shouldHide.current = true;
-          clearTimeout(showTimeout.current);
+
+          if (showTimeout.current) {
+            clearTimeout(showTimeout.current);
+          }
+
           showTimeout.current = undefined;
           hideTimeout.current = setTimeout(() => {
             if (shouldHide.current !== false) {
@@ -118,14 +136,16 @@ const PopperPopover = ({
 
       {showPopover && (
         <div
-          ref={setPopperElement}
+          ref={(ref) => ref && setPopperElement(ref)}
           className="tooltip-wrapper"
           style={{
             ...popperStyles,
             zIndex: 1,
-            width: `max(min(80vw, ${maxWidth}px), ${referenceElement.clientWidth}px)`,
+            width: referenceElement
+              ? `max(min(80vw, ${maxWidth}px), ${referenceElement.clientWidth}px)`
+              : undefined,
           }}
-          {...attributes.popper}
+          {...attributes["popper"]}
           onMouseEnter={() => {
             if (!interactive) {
               return;

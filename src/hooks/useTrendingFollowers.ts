@@ -18,7 +18,7 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
     async () => {
       const url = new URL(
         `${
-          process.env.SITE || "http://localhost:3000"
+          process.env['SITE'] || "http://localhost:3000"
         }/api/get-trending-followers`
       );
       url.search = new URLSearchParams({
@@ -39,5 +39,5 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
     }
   );
 
-  return data;
+  return data || ({} as Partial<NonNullable<typeof data>>);
 };

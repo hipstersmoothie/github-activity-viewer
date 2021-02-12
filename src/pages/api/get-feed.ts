@@ -37,7 +37,8 @@ async function getRepoInfo(
 
   const query = repos
     .map((repo) => {
-      const [owner, name] = repo.name.split("/");
+      const [owner, name] = repo.name.split("/") as [string, string];
+
       return gql`
         ${queryId(repo)}: repository(owner: "${owner}", name: "${name}") {
           description
@@ -123,8 +124,11 @@ export default async (
   const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
 
   const user = await octokit.users.getAuthenticated();
+  const active = Array.isArray(req.query["active"])
+    ? req.query["active"][0]
+    : req.query["active"];
   const result: GitHubFeedEvent[] = await octokit.paginate(
-    req.query.active === "following"
+    active === "following"
       ? octokit.activity.listReceivedEventsForUser
       : octokit.activity.listEventsForAuthenticatedUser,
     {

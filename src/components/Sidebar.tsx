@@ -28,11 +28,11 @@ const SideBarItem = ({
             sx={{
               width: "100%",
               height: 64,
-              color: active ? "white" : theme.colors.gray[9],
-              background: active ? theme.colors.blue[4] : undefined,
+              color: active ? "white" : theme["colors"].gray[9],
+              background: active ? theme["colors"].blue[4] : undefined,
               ":hover": {
-                color: !active && "black",
-                background: !active && theme.colors.blue[2],
+                color: active ? undefined : "black",
+                background: active ? "" : theme["colors"].blue[2],
               },
             }}
             {...props}

@@ -2,7 +2,7 @@
 
 import React from "react";
 import Head from "next/head";
-import { Grid } from "@primer/components";
+import { Flex, Grid, Text } from "@primer/components";
 import useLocalStorageState from "use-local-storage-state";
 
 import { useTrendingFollowers } from "../hooks/useTrendingFollowers";
@@ -23,10 +23,19 @@ const App = () => {
   });
 
   React.useEffect(() => {
-    if (featuredUser.login !== previousFeaturedUser.login) {
+    if (featuredUser && featuredUser.login !== previousFeaturedUser.login) {
       previousFeaturedUserSet({ login: featuredUser.login, date: new Date() });
     }
-  }, [featuredUser.login, previousFeaturedUser.login, previousFeaturedUserSet]);
+  }, [featuredUser, previousFeaturedUser.login, previousFeaturedUserSet]);
+
+  // TODO design
+  if (!featuredUser) {
+    return (
+      <Flex>
+        <Text fontSize={20}>Uh oh!</Text>
+      </Flex>
+    );
+  }
 
   return (
     <Grid

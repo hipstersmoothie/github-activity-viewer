@@ -32,8 +32,8 @@ const LanguageFilter = ({
   languageFilterSet,
 }: {
   languages: LanguageType[];
-  languageFilter: LanguageType;
-  languageFilterSet: (newLang: LanguageType) => void;
+  languageFilter?: LanguageType;
+  languageFilterSet: (newLang?: LanguageType) => void;
 }) => {
   const [search, searchSet] = React.useState("");
   const sortedLanguages = languages
@@ -58,10 +58,7 @@ const LanguageFilter = ({
 
           <SelectMenu.List>
             {!search && (
-              <SelectMenu.Item
-                as="button"
-                onClick={() => languageFilterSet(null)}
-              >
+              <SelectMenu.Item as="button" onClick={() => languageFilterSet()}>
                 <Language language={ALL_LANGUAGE} />
               </SelectMenu.Item>
             )}
@@ -105,7 +102,7 @@ const isRepo = (value: GitHubFeedEvent | Repo): value is Repo =>
   "name" in value;
 
 const useUserRepoEvents = <T extends GitHubFeedEvent | Repo>(events: T[]) => {
-  const { login } = useUser();
+  const { login } = useUser() || {};
   const fromUsersRepos: T[] = [];
   const fromOtherRepos: T[] = [];
 
@@ -126,15 +123,12 @@ const useUserRepoEvents = <T extends GitHubFeedEvent | Repo>(events: T[]) => {
 export const WatchEvents = ({
   events,
   pageHeight,
-}: { events: GitHubFeedEvent[]; pageHeight: number } & Omit<
+}: { events: GitHubFeedEvent[]; pageHeight?: number } & Omit<
   React.ComponentProps<typeof BorderBox>,
   "title"
 >) => {
   const { repoInfo } = React.useContext(DataContext);
-  const [
-    languageFilter,
-    languageFilterSet,
-  ] = React.useState<LanguageType | null>(null);
+  const [languageFilter, languageFilterSet] = React.useState<LanguageType>();
   const groupedByProject = new Map<string, Actor[]>();
   const projects: Repo[] = [];
   const languages: LanguageType[] = [];
@@ -143,48 +137,48 @@ export const WatchEvents = ({
 
   events.forEach((event) => {
     if (groupedByProject.has(event.repo.name)) {
-      if (
-        !groupedByProject
-          .get(event.repo.name)
-          .find((p) => p.login === event.actor.login)
-      ) {
-        groupedByProject.get(event.repo.name).push(event.actor);
+      const repo = groupedByProject.get(event.repo.name);
+
+      if (repo && !repo.find((p) => p.login === event.actor.login)) {
+        repo.push(event.actor);
       }
     } else {
       projects.push(event.repo);
       groupedByProject.set(event.repo.name, [event.actor]);
 
       const info = repoInfo[queryId(event.repo)];
+      const language = info?.languages?.edges[0];
 
       if (
-        info.languages.edges.length &&
-        !languages.find(
-          (l) => l.node.name === info.languages.edges[0].node.name
-        )
+        language &&
+        !languages.find((l) => l.node.name === language.node.name)
       ) {
-        languages.push(info.languages.edges[0]);
+        languages.push(language);
       }
     }
   });
 
   projects.sort(
     (a, b) =>
-      groupedByProject.get(b.name).length - groupedByProject.get(a.name).length
+      (groupedByProject.get(b.name) || []).length -
+      (groupedByProject.get(a.name) || []).length
   );
 
-  const firstWithOneStar = projects.find(
-    (p) => groupedByProject.get(p.name).length === 1
-  );
+  const firstWithOneStar =
+    projects.find((p) => (groupedByProject.get(p.name) || []).length === 1) ||
+    ({} as Repo);
 
   const storageId = (repo: Repo) => {
-    const users = groupedByProject.get(repo.name);
-    return `${repo.id}-${users.map((u) => u.display_login).join("-")}`;
+    const users = groupedByProject.get(repo.name) || [];
+    const logins = users.map((u) => u.display_login);
+
+    return `${repo.id}-${logins.join("-")}`;
   };
 
   // Remember the latest repo seen
   React.useEffect(() => {
     const first = projects.find((p) => {
-      const users = groupedByProject.get(p.name);
+      const users = groupedByProject.get(p.name) || [];
       return users.length === 1;
     });
 
@@ -202,11 +196,11 @@ export const WatchEvents = ({
   const { fromOtherRepos, fromUsersRepos } = useUserRepoEvents(projects);
 
   const RepoRenderer = (repo: Repo) => {
-    const users = groupedByProject.get(repo.name);
+    const users = groupedByProject.get(repo.name) || [];
 
     return (
       <>
-        {users.length > 1 && repo.name === projects[0].name && (
+        {users.length > 1 && repo.name === projects[0]?.name && (
           <Section>Trending Among People you Follow</Section>
         )}
         {users.length === 1 &&
@@ -235,7 +229,7 @@ export const WatchEvents = ({
     <GridCard
       title="Recently Starred"
       showCount={Math.floor(
-        (pageHeight -
+        ((pageHeight || 0) -
           containerHeight -
           yourReposHeight -
           otherReposTitleHeight) /
@@ -276,8 +270,7 @@ export const WatchEvents = ({
           const info = repoInfo[queryId(repo)];
 
           return (
-            info.languages.edges.length &&
-            info.languages.edges[0].node.name === languageFilter.node.name
+            info?.languages?.edges[0]?.node.name === languageFilter.node.name
           );
         })
         .map((repo) => (

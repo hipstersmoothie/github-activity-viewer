@@ -1,4 +1,5 @@
 import React from "react";
+import type { AppProps } from "next/app";
 import { BaseStyles } from "@primer/components";
 import { Provider } from "next-auth/client";
 import { useSession } from "next-auth/client";
@@ -9,7 +10,7 @@ import "../css/main.css";
 // eslint-disable-next-line import/no-unassigned-import
 import "../css/main.scss";
 
-const MyApp = ({ Component, pageProps }) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   const [session, loading] = useSession();
 
   if (loading) {

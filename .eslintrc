@@ -3,6 +3,8 @@
   "rules": {
     "@typescript-eslint/explicit-module-boundary-types": 0,
     "camelcase": 0,
-    "jsdoc/require-jsdoc": 0
+    "jsdoc/require-jsdoc": 0,
+    // off until typescript support it for the new flag in 4.2
+    "dot-notation":"off"
   }
 }

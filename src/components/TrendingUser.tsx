@@ -233,7 +233,7 @@ export const TrendingUser = (
             py={3}
             m={-4}
             mb={4}
-            sx={{ borderBottom: `1px solid ${theme.colors.gray[2]}` }}
+            sx={{ borderBottom: `1px solid ${theme['colors'].gray[2]}` }}
           >
             <Box
               mr={3}

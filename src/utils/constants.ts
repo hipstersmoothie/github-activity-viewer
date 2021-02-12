@@ -1,3 +1,4 @@
 import { theme } from "@primer/components";
 
-export const DEFAULT_LANGUAGE_COLOR = theme.colors.gray[4];
+// eslint-disable-next-line dot-notation
+export const DEFAULT_LANGUAGE_COLOR = theme['colors'].gray[4];

@@ -12,7 +12,7 @@ export const useFeeds = (active: "following" | "user") => {
     `/api/get-feed/${active}`,
     async () => {
       const url = new URL(
-        `${process.env.SITE || "http://localhost:3000"}/api/get-feed`
+        `${process.env['SITE'] || "http://localhost:3000"}/api/get-feed`
       );
       url.search = new URLSearchParams({ active }).toString();
 
@@ -65,5 +65,5 @@ export const useFeeds = (active: "following" | "user") => {
     }
   );
 
-  return data || ({} as Partial<typeof data>);
+  return data || ({} as Partial<NonNullable<typeof data>>);
 };

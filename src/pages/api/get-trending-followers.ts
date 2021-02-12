@@ -102,6 +102,7 @@ async function getRecentFollowers(
             weight: 1,
             avatar_url: user.avatarUrl,
             display_login: user.login,
+            // TODO LOOK AT THIS LOGIC
             isAuthenticatedUserFollowing: following.some(
               (f) => f.login === user.login
             ),
@@ -125,7 +126,7 @@ async function getRecentFollowers(
       .sort((a, b) => b.weight - a.weight);
   } catch (error) {
     console.log(error);
-    return error.data;
+    return [];
   }
 }
 
@@ -242,7 +243,13 @@ const getFeaturedUserInfo = async (
         })
         .slice(0, 10),
     };
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    return {
+      pinnedItems: [],
+      recentContributions: [],
+    };
+  }
 };
 
 interface QueryType {
@@ -285,19 +292,16 @@ export default async (
     return follower.login !== query.previousFeaturedUser;
   });
   const trendingInNetwork = followersToConsider.filter(
-    (f) => f.login !== featuredUser.login
-  );
-
-  const featuredUserInfo = await getFeaturedUserInfo(
-    graphqlWithAuth,
-    featuredUser.login
+    (f) => featuredUser && f.login !== featuredUser.login
   );
 
   res.json({
     trendingInNetwork,
-    featuredUser: {
-      ...featuredUser,
-      ...featuredUserInfo,
-    },
+    featuredUser: featuredUser
+      ? {
+          ...featuredUser,
+          ...(await getFeaturedUserInfo(graphqlWithAuth, featuredUser.login)),
+        }
+      : undefined,
   });
 };

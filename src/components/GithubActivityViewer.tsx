@@ -1,18 +1,16 @@
 import React from "react";
 
-import { Grid, Flex } from "@primer/components";
+import { Grid } from "@primer/components";
 
 import { Actor, EventMap, ReleaseEventType } from "../utils/types";
 import { WatchEvents } from "./WatchEvents";
 import { GridCard } from "./Event";
 import { ReleaseEvent } from "./ReleaseEvent";
 import { CreateEvent } from "./CreateEvent";
-import { ActorLink } from "./HomePageLink";
-import { ActorAvatar } from "./ActorAvatar";
 import { TrendingUser } from "./TrendingUser";
 
 export const GithubActivityViewer = (
-  props: EventMap & { pageHeight: number; recentFollowers?: Actor[] }
+  props: EventMap & { pageHeight?: number; recentFollowers?: Actor[] }
 ) => {
   const newRepoEvents = [
     ...props.CreateEvent.filter((e) => e.payload.ref_type === "repository"),

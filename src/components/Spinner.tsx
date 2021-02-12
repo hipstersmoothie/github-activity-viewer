@@ -82,7 +82,7 @@ export const Spinner = () => (
         animation-duration: 1s;
         animation-iteration-count: infinite;
         animation-timing-function: ease-out;
-        fill: ${theme.colors.gray[1]};
+        fill: ${theme['colors'].gray[1]};
       }
       
       #octo #part1 { animation-delay: 0.000s }
@@ -96,7 +96,7 @@ export const Spinner = () => (
       
       @keyframes fade {
           0%,25%  { fill: #fff }
-          50%,75% { fill: ${theme.colors.gray[4]} }
+          50%,75% { fill: ${theme['colors'].gray[4]} }
       }
     `}</style>
   </>

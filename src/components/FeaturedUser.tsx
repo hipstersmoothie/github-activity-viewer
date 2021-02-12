@@ -201,19 +201,18 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                           <Text fontWeight="bold">{pinned.name}</Text>
                         </Link>
                       </Flex>
-                      <Text as="p" color="gray.7" m={0}>
-                        {renderEmoji(pinned.description)}
-                      </Text>
+
+                      {pinned.description && (
+                        <Text as="p" color="gray.7" m={0}>
+                          {renderEmoji(pinned.description)}
+                        </Text>
+                      )}
                     </div>
 
                     <Flex mt={3}>
-                      {"languages" in pinned &&
-                        pinned.languages.edges.length !== 0 && (
-                          <Language
-                            language={pinned.languages.edges[0]}
-                            mr={3}
-                          />
-                        )}
+                      {"languages" in pinned && pinned.languages.edges[0] && (
+                        <Language language={pinned.languages.edges[0]} mr={3} />
+                      )}
                       {pinned.stargazerCount && (
                         <StarCount
                           stargazers={pinned.stargazerCount}

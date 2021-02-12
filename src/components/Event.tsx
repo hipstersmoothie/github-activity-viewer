@@ -59,8 +59,8 @@ export const GridCard = <T extends any>({
             px={4}
             py={3}
             sx={{
-              borderBottomLeftRadius: theme.radii[2],
-              borderBottomRightRadius: theme.radii[2],
+              borderBottomLeftRadius: theme["radii"][2],
+              borderBottomRightRadius: theme["radii"][2],
               ":hover": { backgroundColor: "blue.0", color: "blue.5" },
               ":focus": {
                 backgroundColor: "blue.0",
