@@ -12,6 +12,17 @@ const options = {
       clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
+
+  callbacks: {
+    async jwt(token, user, account, profile, isNewUser) {
+      // Add access_token to the token right after signin
+      if (account?.accessToken) {
+        token.accessToken = account.accessToken;
+      }
+
+      return token;
+    },
+  },
 };
 
 export default (req, res) => NextAuth(req, res, options);

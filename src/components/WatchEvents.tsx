@@ -147,7 +147,7 @@ export const WatchEvents = ({
       groupedByProject.set(event.repo.name, [event.actor]);
 
       // TypeScript 4.2 features break this rule, info is used
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const info = repoInfo[queryId(event.repo)];
       const language = info?.languages?.edges[0];
 
