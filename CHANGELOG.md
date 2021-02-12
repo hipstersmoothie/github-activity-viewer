@@ -1,3 +1,15 @@
+# v0.0.29 (Fri Feb 12 2021)
+
+#### ⚠️ Pushed to `master`
+
+- render different colors for different merge states ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.28 (Fri Feb 12 2021)
 
 #### ⚠️ Pushed to `master`
