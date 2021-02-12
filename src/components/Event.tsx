@@ -19,7 +19,7 @@ export const Event = ({
   </Flex>
 );
 
-export const GridCard = <T extends any>({
+export const GridCard = <T extends unknown>({
   title,
   shownFilter = () => true,
   showCount = 5,

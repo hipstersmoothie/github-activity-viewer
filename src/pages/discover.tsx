@@ -1,5 +1,3 @@
-/* eslint-disable react/no-danger */
-
 import React from "react";
 import Head from "next/head";
 import { Flex, Grid, Text } from "@primer/components";
@@ -29,7 +27,7 @@ const App = () => {
   }, [featuredUser, previousFeaturedUser.login, previousFeaturedUserSet]);
 
   // TODO design
-  if (!featuredUser) {
+  if (featuredUser) {
     return (
       <Flex>
         <Text fontSize={20}>Uh oh!</Text>

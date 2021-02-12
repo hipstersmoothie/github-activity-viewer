@@ -110,6 +110,7 @@ async function getRecentFollowers(
     return result.user.followers.nodes.map((node) => ({
       ...node,
       display_login: node.login,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       avatar_url: (node as any).avatarUrl,
     }));
   } catch (error) {

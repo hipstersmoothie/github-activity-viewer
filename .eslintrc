@@ -5,6 +5,14 @@
     "camelcase": 0,
     "jsdoc/require-jsdoc": 0,
     // off until typescript support it for the new flag in 4.2
-    "dot-notation":"off"
-  }
+    "dot-notation": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/pages/api/**/*"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
 }

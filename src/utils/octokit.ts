@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const authenticateOctokit = async (req: NextApiRequest) => {
-  // eslint-disable-next-line dot-notation
   const token = await jwt.getJwt({ req, secret: process.env["GITHUB_SECRET"] });
   const octokit = new Octokit({
     auth: token.account.accessToken,

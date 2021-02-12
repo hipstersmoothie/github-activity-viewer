@@ -146,6 +146,8 @@ export const WatchEvents = ({
       projects.push(event.repo);
       groupedByProject.set(event.repo.name, [event.actor]);
 
+      // TypeScript 4.2 features break this rule, info is used
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars-vars
       const info = repoInfo[queryId(event.repo)];
       const language = info?.languages?.edges[0];
 
@@ -191,6 +193,7 @@ export const WatchEvents = ({
     }
     // Only windowFocus is a dep because we actually want the stale values for all
     // other potential deps.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [windowFocus]);
 
   const { fromOtherRepos, fromUsersRepos } = useUserRepoEvents(projects);
@@ -267,6 +270,8 @@ export const WatchEvents = ({
             return true;
           }
 
+          // TypeScript 4.2 features break this rule, info is used
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const info = repoInfo[queryId(repo)];
 
           return (
