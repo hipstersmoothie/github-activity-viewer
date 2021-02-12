@@ -1,7 +1,8 @@
 import * as React from "react";
 import { usePopper, Modifier } from "react-popper";
-import { Popover } from "@primer/components";
+import { BaseStyles, Popover } from "@primer/components";
 import maxSize from "popper-max-size-modifier";
+import Portal from "@reach/portal";
 
 export interface PopperPopoverProps {
   trigger: React.ReactNode;
@@ -135,59 +136,63 @@ const PopperPopover = ({
       </div>
 
       {showPopover && (
-        <div
-          ref={(ref) => ref && setPopperElement(ref)}
-          className="tooltip-wrapper"
-          style={{
-            ...popperStyles,
-            zIndex: 1,
-            width: referenceElement
-              ? `max(min(80vw, ${maxWidth}px), ${referenceElement.clientWidth}px)`
-              : undefined,
-          }}
-          {...attributes["popper"]}
-          onMouseEnter={() => {
-            if (!interactive) {
-              return;
-            }
+        <Portal>
+          <BaseStyles>
+            <div
+              ref={(ref) => ref && setPopperElement(ref)}
+              className="tooltip-wrapper"
+              style={{
+                ...popperStyles,
+                zIndex: 100,
+                width: referenceElement
+                  ? `max(min(80vw, ${maxWidth}px), ${referenceElement.clientWidth}px)`
+                  : undefined,
+              }}
+              {...attributes["popper"]}
+              onMouseEnter={() => {
+                if (!interactive) {
+                  return;
+                }
 
-            shouldHide.current = false;
-          }}
-          onMouseLeave={() => {
-            if (!interactive) {
-              return;
-            }
+                shouldHide.current = false;
+              }}
+              onMouseLeave={() => {
+                if (!interactive) {
+                  return;
+                }
 
-            shouldHide.current = true;
-            requestAnimationFrame(() => {
-              if (shouldHide.current !== false) {
-                hide();
-              }
-            });
-          }}
-        >
-          <Popover
-            relative
-            open
-            width="100%"
-            height="100%"
-            caret={
-              (computedPlacement === "top" && "bottom") ||
-              (computedPlacement === "bottom" && "top") ||
-              (computedPlacement === "left" && "right") ||
-              (computedPlacement === "right" && "left") ||
-              undefined
-            }
-          >
-            <Popover.Content
-              width="100%"
-              height="100%"
-              sx={{ ...popperContent }}
+                shouldHide.current = true;
+                requestAnimationFrame(() => {
+                  if (shouldHide.current !== false) {
+                    hide();
+                  }
+                });
+              }}
             >
-              {children}
-            </Popover.Content>
-          </Popover>
-        </div>
+              <Popover
+                relative
+                open
+                width="100%"
+                height="100%"
+                caret={
+                  (computedPlacement === "top" && "bottom") ||
+                  (computedPlacement === "bottom" && "top") ||
+                  (computedPlacement === "left" && "right") ||
+                  (computedPlacement === "right" && "left") ||
+                  undefined
+                }
+              >
+                <Popover.Content
+                  width="100%"
+                  height="100%"
+                  sx={{ ...popperContent }}
+                >
+                  {children}
+                </Popover.Content>
+              </Popover>
+            </div>
+          </BaseStyles>
+        </Portal>
       )}
     </>
   );

@@ -1199,6 +1199,14 @@
     "@reach/utils" "0.13.0"
     tslib "^2.0.0"
 
+"@reach/portal@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@reach/portal/-/portal-0.13.0.tgz#bed220d41097deb1454a7928b22529ba10d3ea2b"
+  integrity sha512-mGbZtox66KR6FJWfvLEJIK2dfBiqkTpGJqQa4jHR+yHu/uSDWHi7DQ173z/BuZPc+9J9sryU53+wqfmhHvU5NA==
+  dependencies:
+    "@reach/utils" "0.13.0"
+    tslib "^2.0.0"
+
 "@reach/utils@0.13.0":
   version "0.13.0"
   resolved "https://registry.yarnpkg.com/@reach/utils/-/utils-0.13.0.tgz#2da775a910d8894bb34e1e94fe95842674f71844"
