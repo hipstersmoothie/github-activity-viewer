@@ -145,6 +145,7 @@ const getFeaturedUserInfo = async (
                   url
                   bodyHTML
                   number
+                  state
                   labels(first: 10) {
                     nodes {
                       name

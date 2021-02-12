@@ -113,7 +113,11 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                 >
                   <Flex alignItems="center">
                     <Flex
-                      color="purple.5"
+                      color={
+                        (contribution.state === "MERGED" && "purple.5") ||
+                        (contribution.state === "CLOSED" && "red.5") ||
+                        "green.5"
+                      }
                       alignItems="center"
                       justifyContent="center"
                       mr={2}

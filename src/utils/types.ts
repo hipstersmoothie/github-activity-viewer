@@ -162,6 +162,7 @@ export interface RecentPullRequest {
   url: string;
   bodyHTML: string;
   number: number;
+  state: 'MERGED' | 'CLOSED';
   labels: {
     nodes: {
       name: string;
