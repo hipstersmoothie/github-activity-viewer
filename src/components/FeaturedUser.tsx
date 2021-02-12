@@ -128,16 +128,23 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                 {contribution.bodyHTML ||
                 contribution.labels.nodes.length !== 0 ? (
                   <PopperPopover maxWidth={600} trigger={trigger}>
-                    <Flex alignItems="center" justifyContent="space-between">
-                      <LabelGroup>
-                        {contribution.labels.nodes.map((label) => (
-                          <Label key={label.name} color={label.color}>
-                            {label.name}
-                          </Label>
-                        ))}
-                      </LabelGroup>
-                    </Flex>
+                    {contribution.labels.nodes.length !== 0 && (
+                      <Flex
+                        alignItems="center"
+                        justifyContent="space-between"
+                        mb={contribution.bodyHTML ? 4 : undefined}
+                      >
+                        <LabelGroup>
+                          {contribution.labels.nodes.map((label) => (
+                            <Label key={label.name} color={label.color}>
+                              {label.name}
+                            </Label>
+                          ))}
+                        </LabelGroup>
+                      </Flex>
+                    )}
                     <div
+                      className="markdown-body"
                       dangerouslySetInnerHTML={{
                         __html: contribution.bodyHTML,
                       }}

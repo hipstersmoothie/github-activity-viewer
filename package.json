@@ -16,6 +16,7 @@
     "@octokit/rest": "^18.0.0",
     "@popperjs/core": "^2.6.0",
     "@primer/components": "^19.1.1",
+    "@primer/css": "^15.2.0",
     "@primer/octicons": "^10.0.0",
     "@primer/octicons-react": "^10.0.0",
     "@primer/styled-octicons": "^10.0.0",
@@ -60,6 +61,7 @@
     "postcss-flexbugs-fixes": "^4.2.1",
     "postcss-preset-env": "^6.7.0",
     "prettier": "^2.0.5",
+    "sass": "^1.32.7",
     "typescript": "^3.9.5"
   },
   "auto": {

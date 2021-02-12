@@ -6,6 +6,8 @@ import Router from "next/router";
 import { SidebarActive, SidebarLayout } from "../components/Sidebar";
 
 import "../css/main.css";
+// eslint-disable-next-line import/no-unassigned-import
+import "../css/main.scss";
 
 const MyApp = ({ Component, pageProps }) => {
   const [session, loading] = useSession();
