@@ -1,3 +1,5 @@
-// add sidebar
-  // TODO: setup work dashboard
-// avater stack broke
+# Todo
+
+- [ ] add sidebar
+  - [ ] setup work dashboard
+- [ ] customized loader per page (might be hard)

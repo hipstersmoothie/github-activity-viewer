@@ -18,11 +18,16 @@ export const ActorAvatar = ({
   size = 32,
   style,
   showTooltip,
+  className,
+  sx,
   ...linkProps
 }: ActorAvatarProps) => {
+  console.log(linkProps);
   const link = (
     <Link
       {...linkProps}
+      className={showTooltip ? undefined : className}
+      sx={showTooltip ? undefined : sx}
       target="_blank"
       rel="noopener"
       href={`https://github.com/${actor.display_login}`}
@@ -31,6 +36,7 @@ export const ActorAvatar = ({
         borderRadius: "50%",
         overflow: "hidden",
         flex: "none",
+        display: "flex",
       }}
     >
       <Avatar
@@ -42,7 +48,15 @@ export const ActorAvatar = ({
   );
 
   if (showTooltip) {
-    return <Tooltip aria-label={actor.login}>{link}</Tooltip>;
+    return (
+      <Tooltip
+        aria-label={actor.login}
+        className={className}
+        sx={{ ...sx, borderRadius: "50%" }}
+      >
+        {link}
+      </Tooltip>
+    );
   }
 
   return link;
