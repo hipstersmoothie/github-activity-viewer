@@ -61,7 +61,7 @@ export const GithubActivityViewer = (
             title="New Followers"
             showCount={5}
             rows={props.recentFollowers.map((follower) => (
-              <TrendingUser key={follower.id} {...follower} />
+              <TrendingUser key={follower.id} isAuthenticatedUserFollowing {...follower} />
             ))}
           />
         )}

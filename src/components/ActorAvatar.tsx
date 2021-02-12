@@ -36,7 +36,7 @@ export const ActorAvatar = ({
         borderRadius: "50%",
         overflow: "hidden",
         flex: "none",
-        display: "flex",
+        // display: "flex",
       }}
     >
       <Avatar
