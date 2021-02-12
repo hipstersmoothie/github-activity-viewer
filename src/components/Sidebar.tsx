@@ -4,8 +4,10 @@ import React, { Suspense } from "react";
 import Link from "next/link";
 import { ZapIcon, PersonIcon, PeopleIcon } from "@primer/octicons-react";
 import { Flex, Sticky, theme, Tooltip } from "@primer/components";
+import { signOut } from "next-auth/client";
 
 import { FullPageSpinner } from "./Spinner";
+import { SignOutIcon } from "@primer/styled-octicons";
 
 const SideBarItem = ({
   active,
@@ -71,23 +73,32 @@ export const SidebarLayout = ({
           color: "gray.6",
         }}
       >
-        <Flex alignItems="start" flexDirection="column">
-          <SideBarItem label="Feed" href="/" active={active === "/"}>
-            <ZapIcon />
-          </SideBarItem>
+        <Flex flexDirection="column" justifyContent="space-between" height="100%">
+          <Flex alignItems="start" flexDirection="column">
+            <SideBarItem label="Feed" href="/" active={active === "/"}>
+              <ZapIcon />
+            </SideBarItem>
+            <SideBarItem
+              label="User Events"
+              href="/user"
+              active={active === "/user"}
+            >
+              <PersonIcon />
+            </SideBarItem>
+            <SideBarItem
+              label="Discover Followers"
+              href="/discover"
+              active={active === "/discover"}
+            >
+              <PeopleIcon />
+            </SideBarItem>
+          </Flex>
           <SideBarItem
-            label="User Events"
-            href="/user"
-            active={active === "/user"}
+            label="Signout"
+            href="/api/auth/signin"
+            onClick={() => signOut()}
           >
-            <PersonIcon />
-          </SideBarItem>
-          <SideBarItem
-            label="Discover Followers"
-            href="/discover"
-            active={active === "/discover"}
-          >
-            <PeopleIcon />
+            <SignOutIcon />
           </SideBarItem>
         </Flex>
       </Sticky>
