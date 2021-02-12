@@ -1,5 +1,6 @@
 import fetch from "isomorphic-fetch";
 import useSWR from "swr";
+import Router from "next/router";
 
 import { GetTrendingFollowersResponse } from "../utils/types";
 import { useWindowFocus } from "./useWindowFocus";
@@ -28,7 +29,8 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
 
       return fetch(url.toString())
         .then((res) => res.json())
-        .then((res: GetTrendingFollowersResponse) => res);
+        .then((res: GetTrendingFollowersResponse) => res)
+        .catch(() => Router.push("/api/auth/signin"));
     },
     {
       suspense: true,

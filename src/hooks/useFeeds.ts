@@ -1,5 +1,6 @@
 import fetch from "isomorphic-fetch";
 import useSWR from "swr";
+import Router from "next/router";
 
 import { EventMap, GetFeedResponse } from "../utils/types";
 import { useWindowFocus } from "./useWindowFocus";
@@ -12,7 +13,7 @@ export const useFeeds = (active: "following" | "user") => {
     `/api/get-feed/${active}`,
     async () => {
       const url = new URL(
-        `${process.env['SITE'] || "http://localhost:3000"}/api/get-feed`
+        `${process.env["SITE"] || "http://localhost:3000"}/api/get-feed`
       );
       url.search = new URLSearchParams({ active }).toString();
 
@@ -54,7 +55,8 @@ export const useFeeds = (active: "following" | "user") => {
             feeds: map,
             recentFollowers: res.recentFollowers,
           };
-        });
+        })
+        .catch(() => Router.push("/api/auth/signin"));
     },
     {
       suspense: true,
