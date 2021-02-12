@@ -1,3 +1,15 @@
+# v0.0.28 (Fri Feb 12 2021)
+
+#### ⚠️ Pushed to `master`
+
+- render markdown more like github ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.27 (Thu Feb 11 2021)
 
 #### ⚠️ Pushed to `master`
