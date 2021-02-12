@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { usePopper, Modifier } from "react-popper";
 import { Popover } from "@primer/components";
 import maxSize from "popper-max-size-modifier";

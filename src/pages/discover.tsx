@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import Head from "next/head";
 import { Flex, Grid, Text } from "@primer/components";
 import useLocalStorageState from "use-local-storage-state";

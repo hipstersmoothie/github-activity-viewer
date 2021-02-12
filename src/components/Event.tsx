@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { theme, Flex, BorderBox, Box, Text } from "@primer/components";
 
 import { GitHubFeedEvent } from "../utils/types";

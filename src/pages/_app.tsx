@@ -1,4 +1,3 @@
-import React from "react";
 import type { AppProps } from "next/app";
 import { BaseStyles } from "@primer/components";
 import { Provider } from "next-auth/client";

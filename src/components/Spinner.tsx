@@ -1,4 +1,3 @@
-import React from "react";
 import { theme, Flex, Text } from "@primer/components";
 
 export const Spinner = () => (

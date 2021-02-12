@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { DataContext } from "../contexts/data";
 import { Repo } from "../utils/types";
 import { queryId } from "../utils/queryId";

@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 import { Flex, Text, Link } from "@primer/components";
 import { StarIcon } from "@primer/styled-octicons";

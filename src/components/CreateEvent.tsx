@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Box } from "@primer/components";
 import { GitHubFeedEvent } from "../utils/types";
 

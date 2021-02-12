@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Link, Heading, Box, Text } from "@primer/components";
 import Markdown from "markdown-to-jsx";
 

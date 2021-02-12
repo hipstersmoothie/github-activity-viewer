@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 import { Box, Popover, Relative } from "@primer/components";
 import { ForkEventType } from "../utils/types";

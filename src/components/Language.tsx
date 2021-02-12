@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Flex, Box, Text } from "@primer/components";
 import { LanguageType } from "../utils/types";
 import { DEFAULT_LANGUAGE_COLOR } from "../utils/constants";

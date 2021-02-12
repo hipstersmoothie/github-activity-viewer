@@ -1,4 +1,3 @@
-import React from "react";
 import ago from "s-ago";
 
 import { Text } from "@primer/components";

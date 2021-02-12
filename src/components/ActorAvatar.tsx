@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 
 import { Avatar, Link, Tooltip } from "@primer/components";
 import { Actor } from "../utils/types";
