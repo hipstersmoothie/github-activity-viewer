@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { NextApiRequest } from "next";
-import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
+import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";
 import jwt from "next-auth/jwt";
 import dotenv from "dotenv";

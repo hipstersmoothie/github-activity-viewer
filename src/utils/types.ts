@@ -199,6 +199,7 @@ export type FeaturedTrendingUser = TrendingActor & {
 };
 
 export interface GetTrendingFollowersResponse {
+  suggested: TrendingActorData[];
   trendingInNetwork: TrendingActor[];
   featuredUser?: FeaturedTrendingUser;
 }

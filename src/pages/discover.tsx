@@ -7,6 +7,8 @@ import { useTrendingFollowers } from "../hooks/useTrendingFollowers";
 import { GridCard } from "../components/Event";
 import { TrendingUser } from "../components/TrendingUser";
 import { FeaturedUser } from "../components/FeaturedUser";
+import { Card } from "../components/Card";
+import { TrendingActor } from "../utils/types";
 
 const App = () => {
   const [previousFeaturedUser, previousFeaturedUserSet] = useLocalStorageState(
@@ -16,7 +18,7 @@ const App = () => {
       date: new Date("2021-02-10T17:31:19.456Z"),
     }
   );
-  const { featuredUser, trendingInNetwork } = useTrendingFollowers({
+  const { featuredUser, trendingInNetwork, suggested } = useTrendingFollowers({
     previousFeaturedUser,
   });
 
@@ -26,11 +28,53 @@ const App = () => {
     }
   }, [featuredUser, previousFeaturedUser.login, previousFeaturedUserSet]);
 
-  // TODO design
-  if (featuredUser) {
+  if (!featuredUser) {
     return (
-      <Flex>
-        <Text fontSize={20}>Uh oh!</Text>
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+      >
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Text as="h1" fontSize={40} mb={4} mt={0}>
+            Uh oh!
+          </Text>
+          <Text as="p" fontSize={24} mt={0} mb={6}>
+            You don't seem to have any followers in your network.
+          </Text>
+
+          <Card width="fit-content" px={6} pb={6}>
+            <Text
+              as="p"
+              fontSize={18}
+              mt={4}
+              mb={6}
+              color="gray.8"
+              textAlign="center"
+            >
+              Try following some of these popular accounts:
+            </Text>
+
+            <Flex
+              flexDirection="column"
+              width="fit-content"
+              mx="auto"
+              minWidth={250}
+            >
+              {suggested.map((user) => (
+                <TrendingUser
+                  {...(user as TrendingActor)}
+                  isAuthenticatedUserFollowing
+                />
+              ))}
+            </Flex>
+          </Card>
+        </Flex>
       </Flex>
     );
   }

@@ -10,14 +10,27 @@ import { CreateEvent } from "./CreateEvent";
 import { TrendingUser } from "./TrendingUser";
 
 export const GithubActivityViewer = (
-  props: EventMap & { pageHeight?: number; recentFollowers?: Actor[] }
+  props: EventMap & { recentFollowers?: Actor[] }
 ) => {
+  const leftColumnRef = React.useRef<HTMLDivElement>(null);
+  const [pageHeight, pageHeightSet] = React.useState<number>();
   const newRepoEvents = [
     ...props.CreateEvent.filter((e) => e.payload.ref_type === "repository"),
     ...props.PublicEvent,
   ].sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
+
+  React.useEffect(() => {
+    if (!leftColumnRef.current) {
+      pageHeightSet(document.body.clientHeight);
+      return;
+    }
+
+    pageHeightSet(
+      Math.min(document.body.clientHeight, leftColumnRef.current?.clientHeight)
+    );
+  }, []);
 
   return (
     <Grid
@@ -28,7 +41,7 @@ export const GithubActivityViewer = (
       alignItems="start"
       maxWidth={1600}
     >
-      <Grid gridGap={6}>
+      <Grid ref={leftColumnRef} gridGap={6}>
         <GridCard
           title="Releases"
           showCount={8}
@@ -54,7 +67,7 @@ export const GithubActivityViewer = (
         )}
       </Grid>
 
-      <WatchEvents events={props.WatchEvent} pageHeight={props.pageHeight} />
+      <WatchEvents events={props.WatchEvent} pageHeight={pageHeight} />
     </Grid>
   );
 };

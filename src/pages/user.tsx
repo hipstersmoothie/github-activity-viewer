@@ -9,15 +9,10 @@ const active = "user";
 
 const App = () => {
   const { feeds, repoInfo, user } = useFeeds(active);
-  const [clientHeight, clientHeightSet] = React.useState<number>();
-
-  React.useEffect(() => {
-    clientHeightSet(document.body.clientHeight);
-  }, []);
 
   return (
     <DataContext.Provider value={{ repoInfo, user }}>
-      <GithubActivityViewer pageHeight={clientHeight} {...feeds} />
+      <GithubActivityViewer {...feeds} />
     </DataContext.Provider>
   );
 };

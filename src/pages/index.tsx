@@ -9,19 +9,9 @@ const active = "following";
 
 const App = () => {
   const { feeds, repoInfo, user, recentFollowers } = useFeeds(active);
-  const [clientHeight, clientHeightSet] = React.useState<number>();
-
-  React.useEffect(() => {
-    clientHeightSet(document.body.clientHeight);
-  }, []);
-
   return (
     <DataContext.Provider value={{ repoInfo, user }}>
-      <GithubActivityViewer
-        pageHeight={clientHeight}
-        recentFollowers={recentFollowers}
-        {...feeds}
-      />
+      <GithubActivityViewer recentFollowers={recentFollowers} {...feeds} />
     </DataContext.Provider>
   );
 };

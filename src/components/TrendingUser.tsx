@@ -231,7 +231,7 @@ export const TrendingUser = (
             py={3}
             m={-4}
             mb={4}
-            sx={{ borderBottom: `1px solid ${theme['colors'].gray[2]}` }}
+            sx={{ borderBottom: `1px solid ${theme["colors"].gray[2]}` }}
           >
             <Box
               mr={3}
@@ -263,7 +263,7 @@ export const TrendingUser = (
         )}
       </PopperPopover>
 
-      {trendingUser.newFollowers && (
+      {(trendingUser.newFollowers || trendingUser.followers?.totalCount) && (
         <CounterLabel
           color={
             trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.8"
@@ -272,7 +272,8 @@ export const TrendingUser = (
             trendingUser.isAuthenticatedUserFollowing ? undefined : "blue.2"
           }
         >
-          {trendingUser.newFollowers.length}
+          {trendingUser.newFollowers?.length ||
+            trendingUser.followers?.totalCount}
         </CounterLabel>
       )}
     </Flex>

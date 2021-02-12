@@ -130,6 +130,82 @@ async function getRecentFollowers(
   }
 }
 
+async function getSuggestedUsers(graphqlWithAuth: typeof graphql) {
+  const query = gql`
+    {
+      sindresorhus: user(login: "sindresorhus") {
+        login
+        id
+        avatarUrl
+        bioHTML
+        company
+        location
+        name
+        websiteUrl
+        twitterUsername
+        followers {
+          totalCount
+        }
+        status {
+          emojiHTML
+          message
+        }
+      }
+      emmabostian: user(login: "emmabostian") {
+        login
+        id
+        avatarUrl
+        bioHTML
+        company
+        location
+        name
+        websiteUrl
+        twitterUsername
+        followers {
+          totalCount
+        }
+        status {
+          emojiHTML
+          message
+        }
+      }
+      rauchg: user(login: "rauchg") {
+        login
+        id
+        avatarUrl
+        bioHTML
+        company
+        location
+        name
+        websiteUrl
+        twitterUsername
+        followers {
+          totalCount
+        }
+        status {
+          emojiHTML
+          message
+        }
+      }
+    }
+  `;
+
+  try {
+    const suggestions = await graphqlWithAuth<
+      Record<string, TrendingActorData>
+    >(query);
+
+    return Object.values(suggestions).map((u) => ({
+      ...u,
+      display_login: u.login,
+      avatar_url: u.avatarUrl,
+    }));
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
 const getFeaturedUserInfo = async (
   graphqlWithAuth: typeof graphql,
   login: string
@@ -294,9 +370,14 @@ export default async (
   const trendingInNetwork = followersToConsider.filter(
     (f) => featuredUser && f.login !== featuredUser.login
   );
+  const suggested =
+    followersWithoutUser.length > 0
+      ? []
+      : await getSuggestedUsers(graphqlWithAuth);
 
   res.json({
     trendingInNetwork,
+    suggested,
     featuredUser: featuredUser
       ? {
           ...featuredUser,

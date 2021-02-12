@@ -34,12 +34,14 @@ export const Card = ({
   ...props
 }: {
   children: React.ReactNode;
-  title: React.ReactNode;
+  title?: React.ReactNode;
 } & Omit<React.ComponentProps<typeof BorderBox>, "title">) => (
   <BorderBox px={4} py={3} width="100%" backgroundColor="white" {...props}>
-    <Heading fontSize={4} fontWeight="bold" mb={5}>
-      {title}
-    </Heading>
+    {title && (
+      <Heading fontSize={4} fontWeight="bold" mb={5}>
+        {title}
+      </Heading>
+    )}
 
     {children}
   </BorderBox>
