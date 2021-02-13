@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@octokit/graphql": "^4.5.1",
+    "@octokit/graphql-schema": "^10.22.0",
     "@octokit/rest": "^18.0.0",
     "@popperjs/core": "^2.6.0",
     "@primer/components": "^23.0.4",

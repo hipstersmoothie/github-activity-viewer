@@ -19,7 +19,7 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
     async () => {
       const url = new URL(
         `${
-          process.env['SITE'] || "http://localhost:3000"
+          process.env["SITE"] || "http://localhost:3000"
         }/api/get-trending-followers`
       );
       url.search = new URLSearchParams({
@@ -27,10 +27,14 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
         previousFeaturedUserDate: options.previousFeaturedUser.date.toString(),
       }).toString();
 
-      return fetch(url.toString())
-        .then((res) => res.json())
-        .then((res: GetTrendingFollowersResponse) => res)
-        .catch(() => Router.push("/api/auth/signin"));
+      try {
+        const req = await fetch(url.toString());
+        const json: GetTrendingFollowersResponse = await req.json();
+
+        return json;
+      } catch (error) {
+        Router.push("/api/auth/signin");
+      }
     },
     {
       suspense: true,

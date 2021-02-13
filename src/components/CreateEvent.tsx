@@ -1,4 +1,3 @@
-import { Box } from "@primer/components";
 import { GitHubFeedEvent } from "../utils/types";
 
 import { ActorLink, RepoLink } from "./HomePageLink";

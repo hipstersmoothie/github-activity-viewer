@@ -17,46 +17,48 @@ export const useFeeds = (active: "following" | "user") => {
       );
       url.search = new URLSearchParams({ active }).toString();
 
-      return fetch(url.toString())
-        .then((res) => res.json())
-        .then((res: GetFeedResponse) => {
-          const map: EventMap = {
-            ReleaseEvent: [],
-            WatchEvent: [],
-            PushEvent: [],
-            PullRequestEvent: [],
-            PullRequestReviewCommentEvent: [],
-            CreateEvent: [],
-            CommitCommentEvent: [],
-            IssueCommentEvent: [],
-            IssuesEvent: [],
-            ForkEvent: [],
-            DeleteEvent: [],
-            PublicEvent: [],
-            MemberEvent: [],
-          };
+      try {
+        const req = await fetch(url.toString());
+        const json: GetFeedResponse = await req.json();
 
-          res.events.forEach((event) => {
-            if (IGNORE_USERS.includes(event.actor.display_login)) {
-              return;
-            }
+        const map: EventMap = {
+          ReleaseEvent: [],
+          WatchEvent: [],
+          PushEvent: [],
+          PullRequestEvent: [],
+          PullRequestReviewCommentEvent: [],
+          CreateEvent: [],
+          CommitCommentEvent: [],
+          IssueCommentEvent: [],
+          IssuesEvent: [],
+          ForkEvent: [],
+          DeleteEvent: [],
+          PublicEvent: [],
+          MemberEvent: [],
+        };
 
-            if (map[event.type]) {
-              map[event.type].push(event);
-            } else {
-              // eslint-disable-next-line no-console
-              console.log("Missing event bucket: ", event.type);
-            }
-          });
+        json.events.forEach((event) => {
+          if (IGNORE_USERS.includes(event.actor.display_login)) {
+            return;
+          }
 
-          return {
-            repoInfo: res.repoInfo,
-            user: res.user,
-            feeds: map,
-            recentFollowers: res.recentFollowers,
-          };
-        })
-        .catch(() => Router.push("/api/auth/signin"));
+          if (map[event.type]) {
+            map[event.type].push(event);
+          } else {
+            // eslint-disable-next-line no-console
+            console.log("Missing event bucket: ", event.type);
+          }
+        });
+
+        return {
+          repoInfo: json.repoInfo,
+          user: json.user,
+          feeds: map,
+          recentFollowers: json.recentFollowers,
+        };
+      } catch (error) {
+        Router.push("/api/auth/signin");
+      }
     },
     {
       suspense: true,
