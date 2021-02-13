@@ -45,7 +45,7 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
             size={180}
             sx={{ borderRadius: "100%" }}
             alt={`${props.name || props.login} Profile`}
-            src={props.avatarUrl}
+            src={props.avatar_url}
             mr={5}
           />
           <Flex flex={1} flexDirection="column">

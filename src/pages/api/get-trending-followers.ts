@@ -2,15 +2,17 @@ import { RestEndpointMethodTypes } from "@octokit/rest";
 import { NextApiRequest, NextApiResponse } from "next";
 import { graphql } from "@octokit/graphql";
 
-import {
-  GetTrendingFollowersResponse,
-  PinnedAndContributionsItemsResponse,
-  TrendingActor,
-  TrendingActorData,
-} from "../../utils/types";
+import { GetTrendingFollowersResponse, TrendingActor } from "../../utils/types";
 import { gql } from "../../utils/gql";
 import { authenticateOctokit } from "../../utils/octokit";
 import { userQueryId } from "../../utils/queryId";
+import { SuggestedUsers } from "../../queries/suggested-users";
+import {
+  SuggestedUsersQuery,
+  FeaturedUserQuery,
+  RecentFollowingQuery,
+} from "../../queries/gen-types";
+import { FeaturedUser } from "../../queries/featured-user";
 
 async function getRecentFollowers(
   graphqlWithAuth: typeof graphql,
@@ -49,17 +51,9 @@ async function getRecentFollowers(
   const fullQuery = `\n{${query}}\n`;
 
   try {
-    const followingData = await graphqlWithAuth<
-      Record<
-        string,
-        {
-          following: {
-            totalCount: number;
-            nodes: TrendingActorData[];
-          };
-        }
-      >
-    >(fullQuery);
+    const followingData = await graphqlWithAuth<RecentFollowingQuery>(
+      fullQuery
+    );
 
     const trendingActors: TrendingActor[] = [];
 
@@ -94,14 +88,11 @@ async function getRecentFollowers(
           trendingActor.newFollowers.push({
             ...actor,
             weight,
-            display_login: actor.login,
           });
         } else {
           trendingActors.push({
             ...user,
             weight: 1,
-            avatar_url: user.avatarUrl,
-            display_login: user.login,
             // TODO LOOK AT THIS LOGIC
             isAuthenticatedUserFollowing: following.some(
               (f) => f.login === user.login
@@ -110,7 +101,6 @@ async function getRecentFollowers(
               {
                 ...actor,
                 weight,
-                display_login: actor.login,
               },
             ],
           });
@@ -131,75 +121,12 @@ async function getRecentFollowers(
 }
 
 async function getSuggestedUsers(graphqlWithAuth: typeof graphql) {
-  const query = gql`
-    {
-      sindresorhus: user(login: "sindresorhus") {
-        login
-        id
-        avatarUrl
-        bioHTML
-        company
-        location
-        name
-        websiteUrl
-        twitterUsername
-        followers {
-          totalCount
-        }
-        status {
-          emojiHTML
-          message
-        }
-      }
-      emmabostian: user(login: "emmabostian") {
-        login
-        id
-        avatarUrl
-        bioHTML
-        company
-        location
-        name
-        websiteUrl
-        twitterUsername
-        followers {
-          totalCount
-        }
-        status {
-          emojiHTML
-          message
-        }
-      }
-      rauchg: user(login: "rauchg") {
-        login
-        id
-        avatarUrl
-        bioHTML
-        company
-        location
-        name
-        websiteUrl
-        twitterUsername
-        followers {
-          totalCount
-        }
-        status {
-          emojiHTML
-          message
-        }
-      }
-    }
-  `;
-
   try {
-    const suggestions = await graphqlWithAuth<
-      Record<string, TrendingActorData>
-    >(query);
+    const suggestions = await graphqlWithAuth<SuggestedUsersQuery>(
+      SuggestedUsers
+    );
 
-    return Object.values(suggestions).map((u) => ({
-      ...u,
-      display_login: u.login,
-      avatar_url: u.avatarUrl,
-    }));
+    return Object.values(suggestions);
   } catch (error) {
     console.log(error);
     return [];
@@ -210,94 +137,10 @@ const getFeaturedUserInfo = async (
   graphqlWithAuth: typeof graphql,
   login: string
 ) => {
-  const query = gql`
-    {
-      user(login: "${login}") {
-        contributionsCollection {
-          pullRequestContributions(orderBy: {direction: DESC}, first: 100) {
-            edges {
-              node {
-                pullRequest {
-                  title
-                  url
-                  bodyHTML
-                  number
-                  state
-                  labels(first: 10) {
-                    nodes {
-                      name
-                      color
-                      description
-                    }
-                  }
-                  repository {
-                    description
-                    nameWithOwner
-                    url
-                    stargazerCount
-                    forkCount
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        repositories(orderBy: {field: STARGAZERS, direction: DESC}, first: 6, ownerAffiliations: OWNER) {
-          edges {
-            node {
-              name
-              url
-              description
-              stargazerCount
-              forkCount
-              languages(first: 1) {
-                edges {
-                  node {
-                    name
-                    color
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        pinnedItems(first: 6) {
-          edges {
-            node {
-              ... on Gist {
-                name
-                url
-                description
-                stargazerCount
-              }
-              ... on Repository {
-                name
-                url
-                description
-                stargazerCount
-                forkCount
-                languages(first: 1) {
-                  edges {
-                    node {
-                      name
-                      color
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-
   try {
-    const data = await graphqlWithAuth<{
-      user: PinnedAndContributionsItemsResponse;
-    }>(query);
+    const data = await graphqlWithAuth<FeaturedUserQuery>(FeaturedUser, {
+      variables: { login },
+    });
 
     const seenRepos = new Set<string>();
     const featuredRepos =

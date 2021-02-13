@@ -38,7 +38,7 @@ export const useFeeds = (active: "following" | "user") => {
         };
 
         json.events.forEach((event) => {
-          if (IGNORE_USERS.includes(event.actor.display_login)) {
+          if (IGNORE_USERS.includes(event.actor.login)) {
             return;
           }
 

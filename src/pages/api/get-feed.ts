@@ -5,13 +5,16 @@ import {
   GitHubFeedEvent,
   Repo,
   GetFeedResponse,
-  RepoInfoMap,
   EventType,
-  Actor,
 } from "../../utils/types";
 import { queryId } from "../../utils/queryId";
 import { authenticateOctokit } from "../../utils/octokit";
 import { gql } from "../../utils/gql";
+import { RecentFollowers } from "../../queries/recent-followers";
+import {
+  RecentFollowersQuery,
+  RepoDescriptionQuery,
+} from "../../queries/gen-types";
 
 async function getRepoInfo(
   graphqlWithAuth: typeof graphql,
@@ -62,7 +65,7 @@ async function getRepoInfo(
 
   const fullQuery = `\n{${query}}\n`;
   try {
-    const result = await graphqlWithAuth<RepoInfoMap>(fullQuery);
+    const result = await graphqlWithAuth<RepoDescriptionQuery>(fullQuery);
     return result;
   } catch (error) {
     return error.data;
@@ -73,46 +76,17 @@ async function getRecentFollowers(
   graphqlWithAuth: typeof graphql,
   login: string
 ) {
-  const query = gql`
-    {
-      user(login: "${login}") {
-        followers(first: 10) {
-          nodes {
-            login
-            id
-            avatarUrl
-            login
-            id
-            avatarUrl
-            bioHTML
-            company
-            location
-            name
-            websiteUrl
-            twitterUsername
-            followers {
-              totalCount
-            }
-            status {
-							emojiHTML
-              message
-            }
-          }
-        }
-      }
-    }
-  `;
-
   try {
-    const result = await graphqlWithAuth<{
-      user: { followers: { nodes: Actor[] } };
-    }>(query);
-    return result.user.followers.nodes.map((node) => ({
-      ...node,
-      display_login: node.login,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      avatar_url: (node as any).avatarUrl,
-    }));
+    const result = await graphqlWithAuth<RecentFollowersQuery>(
+      RecentFollowers,
+      {
+        variables: {
+          login,
+        },
+      }
+    );
+
+    return result.user.followers.nodes;
   } catch (error) {
     return error.data;
   }

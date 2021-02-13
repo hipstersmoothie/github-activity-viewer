@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Grid } from "@primer/components";
 
-import { Actor, EventMap, ReleaseEventType } from "../utils/types";
+import { EventMap, ReleaseEventType, RecentFollower } from "../utils/types";
 import { WatchEvents } from "./WatchEvents";
 import { GridCard } from "./Event";
 import { ReleaseEvent } from "./ReleaseEvent";
@@ -10,7 +10,7 @@ import { CreateEvent } from "./CreateEvent";
 import { TrendingUser } from "./TrendingUser";
 
 export const GithubActivityViewer = (
-  props: EventMap & { recentFollowers?: Actor[] }
+  props: EventMap & { recentFollowers?: RecentFollower[] }
 ) => {
   const leftColumnRef = React.useRef<HTMLDivElement>(null);
   const [pageHeight, pageHeightSet] = React.useState<number>();

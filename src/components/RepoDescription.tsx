@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Flex, Text, AvatarStack } from "@primer/components";
-import { Actor, ExtendedRepo } from "../utils/types";
+import { User, ExtendedRepo, Repo } from "../utils/types";
 import { RepoLink } from "./HomePageLink";
 import { renderEmoji } from "../utils/renderEmoji";
 import { ActorAvatar } from "./ActorAvatar";
@@ -13,11 +13,13 @@ export const RepoDescription = ({
   users = [],
   ...props
 }: {
-  repo: ExtendedRepo;
-  users?: Actor[];
+  repo: ExtendedRepo | Repo;
+  users?: User[];
 } & React.ComponentProps<typeof Flex>) => {
   const hasRepoInfo =
-    repo.languages?.edges[0] || repo.stargazers || users.length > 0;
+    ("languages" in repo && repo.languages.edges[0]) ||
+    ("stargazers" in repo && repo.stargazers) ||
+    users.length > 0;
 
   return (
     <Flex flexDirection="column" {...props}>
@@ -32,10 +34,10 @@ export const RepoDescription = ({
       {hasRepoInfo && (
         <Flex alignItems="center" justifyContent="space-between">
           <Flex>
-            {repo.languages?.edges[0] && (
+            {"languages" in repo && repo.languages.edges[0] && (
               <Language language={repo.languages.edges[0]} mr={4} />
             )}
-            {repo.stargazers && (
+            {"stargazers" in repo && repo.stargazers && (
               <StarCount
                 stargazers={repo.stargazers.totalCount}
                 repo={repo.url}

@@ -1,18 +1,14 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
+import {
+  FeaturedUserQuery,
+  RecentFollowersQuery,
+  RepoDescriptionQuery,
+  SuggestedUsersQuery,
+} from "../queries/gen-types";
 
-export interface Actor {
-  id: number;
-  login: string;
-  display_login: string;
-  avatar_url: string;
-}
-
-export interface Repo {
-  id: number;
-  name: string;
-  full_name: string;
-  url: string;
-}
+type Org = RestEndpointMethodTypes["orgs"]["get"]["response"]["data"];
+export type Repo = RestEndpointMethodTypes["repos"]["get"]["response"]["data"];
+export type User = RestEndpointMethodTypes["users"]["listFollowersForUser"]["response"]["data"][number];
 
 export interface Payload {
   ref: string;
@@ -20,13 +16,6 @@ export interface Payload {
   master_branch: string;
   description: string;
   pusher_type: string;
-}
-
-export interface Org {
-  id: number;
-  login: string;
-  url: string;
-  avatar_url: string;
 }
 
 export type EventType =
@@ -47,7 +36,7 @@ export type EventType =
 interface BaseFeedEvent {
   id: string;
   type: EventType;
-  actor: Actor;
+  actor: User;
   repo: Repo;
   payload: Payload;
   public: boolean;
@@ -73,13 +62,7 @@ export type ReleaseEventType = BaseFeedEvent & {
   type: "ReleaseEvent";
   payload: {
     action: "published";
-    release: {
-      name: string;
-      tag_name: string;
-      published_at: string;
-      html_url: string;
-      body: string;
-    };
+    release: RestEndpointMethodTypes["repos"]["getRelease"]["response"]["data"];
   };
 };
 
@@ -89,117 +72,39 @@ export type GitHubFeedEvent =
   | WatchEventType
   | ReleaseEventType;
 
-export interface LanguageType {
-  node: { name: string; color: string };
-}
-
-export interface ExtendedRepoData {
-  description?: string;
-  url?: string;
-  updatedAt?: string;
-  languages?: {
-    edges: LanguageType[];
-  };
-  stargazers?: {
-    totalCount: number;
-  };
-}
-
-export type ExtendedRepo = Repo & ExtendedRepoData;
-
-export type RepoInfoMap = Record<string, ExtendedRepoData>;
+export type EventMap = Record<EventType, GitHubFeedEvent[]>;
+export type ExtendedRepo = RepoDescriptionQuery["repository"];
+export type LanguageType = ExtendedRepo["languages"]["edges"][number];
+export type RepoInfoMap = Record<string, ExtendedRepo>;
+export type RecentFollower = RecentFollowersQuery["user"]["followers"]["nodes"][number];
 
 export interface GetFeedResponse {
   events: GitHubFeedEvent[];
   repoInfo: RepoInfoMap;
-  user: RestEndpointMethodTypes["users"]["getAuthenticated"]["response"]["data"];
-  recentFollowers: Actor[];
+  user: User;
+  recentFollowers: RecentFollower[];
 }
 
-export interface TrendingActorData {
-  login: string;
-  id: number;
-  avatarUrl: string;
-  name?: string;
-  bioHTML?: string;
-  company?: string;
-  websiteUrl?: string;
-  location?: string;
-  twitterUsername?: string;
-  followers: {
-    totalCount: number;
-  };
-  status?: {
-    emojiHTML: string;
-    message: string;
-  };
-}
-
-export interface TrendingActor extends Actor, TrendingActorData {
-  isAuthenticatedUserFollowing: boolean;
-  newFollowers: (Actor & { weight: number })[];
+interface Weighted {
   weight: number;
 }
 
-export type EventMap = Record<EventType, GitHubFeedEvent[]>;
-
-export interface PinnedItemBase {
-  name: string;
-  url: string;
-  description?: string;
-  stargazerCount: number;
-}
-
-export interface PinnedItemRepo extends PinnedItemBase {
-  forkCount: number;
-  languages: {
-    edges: LanguageType[];
+export type TrendingActor = RecentFollower &
+  Weighted & {
+    isAuthenticatedUserFollowing: boolean;
+    newFollowers: (User & Weighted)[];
   };
-}
-
-export interface RecentPullRequest {
-  title: string;
-  url: string;
-  bodyHTML: string;
-  number: number;
-  state: 'MERGED' | 'CLOSED';
-  labels: {
-    nodes: {
-      name: string;
-      color: string;
-      description?: string;
-    }[];
-  };
-  repository: {
-    description?: string;
-    nameWithOwner: string;
-    url: string;
-    stargazerCount: number;
-    forkCount: number;
-  };
-}
-
-export interface PinnedAndContributionsItemsResponse {
-  pinnedItems: { edges: { node: PinnedItemBase | PinnedItemRepo }[] };
-  repositories: { edges: { node: PinnedItemRepo }[] };
-  contributionsCollection: {
-    pullRequestContributions: {
-      edges: {
-        node: {
-          pullRequest: RecentPullRequest;
-        };
-      }[];
-    };
-  };
-}
 
 export type FeaturedTrendingUser = TrendingActor & {
-  pinnedItems: (PinnedItemBase | PinnedItemRepo)[];
-  recentContributions: RecentPullRequest[];
+  pinnedItems: (
+    | FeaturedUserQuery["user"]["pinnedItems"]["edges"][number]["node"]
+    | FeaturedUserQuery["user"]["repositories"]["edges"][number]["node"]
+  )[];
+  recentContributions: FeaturedUserQuery["user"]["contributionsCollection"]["pullRequestContributions"]["edges"][number]["node"]["pullRequest"][];
 };
 
 export interface GetTrendingFollowersResponse {
-  suggested: TrendingActorData[];
+  suggested: SuggestedUsersQuery[keyof SuggestedUsersQuery][];
   trendingInNetwork: TrendingActor[];
   featuredUser?: FeaturedTrendingUser;
 }

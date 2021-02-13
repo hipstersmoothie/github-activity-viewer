@@ -12,7 +12,7 @@ import {
 } from "@primer/components";
 
 import { CardDivider } from "./Card";
-import { GitHubFeedEvent, Repo, Actor, LanguageType } from "../utils/types";
+import { GitHubFeedEvent, Repo, User, LanguageType } from "../utils/types";
 import { DEFAULT_LANGUAGE_COLOR } from "../utils/constants";
 import { DataContext } from "../contexts/data";
 import { queryId } from "../utils/queryId";
@@ -129,7 +129,7 @@ export const WatchEvents = ({
 >) => {
   const { repoInfo } = React.useContext(DataContext);
   const [languageFilter, languageFilterSet] = React.useState<LanguageType>();
-  const groupedByProject = new Map<string, Actor[]>();
+  const groupedByProject = new Map<string, User[]>();
   const projects: Repo[] = [];
   const languages: LanguageType[] = [];
   const lastSeen = localStorage.getItem("github-activity-last-seen");
@@ -172,7 +172,7 @@ export const WatchEvents = ({
 
   const storageId = (repo: Repo) => {
     const users = groupedByProject.get(repo.name) || [];
-    const logins = users.map((u) => u.display_login);
+    const logins = users.map((u) => u.login);
 
     return `${repo.id}-${logins.join("-")}`;
   };

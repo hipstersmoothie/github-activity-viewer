@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link } from "@primer/components";
-import { Repo, Actor } from "../utils/types";
+import { Repo, User } from "../utils/types";
 
 const HomePageLink = (props: React.ComponentProps<typeof Link>) => (
   <Link
@@ -16,17 +16,20 @@ const HomePageLink = (props: React.ComponentProps<typeof Link>) => (
   />
 );
 
-export const ActorLink = (props: Actor) => (
+export const ActorLink = (props: Pick<User, "login">) => (
   <HomePageLink target="_blank" href={`https://github.com/${props.login}`}>
     {props.login}
   </HomePageLink>
 );
 
 interface RepoLinkProps extends React.ComponentProps<typeof Link> {
-  repo: Repo;
+  repo: Partial<Pick<Repo, "full_name" | "name">>;
 }
 
-export const RepoLink = ({ repo: { full_name, name }, ...props }: RepoLinkProps) => (
+export const RepoLink = ({
+  repo: { full_name, name },
+  ...props
+}: RepoLinkProps) => (
   <HomePageLink
     {...props}
     target="_blank"

@@ -62,9 +62,11 @@ const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
 };
 
 export const TrendingUserProfileInfo = (
-  props: Pick<
-    TrendingActor,
-    "company" | "location" | "twitterUsername" | "websiteUrl"
+  props: Partial<
+    Pick<
+      TrendingActor,
+      "company" | "location" | "twitterUsername" | "websiteUrl"
+    >
   >
 ) => {
   return (
@@ -201,16 +203,23 @@ export const TrendingUserFollowerInfo = (
 };
 
 type OptionalUserData =
+  | "websiteUrl"
+  | "twitterUsername"
+  | "status"
+  | "bioHTML"
+  | "company"
+  | "location"
   | "isAuthenticatedUserFollowing"
   | "newFollowers"
   | "followers"
-  | "weight"
-  | "avatarUrl";
+  | "weight";
 
 export const TrendingUser = (
   trendingUser: Partial<Pick<TrendingActor, OptionalUserData>> &
     Omit<TrendingActor, OptionalUserData> &
-    Pick<PopperPopoverProps, "placement">
+    Pick<PopperPopoverProps, "placement"> & {
+      id?: string | number;
+    }
 ) => {
   return (
     <Flex alignItems="baseline" justifyContent="space-between" mb={3}>

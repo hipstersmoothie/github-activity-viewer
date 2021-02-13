@@ -1,14 +1,14 @@
 import * as React from "react";
 
 import { Avatar, Link, Tooltip } from "@primer/components";
-import { Actor } from "../utils/types";
+import { User } from "../utils/types";
 
 interface ActorAvatarProps
   extends Omit<React.ComponentProps<typeof Link>, "href"> {
   /** The size of the avatar */
   size?: number;
   /** The user to display an avatar for */
-  actor: Actor;
+  actor: Pick<User, "avatar_url" | "login">;
   showTooltip?: boolean;
 }
 
@@ -23,11 +23,7 @@ export const ActorAvatar = ({
   ...linkProps
 }: ActorAvatarProps) => {
   const avatar = (
-    <Avatar
-      src={actor.avatar_url}
-      alt={`@${actor.display_login}`}
-      size={size}
-    />
+    <Avatar src={actor.avatar_url} alt={`@${actor.login}`} size={size} />
   );
 
   return (
@@ -37,11 +33,11 @@ export const ActorAvatar = ({
       sx={sx}
       target="_blank"
       rel="noopener"
-      href={`https://github.com/${actor.display_login}`}
+      href={`https://github.com/${actor.login}`}
       style={{
         ...style,
         borderRadius: "50%",
-        overflow: 'visible',
+        overflow: "visible",
         flex: "none",
         display: "flex",
       }}
@@ -49,7 +45,7 @@ export const ActorAvatar = ({
       {showTooltip ? (
         <Tooltip
           aria-label={actor.login}
-          sx={{ borderRadius: "50%", display: "flex", overflow: 'visible' }}
+          sx={{ borderRadius: "50%", display: "flex", overflow: "visible" }}
         >
           {avatar}
         </Tooltip>

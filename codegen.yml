@@ -1,0 +1,11 @@
+schema: ./node_modules/@octokit/graphql-schema/schema.graphql
+generates:
+  src/queries/gen-types.ts:
+    documents: src/queries/*.ts
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      maybeValue: T
+      avoidOptionals: true
+      skipTypename: true
