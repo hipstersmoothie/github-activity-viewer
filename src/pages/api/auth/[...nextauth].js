@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
 
+console.log('SITE env var: ', process.env.SITE)
+
 const options = {
   site: process.env.SITE || "http://localhost:3000",
 
