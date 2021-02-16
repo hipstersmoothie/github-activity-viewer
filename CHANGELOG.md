@@ -1,3 +1,15 @@
+# v0.0.31 (Tue Feb 16 2021)
+
+#### ⚠️ Pushed to `master`
+
+- fix build ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.30 (Tue Feb 16 2021)
 
 #### ⚠️ Pushed to `master`
