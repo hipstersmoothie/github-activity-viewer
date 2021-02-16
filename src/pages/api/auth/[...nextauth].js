@@ -2,8 +2,6 @@ import nextAuth from "next-auth";
 import Providers from "next-auth/providers";
 
 const options = {
-  site: process.env.SITE || "http://localhost:3000",
-
   secret: process.env.GITHUB_SECRET,
 
   providers: [
@@ -28,7 +26,5 @@ const options = {
 };
 
 export default (req, res) => {
-  console.log("SITE env var: ", process.env.SITE);
-  console.log("options.site: ", options.site);
   return nextAuth(req, res, options);
 };
