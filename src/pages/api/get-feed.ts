@@ -39,9 +39,6 @@ async function getRepoInfo(
     }
   });
 
-  const [, args] =
-    RepoDescription.match(/query \S+ {((.|\s)*)}/) || (["", ""] as const);
-
   const query = repos
     .map((repo) => {
       const [owner, name] = repo.name.split("/") as [string, string];

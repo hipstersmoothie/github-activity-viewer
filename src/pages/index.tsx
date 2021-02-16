@@ -9,6 +9,8 @@ const active = "following";
 const App = () => {
   const { feeds, repoInfo, user, recentFollowers } = useFeeds(active);
 
+  console.log({feeds})
+
   return (
     <DataContext.Provider value={{ repoInfo, user }}>
       <GithubActivityViewer recentFollowers={recentFollowers} {...feeds} />
