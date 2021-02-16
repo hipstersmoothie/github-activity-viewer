@@ -1,3 +1,28 @@
+# v0.0.30 (Tue Feb 16 2021)
+
+#### ⚠️ Pushed to `master`
+
+- fix bugs ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- refactoring types ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix build errors ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- redirect to login on backend errors ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add sign out button ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix avatar tooltips ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix layout ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- portal the flyouts ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- fix avatar stack ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- react 17 no longer requires the top level import :tada: ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- move height math to GitHubEventViewer + design no following network screen ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- upgrade next ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- upgrade eslint ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- strict mode ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.29 (Fri Feb 12 2021)
 
 #### ⚠️ Pushed to `master`
