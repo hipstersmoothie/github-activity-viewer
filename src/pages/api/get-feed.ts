@@ -15,7 +15,6 @@ import {
   RecentFollowersQuery,
   RepoDescriptionQuery,
 } from "../../queries/gen-types";
-import { RepoDescription } from "../../queries/repo-description";
 
 async function getRepoInfo(
   graphqlWithAuth: typeof graphql,
