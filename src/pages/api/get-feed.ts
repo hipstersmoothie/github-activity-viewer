@@ -15,6 +15,7 @@ import {
   RecentFollowersQuery,
   RepoDescriptionQuery,
 } from "../../queries/gen-types";
+import { RepoDescription } from "../../queries/repo-description";
 
 async function getRepoInfo(
   graphqlWithAuth: typeof graphql,
@@ -37,6 +38,9 @@ async function getRepoInfo(
       repos.push(event.repo);
     }
   });
+
+  const [, args] =
+    RepoDescription.match(/query \S+ {((.|\s)*)}/) || (["", ""] as const);
 
   const query = repos
     .map((repo) => {
@@ -63,12 +67,17 @@ async function getRepoInfo(
     })
     .join("\n");
 
-  const fullQuery = `\n{${query}}\n`;
   try {
-    const result = await graphqlWithAuth<RepoDescriptionQuery>(fullQuery);
+    const result = await graphqlWithAuth<RepoDescriptionQuery>(`
+      {
+        ${query}
+      }
+    `);
+
     return result;
   } catch (error) {
-    return error.data;
+    console.log(error.message)
+    return error.data || {};
   }
 }
 
@@ -79,16 +88,13 @@ async function getRecentFollowers(
   try {
     const result = await graphqlWithAuth<RecentFollowersQuery>(
       RecentFollowers,
-      {
-        variables: {
-          login,
-        },
-      }
+      { login }
     );
 
     return result.user.followers.nodes;
   } catch (error) {
-    return error.data;
+    console.log(error)
+    return [];
   }
 }
 

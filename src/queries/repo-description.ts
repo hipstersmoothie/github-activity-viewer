@@ -1,8 +1,8 @@
 import { gql } from "../utils/gql";
 
 export const RepoDescription = gql`
-  query RepoDescription {
-    repository(owner: "$owner: String!", name: "$name: String!") {
+  query RepoDescription($owner: String!, $name: String!) {
+    repository(owner: $owner, name: $name) {
       name
       description
       url

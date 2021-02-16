@@ -1,8 +1,8 @@
 import { gql } from "../utils/gql";
 
 export const FeaturedUser = gql`
-  query FeaturedUser {
-    user(login: "$login: String!") {
+  query FeaturedUser($login: String!) {
+    user(login: $login) {
       contributionsCollection {
         pullRequestContributions(orderBy: { direction: DESC }, first: 100) {
           edges {

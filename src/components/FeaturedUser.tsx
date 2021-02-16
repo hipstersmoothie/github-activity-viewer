@@ -37,6 +37,8 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
     </Link>
   );
 
+  console.log(props)
+
   return (
     <Card title="Featured User" width="100%">
       <Box pr={4}>

@@ -1,8 +1,8 @@
 import { gql } from "../utils/gql";
 
 export const RecentFollowers = gql`
-  query RecentFollowers {
-    user(login: "$login: String!") {
+  query RecentFollowers($login: String!) {
+    user(login: $login) {
       followers(first: 10) {
         nodes {
           login

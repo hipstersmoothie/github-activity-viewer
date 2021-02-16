@@ -200,6 +200,11 @@ export const WatchEvents = ({
 
   const RepoRenderer = (repo: Repo) => {
     const users = groupedByProject.get(repo.name) || [];
+    const info = repoInfo[queryId(repo)];
+
+    if (!info) {
+      return null;
+    }
 
     return (
       <>
@@ -212,7 +217,7 @@ export const WatchEvents = ({
         {lastSeen === storageId(repo) && <Section>Seen previously...</Section>}
 
         <RepoDescription
-          repo={{ ...repo, ...repoInfo[queryId(repo)] }}
+          repo={{ ...repo, ...info }}
           users={users}
           mb={4}
         />

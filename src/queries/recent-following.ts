@@ -1,8 +1,8 @@
 import { gql } from "../utils/gql";
 
 export const RecentFollowing = gql`
-  query RecentFollowing {
-    user(login: "$login: String!") {
+  query RecentFollowing($login: String!) {
+    user(login: $login) {
       following(first: 3) {
         totalCount
         nodes {

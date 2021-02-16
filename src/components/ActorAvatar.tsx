@@ -39,7 +39,6 @@ export const ActorAvatar = ({
         borderRadius: "50%",
         overflow: "visible",
         flex: "none",
-        display: "flex",
       }}
     >
       {showTooltip ? (

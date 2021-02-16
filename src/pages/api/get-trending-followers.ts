@@ -27,7 +27,7 @@ async function getRecentFollowers(
           nodes {
             login
             id
-            avatarUrl
+            avatar_url: avatarUrl
             bioHTML
             company
             location
@@ -139,7 +139,7 @@ const getFeaturedUserInfo = async (
 ) => {
   try {
     const data = await graphqlWithAuth<FeaturedUserQuery>(FeaturedUser, {
-      variables: { login },
+      login,
     });
 
     const seenRepos = new Set<string>();
@@ -164,6 +164,7 @@ const getFeaturedUserInfo = async (
     };
   } catch (error) {
     console.log(error);
+
     return {
       pinnedItems: [],
       recentContributions: [],

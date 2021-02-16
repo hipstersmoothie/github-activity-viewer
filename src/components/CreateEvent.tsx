@@ -8,6 +8,7 @@ import PopperPopover from "./Popover";
 
 export const CreateEvent = ({ event }: { event: GitHubFeedEvent }) => {
   const repo = useRepoInfo(event.repo);
+ 
   const trigger = (
     <Event event={event}>
         <ActorLink {...event.actor} />{" "}
