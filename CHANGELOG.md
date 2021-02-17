@@ -1,3 +1,15 @@
+# v0.0.35 (Wed Feb 17 2021)
+
+#### ⚠️ Pushed to `master`
+
+- add fork events to new repo card ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.34 (Wed Feb 17 2021)
 
 #### ⚠️ Pushed to `master`
