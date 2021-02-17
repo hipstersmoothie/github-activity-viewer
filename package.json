@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "echo 'Site: ' $SITE && next build",
+    "build": "echo 'Site: ' $NEXTAUTH_URL && next build",
     "start": "next start",
     "release": "auto shipit -vv",
     "type-check": "tsc",
