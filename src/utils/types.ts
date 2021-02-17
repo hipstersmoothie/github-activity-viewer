@@ -66,6 +66,15 @@ export type ReleaseEventType = BaseFeedEvent & {
   };
 };
 
+export type IssueCommentEventType = BaseFeedEvent & {
+  type: "IssueCommentEvent";
+  payload: {
+    action: "created";
+    comment: RestEndpointMethodTypes["issues"]["getComment"]["response"]["data"];
+    issue: RestEndpointMethodTypes["issues"]["get"]["response"]["data"];
+  };
+};
+
 export type GitHubFeedEvent =
   | BaseFeedEvent
   | ForkEventType

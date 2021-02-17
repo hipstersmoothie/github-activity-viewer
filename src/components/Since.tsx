@@ -2,6 +2,11 @@ import ago from "s-ago";
 
 import { Text } from "@primer/components";
 
-export const Since = ({ date }: { date: Date }) => (
-  <Text color="gray.4">{ago(new Date(date))}</Text>
+export const Since = ({
+  date,
+  ...props
+}: { date: Date } & React.ComponentProps<typeof Text>) => (
+  <Text as="div" color="gray.4" {...props}>
+    {ago(new Date(date))}
+  </Text>
 );

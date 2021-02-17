@@ -1,6 +1,6 @@
 import * as React from "react";
 import { usePopper, Modifier } from "react-popper";
-import { BaseStyles, Popover } from "@primer/components";
+import { BaseStyles, Popover, Box } from "@primer/components";
 import maxSize from "popper-max-size-modifier";
 import Portal from "@reach/portal";
 
@@ -45,7 +45,8 @@ const PopperPopover = ({
   interactive,
   maxWidth = 400,
   placement = "right",
-}: PopperPopoverProps) => {
+  ...props
+}: PopperPopoverProps & React.ComponentProps<"div">) => {
   const shouldHide = React.useRef<boolean>();
   const showTimeout = React.useRef<ReturnType<typeof setTimeout>>();
   const hideTimeout = React.useRef<ReturnType<typeof setTimeout>>();
@@ -88,7 +89,7 @@ const PopperPopover = ({
 
   return (
     <>
-      <div
+      <Box
         ref={(ref) => ref && setReferenceElement(ref)}
         style={{ width: "fit-content" }}
         onFocus={() => {
@@ -131,9 +132,10 @@ const PopperPopover = ({
             }
           }, 300);
         }}
+        {...props}
       >
         {trigger}
-      </div>
+      </Box>
 
       {showPopover && (
         <Portal>

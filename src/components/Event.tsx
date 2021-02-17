@@ -15,7 +15,7 @@ export const Event = ({
 } & React.ComponentProps<typeof Flex>) => (
   <Flex key={event.id} alignItems="baseline" {...props}>
     <ActorAvatar actor={event.actor} mr={3} />
-    <Box pb={3}>{children}</Box>
+    <Box>{children}</Box>
   </Flex>
 );
 

@@ -25,7 +25,7 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
           {event.payload.release.tag_name}
         </Link>
       </Box>
-      <Since date={event.created_at} />
+      <Since date={event.created_at} pb={3} />
     </Event>
   );
 

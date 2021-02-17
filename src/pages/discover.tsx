@@ -45,7 +45,7 @@ const App = () => {
             Uh oh!
           </Text>
           <Text as="p" fontSize={24} mt={0} mb={6}>
-            You don't seem to have any followers in your network.
+            You don&apos;t seem to have any followers in your network.
           </Text>
 
           <Card width="fit-content" px={6} pb={6}>
@@ -68,6 +68,7 @@ const App = () => {
             >
               {suggested.map((user) => (
                 <TrendingUser
+                  key={user.id}
                   {...(user as TrendingActor)}
                   isAuthenticatedUserFollowing
                 />

@@ -4,12 +4,8 @@ import { DataContext } from "../contexts/data";
 import { useFeeds } from "../hooks/useFeeds";
 import { GithubActivityViewer } from "../components/GithubActivityViewer";
 
-const active = "following";
-
 const App = () => {
-  const { feeds, repoInfo, user, recentFollowers } = useFeeds(active);
-
-  console.log({feeds})
+  const { feeds, repoInfo, user, recentFollowers } = useFeeds('following');
 
   return (
     <DataContext.Provider value={{ repoInfo, user }}>

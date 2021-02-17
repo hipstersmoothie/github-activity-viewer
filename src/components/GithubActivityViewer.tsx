@@ -17,6 +17,7 @@ export const GithubActivityViewer = (
   const newRepoEvents = [
     ...props.CreateEvent.filter((e) => e.payload.ref_type === "repository"),
     ...props.PublicEvent,
+    ...props.ForkEvent,
   ].sort((a, b) => {
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });

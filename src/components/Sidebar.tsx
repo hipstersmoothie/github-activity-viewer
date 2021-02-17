@@ -2,12 +2,11 @@
 
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { ZapIcon, PersonIcon, PeopleIcon } from "@primer/octicons-react";
+import { ZapIcon, PersonIcon, PeopleIcon, SignOutIcon } from "@primer/octicons-react";
 import { Flex, Sticky, theme, Tooltip } from "@primer/components";
 import { signOut } from "next-auth/client";
 
 import { FullPageSpinner } from "./Spinner";
-import { SignOutIcon } from "@primer/styled-octicons";
 
 const SideBarItem = ({
   active,

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Link } from "@primer/components";
 import { Repo, User } from "../utils/types";
 
-const HomePageLink = (props: React.ComponentProps<typeof Link>) => (
+export const HomePageLink = (props: React.ComponentProps<typeof Link>) => (
   <Link
     color="bodytext"
     fontWeight="bold"
