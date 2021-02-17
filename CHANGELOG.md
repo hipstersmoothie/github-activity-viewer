@@ -1,3 +1,17 @@
+# v0.0.33 (Wed Feb 17 2021)
+
+#### ⚠️ Pushed to `master`
+
+- ?? ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- print better ([@hipstersmoothie](https://github.com/hipstersmoothie))
+- add debug info ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.32 (Tue Feb 16 2021)
 
 #### ⚠️ Pushed to `master`
