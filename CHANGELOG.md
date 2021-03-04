@@ -1,3 +1,15 @@
+# v0.0.36 (Thu Mar 04 2021)
+
+#### ⚠️ Pushed to `master`
+
+- better url joins ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.35 (Wed Feb 17 2021)
 
 #### ⚠️ Pushed to `master`
