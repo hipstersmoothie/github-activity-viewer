@@ -1,6 +1,7 @@
 import fetch from "isomorphic-fetch";
 import useSWR from "swr";
 import Router from "next/router";
+import join from "url-join";
 
 import { GetTrendingFollowersResponse } from "../utils/types";
 import { useWindowFocus } from "./useWindowFocus";
@@ -18,9 +19,10 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
     `/api/get-trending-followers`,
     async () => {
       const url = new URL(
-        `${
-          process.env["SITE"] || "http://localhost:3000"
-        }/api/get-trending-followers`
+        join(
+          process.env["SITE"] || "http://localhost:3000",
+          "/api/get-trending-followers"
+        )
       );
       url.search = new URLSearchParams({
         previousFeaturedUser: options.previousFeaturedUser.login,
