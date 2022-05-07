@@ -1,3 +1,15 @@
+# v0.0.37 (Sat May 07 2022)
+
+#### ⚠️ Pushed to `master`
+
+- update deps ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.36 (Thu Mar 04 2021)
 
 #### ⚠️ Pushed to `master`
