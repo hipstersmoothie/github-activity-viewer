@@ -1,18 +1,11 @@
 import * as React from "react";
-import {
-  Flex,
-  BorderBox,
-  Heading,
-  Box,
-  CounterLabel,
-  Text,
-} from "@primer/components";
+import { Heading, Box, BoxProps, CounterLabel, Text } from "@primer/react";
 
-export const CardDivider = (props: React.ComponentProps<typeof Box>) => (
+export const CardDivider = (props: BoxProps) => (
   <Box
     {...props}
     mx={-4}
-    sx={{ borderBottom: "1px solid", borderColor: "border.gray" }}
+    sx={{ borderBottom: "1px solid", borderColor: "border.muted" }}
   />
 );
 
@@ -23,9 +16,14 @@ export const CardTitle = ({
   title: React.ReactNode;
   count: number;
 }) => (
-  <Flex alignItems="center" justifyContent="space-between">
+  <Box
+    display="flex"
+    alignItems="center"
+    justifyContent="space-between"
+    color="fg.default"
+  >
     <Text mr={2}>{title}</Text> {count && <CounterLabel>{count}</CounterLabel>}
-  </Flex>
+  </Box>
 );
 
 export const Card = ({
@@ -35,14 +33,26 @@ export const Card = ({
 }: {
   children: React.ReactNode;
   title?: React.ReactNode;
-} & Omit<React.ComponentProps<typeof BorderBox>, "title">) => (
-  <BorderBox px={4} py={3} width="100%" backgroundColor="white" {...props}>
+} & Omit<BoxProps, "title">) => (
+  <Box
+    borderWidth="1px"
+    borderStyle="solid"
+    borderColor="border.default"
+    borderRadius={4}
+    px={4}
+    py={3}
+    width="100%"
+    backgroundColor="canvas.default"
+    {...props}
+  >
     {title && (
-      <Heading fontSize={4} fontWeight="bold" mb={5}>
+      <Heading
+        sx={{ fontSize: 4, fontWeight: "bold", mb: 5, color: "fg.default" }}
+      >
         {title}
       </Heading>
     )}
 
     {children}
-  </BorderBox>
+  </Box>
 );

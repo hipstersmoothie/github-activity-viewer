@@ -3,22 +3,23 @@
 import { NextApiRequest } from "next";
 import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";
-import jwt from "next-auth/jwt";
 import dotenv from "dotenv";
+import { getSession } from "next-auth/react";
 
 dotenv.config();
 
 export const authenticateOctokit = async (req: NextApiRequest) => {
-  const token = await jwt.getToken({
-    req,
-    secret: process.env["GITHUB_SECRET"] as string,
-  });
-  const octokit = new Octokit({
-    auth: (token as any).accessToken,
-  });
+  const session = (await getSession({ req })) || {};
+  const accessToken = (session as any).accessToken;
+
+  if (!accessToken) {
+    throw new Error("No access token");
+  }
+
+  const octokit = new Octokit({ auth: accessToken });
   const graphqlWithAuth = graphql.defaults({
     headers: {
-      authorization: `token ${(token as any).accessToken}`,
+      authorization: `token ${accessToken}`,
     },
   });
 

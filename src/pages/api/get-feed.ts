@@ -72,8 +72,12 @@ async function getRepoInfo(
 
     return result;
   } catch (error) {
-    console.log(error.message)
-    return error.data || {};
+    if (error instanceof Error) {
+      console.log(error.message);
+      return (error as any).data || {};
+    }
+
+    throw error;
   }
 }
 
@@ -89,7 +93,7 @@ async function getRecentFollowers(
 
     return result.user.followers.nodes;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return [];
   }
 }
@@ -104,14 +108,14 @@ export default async (
   const active = Array.isArray(req.query["active"])
     ? req.query["active"][0]
     : req.query["active"];
-  const result: GitHubFeedEvent[] = await octokit.paginate(
+  const result = ((await octokit.paginate(
     active === "following"
       ? octokit.activity.listReceivedEventsForUser
       : octokit.activity.listEventsForAuthenticatedUser,
     {
       username: user.data.login,
     }
-  );
+  )) as unknown) as GitHubFeedEvent[];
   const repoInfo = await getRepoInfo(graphqlWithAuth, result);
   const recentFollowers = await getRecentFollowers(
     graphqlWithAuth,

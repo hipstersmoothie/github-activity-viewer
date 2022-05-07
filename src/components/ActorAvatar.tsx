@@ -1,10 +1,7 @@
-import * as React from "react";
-
-import { Avatar, Link, Tooltip } from "@primer/components";
+import { Avatar, Link, LinkProps, Tooltip } from "@primer/react";
 import { User } from "../utils/types";
 
-interface ActorAvatarProps
-  extends Omit<React.ComponentProps<typeof Link>, "href"> {
+interface ActorAvatarProps extends Omit<LinkProps, "href"> {
   /** The size of the avatar */
   size?: number;
   /** The user to display an avatar for */

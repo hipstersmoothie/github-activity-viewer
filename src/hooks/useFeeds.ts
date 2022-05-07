@@ -21,7 +21,6 @@ export const useFeeds = (active: "following" | "user") => {
       try {
         const req = await fetch(url.toString());
         const json: GetFeedResponse = await req.json();
-
         const map: EventMap = {
           ReleaseEvent: [],
           WatchEvent: [],
@@ -58,6 +57,7 @@ export const useFeeds = (active: "following" | "user") => {
           recentFollowers: json.recentFollowers,
         };
       } catch (error) {
+        console.error(error);
         Router.push("/api/auth/signin");
       }
     },

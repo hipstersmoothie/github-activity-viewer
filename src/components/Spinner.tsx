@@ -1,8 +1,9 @@
-import { theme, Flex, Text } from "@primer/components";
+import { theme, Box, Text } from "@primer/react";
 
 export const Spinner = () => (
   <>
-    <Flex
+    <Box
+      display="flex"
       alignItems="center"
       flexDirection="column"
       justifyContent="center"
@@ -67,11 +68,11 @@ export const Spinner = () => (
           d="m197.75,459.850006c0,0 -0.125,-48.75 -0.125,-48.850006c0,-0.100006 -4.75,-4.399994 -33,-1c-28.25,3.399994 -62.5,-66.649994 -65.25,-69.75c-2.75,-3.100006 14,-5.649994 26.5,5c12.5,10.649994 38.25,33.350006 38.5,33.25c0.25,-0.100006 31.75,0.600006 31.75,0.5c0,-0.100006 3,-44.149994 20.75,-37.5c17.75,6.649994 -72.5,1.350006 -97.75,-61.25c-25.25,-62.600006 19.25,-124.899994 20.25,-115.399994c1,9.5 -17,-35 -10.25,-46.850006c6.75,-11.849998 19.25,-9.400002 30.25,-5.5c11,3.900002 34.25,20.350006 39.25,21.25c5,0.899994 18.25,-8.150002 59.25,-7.5c41,0.650002 52.769196,6.138474 56.75,6.5c3.980804,0.361526 30.519165,-17.38076 38.250061,-22.557701c7.730896,-5.176941 18.653595,-9.092308 28.653687,0.78849c10.000092,9.880798 4.923157,67.00383 3.096252,55.519211c-1.826904,-11.484619 36.25,70.600006 6,122.100006c-30.25,51.5 -99.25,52.75 -87.75,55.899994c11.5,3.149994 15,33.350006 14.75,49.850006l-0.25,65.899994l-22.875,3.875l-0.5,-74.75c0.125,-9.225006 -9.125,-10.649994 -9.625,-9.75l-0.25,85.875l-21.25,1.25l-0.25,-86.75l-10.5,0l0,86.5l-20.75,-1l-0.25,-84.25c0,-0.100006 -8.75,-1.149994 -8.25,10.75l-0.5,72.25"
         />
       </svg>
-      <Text color="white" fontSize={5} fontWeight="bold" mt={2} mb={1}>
+      <Text color="fg.default" fontSize={5} fontWeight="bold" mt={2} mb={1}>
         Loading your activity...
       </Text>
-      <Text color="white">(This might take a minute)</Text>
-    </Flex>
+      <Text color="fg.default">(This might take a minute)</Text>
+    </Box>
 
     <style>{`
       #octo #cat { fill: #fff }
@@ -81,7 +82,7 @@ export const Spinner = () => (
         animation-duration: 1s;
         animation-iteration-count: infinite;
         animation-timing-function: ease-out;
-        fill: ${theme['colors'].gray[1]};
+        fill: ${theme.colorSchemes.light.colors.fg?.subtle};
       }
       
       #octo #part1 { animation-delay: 0.000s }
@@ -95,21 +96,22 @@ export const Spinner = () => (
       
       @keyframes fade {
           0%,25%  { fill: #fff }
-          50%,75% { fill: ${theme['colors'].gray[4]} }
+          50%,75% { fill: ${theme.colorSchemes.light.colors.fg?.muted} }
       }
     `}</style>
   </>
 );
 
 export const FullPageSpinner = () => (
-  <Flex
+  <Box
+    display="flex"
     justifyContent="center"
     sx={{
-      backgroundColor: "gray.3",
+      backgroundColor: "canvas.inset",
       minHeight: "100vh",
-      width: '100%'
+      width: "100%",
     }}
   >
     <Spinner />
-  </Flex>
+  </Box>
 );

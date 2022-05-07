@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Grid } from "@primer/components";
+import { Box } from "@primer/react";
 
 import { EventMap, ReleaseEventType, RecentFollower } from "../utils/types";
 import { WatchEvents } from "./WatchEvents";
@@ -34,15 +34,16 @@ export const GithubActivityViewer = (
   }, []);
 
   return (
-    <Grid
+    <Box
       px={4}
       py={3}
+      display="grid"
       gridGap={6}
       gridTemplateColumns={["repeat(1, auto)", "1fr 2fr"]}
       alignItems="start"
       maxWidth={1600}
     >
-      <Grid ref={leftColumnRef} gridGap={6}>
+      <Box ref={leftColumnRef} display="grid" gridGap={6}>
         <GridCard
           title="Releases"
           showCount={8}
@@ -62,13 +63,17 @@ export const GithubActivityViewer = (
             title="New Followers"
             showCount={5}
             rows={props.recentFollowers.map((follower) => (
-              <TrendingUser key={follower.id} isAuthenticatedUserFollowing {...follower} />
+              <TrendingUser
+                key={follower.id}
+                isAuthenticatedUserFollowing
+                {...follower}
+              />
             ))}
           />
         )}
-      </Grid>
+      </Box>
 
       <WatchEvents events={props.WatchEvent} pageHeight={pageHeight} />
-    </Grid>
+    </Box>
   );
 };

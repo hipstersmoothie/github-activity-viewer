@@ -1,4 +1,4 @@
-import { Link, Heading, Box, Text } from "@primer/components";
+import { Link, Heading, Box, Text } from "@primer/react";
 import Markdown from "markdown-to-jsx";
 
 import { ReleaseEventType } from "../utils/types";
@@ -14,8 +14,8 @@ import PopperPopover from "./Popover";
 export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
   const repo = useRepoInfo(event.repo);
   const trigger = (
-    <Event as="summary" event={event}>
-      <Box>
+    <Event event={event}>
+      <Box color="fg.muted">
         <ActorLink {...event.actor} />{" "}
         <span>
           released <RepoLink repo={event.repo} />
@@ -35,13 +35,15 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
 
       <CardDivider my={4} />
 
-      <Heading fontSize={3}>
+      <Heading sx={{ fontSize: 3 }}>
         {event.payload.release.name || event.payload.release.tag_name}
       </Heading>
 
-      <Text>
-        <Markdown>{renderEmoji(event.payload.release.body)}</Markdown>
-      </Text>
+      {event.payload.release.body && (
+        <Text>
+          <Markdown>{renderEmoji(event.payload.release.body)}</Markdown>
+        </Text>
+      )}
     </PopperPopover>
   );
 };

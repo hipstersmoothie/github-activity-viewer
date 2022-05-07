@@ -2,9 +2,16 @@
 
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { ZapIcon, PersonIcon, PeopleIcon, SignOutIcon } from "@primer/octicons-react";
-import { Flex, Sticky, theme, Tooltip } from "@primer/components";
-import { signOut } from "next-auth/client";
+import {
+  ZapIcon,
+  PersonIcon,
+  PeopleIcon,
+  SignOutIcon,
+} from "@primer/octicons-react";
+import { Box, BoxProps, Tooltip } from "@primer/react";
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import Router from "next/router";
 
 import { FullPageSpinner } from "./Spinner";
 
@@ -14,7 +21,7 @@ const SideBarItem = ({
   href,
   label,
   ...props
-}: React.ComponentProps<typeof Flex> & {
+}: BoxProps & {
   active?: boolean;
   href: string;
   label: string;
@@ -23,23 +30,24 @@ const SideBarItem = ({
     <Tooltip direction="e" aria-label={label} sx={{ width: "100%" }}>
       <Link passHref href={href}>
         <a style={{ width: "100%" }}>
-          <Flex
+          <Box
+            display="flex"
             alignItems="center"
             justifyContent="center"
+            bg={active ? "accent.emphasis" : undefined}
+            color={active ? "fg.onEmphasis" : "fg.muted"}
             sx={{
               width: "100%",
               height: 64,
-              color: active ? "white" : theme["colors"].gray[9],
-              background: active ? theme["colors"].blue[4] : undefined,
               ":hover": {
-                color: active ? undefined : "black",
-                background: active ? "" : theme["colors"].blue[2],
+                color: active ? undefined : "fg.default",
+                bg: active ? "" : "accent.muted",
               },
             }}
             {...props}
           >
             {children}
-          </Flex>
+          </Box>
         </a>
       </Link>
     </Tooltip>
@@ -48,50 +56,61 @@ const SideBarItem = ({
 
 export type SidebarActive = "/" | "/user" | "/discover";
 
-export const SidebarLayout = ({
-  children,
-  active,
-}: {
-  children: React.ReactNode;
-  active: SidebarActive;
-}) => {
+export const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
+  const { data, status } = useSession();
+
+  if (status === "loading") {
+    return null;
+  }
+
+  if (!data) {
+    Router.push("/api/auth/signin");
+    return null;
+  }
+
   return (
-    <Flex
+    <Box
+      display="flex"
       sx={{
-        backgroundColor: "gray.1",
+        bg: "canvas.inset",
         minHeight: "100vh",
       }}
     >
-      <Sticky
+      <Box
         top={0}
+        position="sticky"
         sx={{
           width: 64,
           minHeight: "100vh",
           maxHeight: "100vh",
-          background: "white",
-          color: "gray.6",
+          bg: "canvas.default",
         }}
       >
-        <Flex flexDirection="column" justifyContent="space-between" height="100%">
-          <Flex alignItems="start" flexDirection="column">
-            <SideBarItem label="Feed" href="/" active={active === "/"}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          height="100%"
+        >
+          <Box display="flex" alignItems="start" flexDirection="column">
+            <SideBarItem label="Feed" href="/" active={Router.route === "/"}>
               <ZapIcon />
             </SideBarItem>
             <SideBarItem
               label="User Events"
               href="/user"
-              active={active === "/user"}
+              active={Router.route === "/user"}
             >
               <PersonIcon />
             </SideBarItem>
             <SideBarItem
               label="Discover Followers"
               href="/discover"
-              active={active === "/discover"}
+              active={Router.route === "/discover"}
             >
               <PeopleIcon />
             </SideBarItem>
-          </Flex>
+          </Box>
           <SideBarItem
             label="Signout"
             href="/api/auth/signin"
@@ -99,11 +118,11 @@ export const SidebarLayout = ({
           >
             <SignOutIcon />
           </SideBarItem>
-        </Flex>
-      </Sticky>
-      <Flex justifyContent="center" sx={{ flex: 1 }}>
+        </Box>
+      </Box>
+      <Box display="flex" justifyContent="center" sx={{ flex: 1 }}>
         <Suspense fallback={<FullPageSpinner />}>{children}</Suspense>
-      </Flex>
-    </Flex>
+      </Box>
+    </Box>
   );
 };

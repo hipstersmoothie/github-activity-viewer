@@ -1,34 +1,20 @@
 import type { AppProps } from "next/app";
-import { BaseStyles } from "@primer/components";
-import { Provider } from "next-auth/client";
-import { useSession } from "next-auth/client";
-import Router from "next/router";
-import { SidebarActive, SidebarLayout } from "../components/Sidebar";
+import { ThemeProvider, BaseStyles } from "@primer/react";
+import { SessionProvider } from "next-auth/react";
 
 import "../css/main.css";
 // eslint-disable-next-line import/no-unassigned-import
 import "../css/main.scss";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const [session, loading] = useSession();
-
-  if (loading) {
-    return null;
-  }
-
-  if (!session) {
-    Router.push("/api/auth/signin");
-    return null;
-  }
-
   return (
-    <Provider session={pageProps.session}>
-      <BaseStyles>
-        <SidebarLayout active={Router.route as SidebarActive}>
+    <ThemeProvider colorMode="auto">
+      <SessionProvider session={pageProps.session}>
+        <BaseStyles>
           <Component {...pageProps} />
-        </SidebarLayout>
-      </BaseStyles>
-    </Provider>
+        </BaseStyles>
+      </SessionProvider>
+    </ThemeProvider>
   );
 };
 

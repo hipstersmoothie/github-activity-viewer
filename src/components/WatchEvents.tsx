@@ -3,17 +3,14 @@ import * as React from "react";
 import {
   Box,
   Text,
-  SelectMenu,
-  Button,
-  Relative,
-  Flex,
+  ActionMenu,
+  ActionList,
   Heading,
-  BorderBox,
-} from "@primer/components";
+  BoxProps,
+} from "@primer/react";
 
 import { CardDivider } from "./Card";
 import { GitHubFeedEvent, Repo, User, LanguageType } from "../utils/types";
-import { DEFAULT_LANGUAGE_COLOR } from "../utils/constants";
 import { DataContext } from "../contexts/data";
 import { queryId } from "../utils/queryId";
 import { Language } from "./Language";
@@ -22,7 +19,7 @@ import { useWindowFocus } from "../hooks/useWindowFocus";
 import { GridCard } from "./Event";
 
 const ALL_LANGUAGE = {
-  node: { color: DEFAULT_LANGUAGE_COLOR, name: "All" },
+  node: { color: "fg.default", name: "All" },
 };
 const ROW_HEIGHT = 108;
 
@@ -35,46 +32,45 @@ const LanguageFilter = ({
   languageFilter?: LanguageType;
   languageFilterSet: (newLang?: LanguageType) => void;
 }) => {
-  const [search, searchSet] = React.useState("");
+  const [search] = React.useState("");
   const sortedLanguages = languages
     .sort((a, b) => a.node.name.localeCompare(b.node.name))
     .filter((lang) => !search || lang.node.name.toLowerCase().includes(search));
 
   return (
-    <Relative display="flex" justifyContent="flex-end">
-      <SelectMenu>
-        <Button as="summary">
+    <Box position="relative" display="flex" justifyContent="flex-end">
+      <ActionMenu>
+        <ActionMenu.Button as="summary">
           <Language language={languageFilter || ALL_LANGUAGE} />
-        </Button>
-        <SelectMenu.Modal align="right">
-          <SelectMenu.Header>Languages</SelectMenu.Header>
-
-          <SelectMenu.Filter
+        </ActionMenu.Button>
+        <ActionMenu.Overlay sx={{ zIndex: 10000 }}>
+          {/* <ActionMenu.Filter
             placeholder="Filter languages"
             aria-label="Filter Languages"
             value={search}
             onChange={(e) => searchSet(e.target.value.toLowerCase())}
-          />
+          /> */}
 
-          <SelectMenu.List>
-            {!search && (
-              <SelectMenu.Item as="button" onClick={() => languageFilterSet()}>
-                <Language language={ALL_LANGUAGE} />
-              </SelectMenu.Item>
-            )}
-            {sortedLanguages.map((language) => (
-              <SelectMenu.Item
-                key={language.node.name}
-                as="button"
-                onClick={() => languageFilterSet(language)}
-              >
-                <Language language={language} />
-              </SelectMenu.Item>
-            ))}
-          </SelectMenu.List>
-        </SelectMenu.Modal>
-      </SelectMenu>
-    </Relative>
+          <ActionList>
+            <ActionList.Group title="Languages">
+              {!search && (
+                <ActionList.Item onClick={() => languageFilterSet()}>
+                  <Language language={ALL_LANGUAGE} />
+                </ActionList.Item>
+              )}
+              {sortedLanguages.map((language) => (
+                <ActionList.Item
+                  key={language.node.name}
+                  onClick={() => languageFilterSet(language)}
+                >
+                  <Language language={language} />
+                </ActionList.Item>
+              ))}
+            </ActionList.Group>
+          </ActionList>
+        </ActionMenu.Overlay>
+      </ActionMenu>
+    </Box>
   );
 };
 
@@ -82,8 +78,8 @@ const Section = ({ children }: { children: React.ReactNode }) => (
   <Box
     my={6}
     pb={2}
-    sx={{ borderBottom: "1px solid", borderColor: "gray.3" }}
-    color="gray.5"
+    sx={{ borderBottom: "1px solid", borderColor: "border.muted" }}
+    color="fg.subtle"
   >
     <Text>{children}</Text>
   </Box>
@@ -124,7 +120,7 @@ export const WatchEvents = ({
   events,
   pageHeight,
 }: { events: GitHubFeedEvent[]; pageHeight?: number } & Omit<
-  React.ComponentProps<typeof BorderBox>,
+  BoxProps,
   "title"
 >) => {
   const { repoInfo } = React.useContext(DataContext);
@@ -216,11 +212,7 @@ export const WatchEvents = ({
           lastSeen !== storageId(repo) && <Section>Starred</Section>}
         {lastSeen === storageId(repo) && <Section>Seen previously...</Section>}
 
-        <RepoDescription
-          repo={{ ...repo, ...info }}
-          users={users}
-          mb={4}
-        />
+        <RepoDescription repo={{ ...repo, ...info }} users={users} mb={4} />
       </>
     );
   };
@@ -247,7 +239,7 @@ export const WatchEvents = ({
         <>
           {fromUsersRepos.length > 0 && (
             <>
-              <Heading fontSize={2} mb={4}>
+              <Heading sx={{ fontSize: 2, mb: 4, color: "fg.muted" }}>
                 On Your Repos
               </Heading>
 
@@ -259,14 +251,21 @@ export const WatchEvents = ({
             </>
           )}
 
-          <Flex alignItems="center" justifyContent="space-between" mb={4}>
-            <Heading fontSize={2}>On Other Repos</Heading>
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+            mb={4}
+          >
+            <Heading sx={{ fontSize: 2, color: "fg.muted" }}>
+              On Other Repos
+            </Heading>
             <LanguageFilter
               languages={languages}
               languageFilter={languageFilter}
               languageFilterSet={languageFilterSet}
             />
-          </Flex>
+          </Box>
         </>
       }
       rows={fromOtherRepos

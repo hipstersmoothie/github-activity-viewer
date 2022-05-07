@@ -1,6 +1,6 @@
 import * as React from "react";
 import Head from "next/head";
-import { Flex, Grid, Text } from "@primer/components";
+import { Text, Box } from "@primer/react";
 import useLocalStorageState from "use-local-storage-state";
 
 import { useTrendingFollowers } from "../hooks/useTrendingFollowers";
@@ -9,6 +9,7 @@ import { TrendingUser } from "../components/TrendingUser";
 import { FeaturedUser } from "../components/FeaturedUser";
 import { Card } from "../components/Card";
 import { TrendingActor } from "../utils/types";
+import { SidebarLayout } from "../components/Sidebar";
 
 const App = () => {
   const [previousFeaturedUser, previousFeaturedUserSet] = useLocalStorageState(
@@ -30,13 +31,15 @@ const App = () => {
 
   if (!featuredUser) {
     return (
-      <Flex
+      <Box
+        display="flex"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
         height="100vh"
       >
-        <Flex
+        <Box
+          display="flex"
           flexDirection="column"
           alignItems="center"
           justifyContent="center"
@@ -54,13 +57,14 @@ const App = () => {
               fontSize={18}
               mt={4}
               mb={6}
-              color="gray.8"
+              color="fg.default"
               textAlign="center"
             >
               Try following some of these popular accounts:
             </Text>
 
-            <Flex
+            <Box
+              display="flex"
               flexDirection="column"
               width="fit-content"
               mx="auto"
@@ -73,15 +77,16 @@ const App = () => {
                   isAuthenticatedUserFollowing
                 />
               ))}
-            </Flex>
+            </Box>
           </Card>
-        </Flex>
-      </Flex>
+        </Box>
+      </Box>
     );
   }
 
   return (
-    <Grid
+    <Box
+      display="grid"
       px={4}
       py={3}
       gridGap={6}
@@ -101,7 +106,7 @@ const App = () => {
           />
         ))}
       />
-    </Grid>
+    </Box>
   );
 };
 
@@ -110,7 +115,9 @@ const Home = () => (
     <Head>
       <title>Discover</title>
     </Head>
-    <App />
+    <SidebarLayout>
+      <App />
+    </SidebarLayout>
   </>
 );
 

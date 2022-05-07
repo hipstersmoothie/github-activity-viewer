@@ -1,5 +1,5 @@
 import * as React from "react";
-import { theme, Flex, BorderBox, Box, Text } from "@primer/components";
+import { theme, BoxProps, Box, Text } from "@primer/react";
 
 import { GitHubFeedEvent } from "../utils/types";
 import { ActorAvatar } from "./ActorAvatar";
@@ -12,11 +12,11 @@ export const Event = ({
 }: {
   event: GitHubFeedEvent;
   children: React.ReactNode;
-} & React.ComponentProps<typeof Flex>) => (
-  <Flex key={event.id} alignItems="baseline" {...props}>
-    <ActorAvatar actor={event.actor} mr={3} />
+} & BoxProps) => (
+  <Box key={event.id} display="flex" alignItems="baseline" {...props}>
+    <ActorAvatar actor={event.actor} sx={{ mr: 3 }} />
     <Box>{children}</Box>
-  </Flex>
+  </Box>
 );
 
 export const GridCard = <T extends unknown>({
@@ -32,7 +32,7 @@ export const GridCard = <T extends unknown>({
   showCount?: number;
   rows: T[];
   staticRows?: React.ReactNode;
-} & Omit<React.ComponentProps<typeof BorderBox>, "title">) => {
+} & Omit<BoxProps, "title">) => {
   const [expanded, expandedSet] = React.useState(false);
   const toggleExpanded = () => expandedSet(!expanded);
   const filteredRows = rows.filter(shownFilter);
@@ -59,6 +59,7 @@ export const GridCard = <T extends unknown>({
             px={4}
             py={3}
             sx={{
+              cursor: "pointer",
               borderBottomLeftRadius: theme["radii"][2],
               borderBottomRightRadius: theme["radii"][2],
               ":hover": { backgroundColor: "blue.0", color: "blue.5" },
@@ -70,13 +71,8 @@ export const GridCard = <T extends unknown>({
             }}
             tabIndex={0}
             onClick={toggleExpanded}
-            onKeyDown={(e) => {
-              if (e.key === " " || e.key === "Enter") {
-                toggleExpanded();
-              }
-            }}
           >
-            <Text>Show {expanded ? "less" : "more"}</Text>
+            <Text color="fg.default">Show {expanded ? "less" : "more"}</Text>
           </Box>
         </>
       )}

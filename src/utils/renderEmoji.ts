@@ -1,8 +1,4 @@
-import toEmoji from "gemoji/name-to-emoji.json";
+import { nameToEmoji } from "gemoji";
 
 export const renderEmoji = (str: string) =>
-  str &&
-  str.replace(
-    /:([^:]*):/g,
-    (_, val) => toEmoji[val as keyof typeof toEmoji] || val
-  );
+  str && str.replace(/:([^:]*):/g, (_, val) => nameToEmoji[val] || val);

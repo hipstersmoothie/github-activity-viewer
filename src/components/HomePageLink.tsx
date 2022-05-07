@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Link } from "@primer/components";
+import { Link } from "@primer/react";
+
 import { Repo, User } from "../utils/types";
 
 export const HomePageLink = (props: React.ComponentProps<typeof Link>) => (

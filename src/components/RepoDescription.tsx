@@ -1,6 +1,4 @@
-import * as React from "react";
-
-import { Flex, Text, AvatarStack } from "@primer/components";
+import { Box, BoxProps, Text, AvatarStack } from "@primer/react";
 import { User, ExtendedRepo, Repo } from "../utils/types";
 import { RepoLink } from "./HomePageLink";
 import { renderEmoji } from "../utils/renderEmoji";
@@ -15,25 +13,25 @@ export const RepoDescription = ({
 }: {
   repo: ExtendedRepo | Repo;
   users?: User[];
-} & React.ComponentProps<typeof Flex>) => {
+} & BoxProps) => {
   const hasRepoInfo =
     ("languages" in repo && repo.languages.edges[0]) ||
     ("stargazers" in repo && repo.stargazers) ||
     users.length > 0;
 
   return (
-    <Flex flexDirection="column" {...props}>
+    <Box display="flex" flexDirection="column" {...props}>
       <RepoLink repo={repo} mb={1} />
 
       {repo.description && (
-        <Text mb={2} color="gray.7">
+        <Text mb={2} color="fg.default">
           {renderEmoji(repo.description)}
         </Text>
       )}
 
       {hasRepoInfo && (
-        <Flex alignItems="center" justifyContent="space-between">
-          <Flex>
+        <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box display="flex">
             {"languages" in repo && repo.languages.edges[0] && (
               <Language language={repo.languages.edges[0]} mr={4} />
             )}
@@ -43,7 +41,7 @@ export const RepoDescription = ({
                 repo={repo.url}
               />
             )}
-          </Flex>
+          </Box>
 
           {users.length > 0 && (
             <AvatarStack alignRight>
@@ -52,8 +50,8 @@ export const RepoDescription = ({
               ))}
             </AvatarStack>
           )}
-        </Flex>
+        </Box>
       )}
-    </Flex>
+    </Box>
   );
 };

@@ -10,10 +10,11 @@ export const CreateEvent = ({ event }: { event: GitHubFeedEvent }) => {
   const repo = useRepoInfo(event.repo);
 
   const trigger = (
-    <Event event={event}>
+    <Event event={event} color="fg.muted">
       <ActorLink {...event.actor} />{" "}
       <span>
-        {event.type === 'ForkEvent'? 'forked' : 'created'} <RepoLink repo={event.repo} />
+        {event.type === "ForkEvent" ? "forked" : "created"}{" "}
+        <RepoLink repo={event.repo} />
       </span>
     </Event>
   );

@@ -1,6 +1,4 @@
-import * as React from "react";
-
-import { Flex, Text, Link } from "@primer/components";
+import { Box, BoxProps, Text, Link } from "@primer/react";
 import { StarIcon } from "@primer/styled-octicons";
 
 export const StarCount = ({
@@ -10,13 +8,13 @@ export const StarCount = ({
 }: {
   stargazers: number;
   repo: string;
-} & React.ComponentProps<typeof Flex>) => {
+} & BoxProps) => {
   return (
     <Link muted href={`${repo}/stargazers`}>
-      <Flex alignItems="center" {...props}>
+      <Box display="flex" alignItems="center" {...props}>
         <StarIcon size="small" mr={1} />
         <Text>{stargazers.toLocaleString()}</Text>
-      </Flex>
+      </Box>
     </Link>
   );
 };

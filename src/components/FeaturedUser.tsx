@@ -1,17 +1,7 @@
 /* eslint-disable react/no-danger */
 
 import * as React from "react";
-import {
-  Avatar,
-  Box,
-  Flex,
-  Text,
-  Link,
-  Grid,
-  BorderBox,
-  LabelGroup,
-  Label,
-} from "@primer/components";
+import { Avatar, Box, Text, Link, LabelGroup, Label } from "@primer/react";
 import { GitMergeIcon, RepoIcon } from "@primer/styled-octicons";
 
 import {
@@ -37,38 +27,42 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
     </Link>
   );
 
-  console.log(props)
-
   return (
     <Card title="Featured User" width="100%">
       <Box pr={4}>
-        <Flex alignItems="center" mb={6}>
+        <Box display="flex" alignItems="center" mb={6}>
           <Avatar
             size={180}
-            sx={{ borderRadius: "100%" }}
+            sx={{ borderRadius: "100%", mr: 5 }}
             alt={`${props.name || props.login} Profile`}
             src={props.avatar_url}
-            mr={5}
           />
-          <Flex flex={1} flexDirection="column">
+          <Box flex={1}>
             {props.name ? (
-              <Flex
+              <Box
                 as="p"
+                display="flex"
                 mb={3}
                 mt={0}
                 alignItems="center"
                 justifyContent="space-between"
                 flex={1}
               >
-                <Text as="span" fontWeight="bold" fontSize={24} mr={2}>
+                <Text
+                  color="fg.default"
+                  as="span"
+                  fontWeight="bold"
+                  fontSize={24}
+                  mr={2}
+                >
                   {props.name}
                 </Text>
-                <Text as="span" color="gray.6" fontSize={16}>
+                <Text as="span" color="fg.muted" fontSize={16}>
                   {featuredUserProfileLink}
                 </Text>
-              </Flex>
+              </Box>
             ) : (
-              <Text as="p" fontWeight="bold" mb={3} mt={0}>
+              <Text as="p" fontWeight="bold" color="fg.default" mb={3} mt={0}>
                 {featuredUserProfileLink}
               </Text>
             )}
@@ -76,6 +70,7 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
             {props.bioHTML && (
               <Text
                 as="p"
+                color="fg.default"
                 dangerouslySetInnerHTML={{ __html: props.bioHTML }}
               />
             )}
@@ -84,14 +79,14 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
               <TrendingUserProfileInfo {...props} />
             </div>
             <TrendingUserFollowerInfo {...props} />
-          </Flex>
-        </Flex>
+          </Box>
+        </Box>
 
-        <Text as="h3" fontSize={20} fontWeight="bold" mb={3}>
+        <Text as="h3" fontSize={20} fontWeight="bold" mb={3} color="fg.muted">
           Recent Pull Requests
         </Text>
 
-        <Grid gridTemplateColumns="max-content auto auto" mb={6}>
+        <Box display="grid" gridTemplateColumns="max-content auto auto" mb={6}>
           {props.recentContributions.map((contribution) => {
             const trigger = (
               <Link
@@ -100,7 +95,7 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                 rel="noreferrer"
                 href={contribution.url}
               >
-                <Text color="gray.9" mr={4}>
+                <Text color="fg.default" mr={4}>
                   {contribution.title}
                 </Text>
               </Link>
@@ -114,8 +109,9 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                   rel="noreferrer"
                   href={contribution.url}
                 >
-                  <Flex alignItems="center">
-                    <Flex
+                  <Box display="flex" alignItems="center">
+                    <Box
+                      display="flex"
                       color={
                         (contribution.state === "MERGED" && "purple.5") ||
                         (contribution.state === "CLOSED" && "red.5") ||
@@ -126,17 +122,18 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                       mr={2}
                     >
                       <GitMergeIcon />
-                    </Flex>
-                    <Text color="black" mr={4} fontWeight="bold">
+                    </Box>
+                    <Text color="fg.default" mr={4} fontWeight="bold">
                       #{contribution.number}
                     </Text>
-                  </Flex>
+                  </Box>
                 </Link>
                 {contribution.bodyHTML ||
                 contribution.labels.nodes.length !== 0 ? (
                   <PopperPopover maxWidth={600} trigger={trigger}>
                     {contribution.labels.nodes.length !== 0 && (
-                      <Flex
+                      <Box
+                        display="flex"
                         alignItems="center"
                         justifyContent="space-between"
                         mb={contribution.bodyHTML ? 4 : undefined}
@@ -148,7 +145,7 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                             </Label>
                           ))}
                         </LabelGroup>
-                      </Flex>
+                      </Box>
                     )}
                     <div
                       className="markdown-body"
@@ -173,46 +170,62 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
               </React.Fragment>
             );
           })}
-        </Grid>
+        </Box>
 
         {props.pinnedItems && props.pinnedItems.length !== 0 && (
           <>
-            <Text as="h3" fontSize={20} fontWeight="bold" mb={3}>
+            <Text
+              as="h3"
+              fontSize={20}
+              fontWeight="bold"
+              mb={3}
+              color="fg.muted"
+            >
               Pinned
             </Text>
 
-            <Grid gridTemplateColumns="1fr 1fr" gridGap={3}>
+            <Box display="grid" gridTemplateColumns="1fr 1fr" gridGap={3}>
               {props.pinnedItems.map((pinned) => (
-                <BorderBox key={pinned.url} p={3} height="100%">
-                  <Flex
+                <Box
+                  key={pinned.url}
+                  borderWidth="1px"
+                  borderStyle="solid"
+                  borderColor="border.muted"
+                  borderRadius={4}
+                  p={3}
+                  height="100%"
+                >
+                  <Box
+                    display="flex"
                     flexDirection="column"
                     justifyContent="space-between"
                     height="100%"
                   >
                     <div>
-                      <Flex alignItems="center" mb={2}>
-                        <Flex
+                      <Box display="flex" alignItems="center" mb={2}>
+                        <Box
+                          display="flex"
                           alignItems="center"
                           justifyContent="center"
                           mr={1}
-                          color="gray."
+                          color="fg.default"
                           pt="2px"
                         >
                           <RepoIcon />
-                        </Flex>
+                        </Box>
                         <Link href={pinned.url} target="blank" rel="noreferrer">
                           <Text fontWeight="bold">{pinned.name}</Text>
                         </Link>
-                      </Flex>
+                      </Box>
 
                       {pinned.description && (
-                        <Text as="p" color="gray.7" m={0}>
+                        <Text as="p" color="fg.muted" m={0}>
                           {renderEmoji(pinned.description)}
                         </Text>
                       )}
                     </div>
 
-                    <Flex mt={3}>
+                    <Box display="flex" mt={3}>
                       {"languages" in pinned && pinned.languages.edges[0] && (
                         <Language language={pinned.languages.edges[0]} mr={3} />
                       )}
@@ -222,11 +235,11 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                           repo={pinned.url}
                         />
                       )}
-                    </Flex>
-                  </Flex>
-                </BorderBox>
+                    </Box>
+                  </Box>
+                </Box>
               ))}
-            </Grid>
+            </Box>
           </>
         )}
       </Box>

@@ -1,22 +1,21 @@
-import * as React from "react";
-import { Flex, Box, Text } from "@primer/components";
+import { BoxProps, Box, Text } from "@primer/react";
+
 import { LanguageType } from "../utils/types";
-import { DEFAULT_LANGUAGE_COLOR } from "../utils/constants";
 
 export const Language = ({
   language,
   ...props
-}: { language: LanguageType } & React.ComponentProps<typeof Flex>) => (
-  <Flex alignItems="center" {...props}>
+}: { language: LanguageType } & BoxProps) => (
+  <Box display="flex" alignItems="center" {...props}>
     <Box
       size={10}
       mr={1}
-      style={{
+      sx={{
         borderRadius: "50%",
         overflow: "hidden",
-        backgroundColor: language.node.color || DEFAULT_LANGUAGE_COLOR,
+        bg: language.node.color || "fg.muted",
       }}
     />
-    <Text color="gray.6">{language.node.name}</Text>
-  </Flex>
+    <Text color="fg.muted">{language.node.name}</Text>
+  </Box>
 );
