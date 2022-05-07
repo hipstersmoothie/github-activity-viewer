@@ -10,9 +10,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ThemeProvider colorMode="auto">
       <SessionProvider session={pageProps.session}>
-        <BaseStyles>
-          <Component {...pageProps} />
-        </BaseStyles>
+        <Component {...pageProps} />
       </SessionProvider>
     </ThemeProvider>
   );

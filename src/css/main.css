@@ -13,3 +13,7 @@
 .tooltip-wrapper[data-popper-placement^="bottom"] .tooltip-arrow {
   top: 0px;
 }
+
+body {
+  margin: 0;
+}
