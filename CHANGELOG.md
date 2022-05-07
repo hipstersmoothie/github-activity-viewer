@@ -1,3 +1,15 @@
+# v0.0.41 (Sat May 07 2022)
+
+#### ⚠️ Pushed to `master`
+
+- fix build ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+#### Authors: 1
+
+- Andrew Lisowski ([@hipstersmoothie](https://github.com/hipstersmoothie))
+
+---
+
 # v0.0.40 (Sat May 07 2022)
 
 #### ⚠️ Pushed to `master`
