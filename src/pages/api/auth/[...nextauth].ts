@@ -2,6 +2,8 @@ import nextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
 export default nextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
+
   providers: [
     // eslint-disable-next-line new-cap
     GithubProvider({
