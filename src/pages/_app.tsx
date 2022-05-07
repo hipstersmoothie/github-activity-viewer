@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { ThemeProvider, BaseStyles } from "@primer/react";
+import { ThemeProvider } from "@primer/react";
 import { SessionProvider } from "next-auth/react";
 
 import "../css/main.css";
