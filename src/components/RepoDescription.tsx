@@ -5,6 +5,7 @@ import { renderEmoji } from "../utils/renderEmoji";
 import { ActorAvatar } from "./ActorAvatar";
 import { Language } from "./Language";
 import { StarCount } from "./StarCount";
+import { TwitterIcon } from "./TwitterIcon";
 
 export const RepoDescription = ({
   repo,
@@ -39,8 +40,28 @@ export const RepoDescription = ({
               <StarCount
                 stargazers={repo.stargazers.totalCount}
                 repo={repo.url}
+                mr={3}
               />
             )}
+
+            <Box
+              as="a"
+              target="_blank"
+              rel="noreferrer"
+              href={`https://twitter.com/search?q=${encodeURIComponent(
+                repo.url
+              )}`}
+              sx={{
+                height: "20px",
+                width: "20px",
+                p: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <TwitterIcon />
+            </Box>
           </Box>
 
           {users.length > 0 && (
