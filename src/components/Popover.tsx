@@ -30,9 +30,15 @@ const PopperPopover = ({
             align="center"
             style={{ outline: "none" }}
           >
-            <Popover.Content style={{ width: maxWidth }}>
-              {children}
-            </Popover.Content>
+            <Popover
+              open
+              caret={placement === "left" ? "right" : "left"}
+              style={{ position: "static" }}
+            >
+              <Popover.Content style={{ width: maxWidth }}>
+                {children}
+              </Popover.Content>
+            </Popover>
           </RadixHoverCard.Content>
         </BaseStyles>
       </RadixHoverCard.Portal>

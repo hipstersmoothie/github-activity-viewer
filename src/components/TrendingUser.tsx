@@ -6,15 +6,12 @@ import {
   Link,
   Box,
   BoxProps,
-  IconButton,
-  Tooltip,
 } from "@primer/react";
 import {
   LinkIcon,
   LocationIcon,
   OrganizationIcon,
   PeopleIcon,
-  PlusIcon,
 } from "@primer/styled-octicons";
 
 import { ActorAvatar } from "./ActorAvatar";
@@ -23,7 +20,6 @@ import PopperPopover, { PopperPopoverProps } from "./Popover";
 import { TrendingActor } from "../utils/types";
 import { TwitterIcon } from "./TwitterIcon";
 import { FollowButton } from "./FollowButton";
-import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
 
 const DataIcon = ({
   icon,
@@ -51,6 +47,8 @@ const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
       <Box
         display="flex"
         as="a"
+        href={`https://github.com/${props.login}`}
+        target="_blank"
         my={0}
         alignItems="center"
         style={{ textDecoration: "none", cursor: "pointer" }}
@@ -254,17 +252,20 @@ export const TrendingUser = (
             display="flex"
             alignItems="center"
             px={4}
-            py={3}
+            py={2}
             m={-4}
-            mb={4}
-            sx={{ borderBottom: "1px solid border.subtle" }}
+            mb={2}
+            borderBottom="1px solid"
+            borderColor="border.subtle"
           >
-            <Box
-              mr={3}
-              dangerouslySetInnerHTML={{
-                __html: trendingUser.status.emojiHTML,
-              }}
-            />
+            {trendingUser.status.emojiHTML && (
+              <Box
+                mr={3}
+                dangerouslySetInnerHTML={{
+                  __html: trendingUser.status.emojiHTML,
+                }}
+              />
+            )}
             <Text>{trendingUser.status.message}</Text>
           </Box>
         )}
