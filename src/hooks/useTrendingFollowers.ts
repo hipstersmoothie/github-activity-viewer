@@ -35,7 +35,7 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
 
         return json;
       } catch (error) {
-        Router.push("/api/auth/signin");
+        Router.push("/sign-in");
       }
     },
     {

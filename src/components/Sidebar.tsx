@@ -9,9 +9,8 @@ import {
   SignOutIcon,
 } from "@primer/octicons-react";
 import { Box, BoxProps, Tooltip } from "@primer/react";
-import { signOut } from "next-auth/react";
-import { useSession } from "next-auth/react";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 import { FullPageSpinner } from "./Spinner";
 
@@ -28,27 +27,25 @@ const SideBarItem = ({
 }) => {
   return (
     <Tooltip direction="e" aria-label={label} sx={{ width: "100%" }}>
-      <Link passHref href={href}>
-        <a style={{ width: "100%" }}>
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            bg={active ? "accent.emphasis" : undefined}
-            color={active ? "fg.onEmphasis" : "fg.muted"}
-            sx={{
-              width: "100%",
-              height: 64,
-              ":hover": {
-                color: active ? undefined : "fg.default",
-                bg: active ? "" : "accent.muted",
-              },
-            }}
-            {...props}
-          >
-            {children}
-          </Box>
-        </a>
+      <Link href={href} style={{ width: "100%" }}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bg={active ? "accent.emphasis" : undefined}
+          color={active ? "fg.onEmphasis" : "fg.muted"}
+          sx={{
+            width: "100%",
+            height: 64,
+            ":hover": {
+              color: active ? undefined : "fg.default",
+              bg: active ? "" : "accent.muted",
+            },
+          }}
+          {...props}
+        >
+          {children}
+        </Box>
       </Link>
     </Tooltip>
   );
@@ -57,16 +54,8 @@ const SideBarItem = ({
 export type SidebarActive = "/" | "/user" | "/discover";
 
 export const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
-  const { data, status } = useSession();
-
-  if (status === "loading") {
-    return null;
-  }
-
-  if (!data) {
-    Router.push("/api/auth/signin");
-    return null;
-  }
+  const supabaseClient = useSupabaseClient();
+  const router = useRouter();
 
   return (
     <Box
@@ -93,28 +82,28 @@ export const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
           height="100%"
         >
           <Box display="flex" alignItems="start" flexDirection="column">
-            <SideBarItem label="Feed" href="/" active={Router.route === "/"}>
+            <SideBarItem label="Feed" href="/" active={router.route === "/"}>
               <ZapIcon />
             </SideBarItem>
             <SideBarItem
               label="User Events"
               href="/user"
-              active={Router.route === "/user"}
+              active={router.route === "/user"}
             >
               <PersonIcon />
             </SideBarItem>
             <SideBarItem
               label="Discover Followers"
               href="/discover"
-              active={Router.route === "/discover"}
+              active={router.route === "/discover"}
             >
               <PeopleIcon />
             </SideBarItem>
           </Box>
           <SideBarItem
             label="Signout"
-            href="/api/auth/signin"
-            onClick={() => signOut()}
+            href="/sign-in"
+            onClick={() => supabaseClient.auth.signOut()}
           >
             <SignOutIcon />
           </SideBarItem>

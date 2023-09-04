@@ -58,7 +58,7 @@ export const useFeeds = (active: "following" | "user") => {
         };
       } catch (error) {
         console.error(error);
-        Router.push("/api/auth/signin");
+        Router.push("/sign-in");
       }
     },
     {

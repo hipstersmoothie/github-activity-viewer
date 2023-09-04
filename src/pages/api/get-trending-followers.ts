@@ -181,7 +181,7 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<GetTrendingFollowersResponse>
 ) => {
-  const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
+  const { octokit, graphqlWithAuth } = await authenticateOctokit(req, res);
   const user = await octokit.users.getAuthenticated();
   const result = await octokit.paginate(octokit.users.listFollowingForUser, {
     username: user.data.login,

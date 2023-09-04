@@ -102,7 +102,7 @@ export default async (
   req: NextApiRequest,
   res: NextApiResponse<GetFeedResponse>
 ) => {
-  const { octokit, graphqlWithAuth } = await authenticateOctokit(req);
+  const { octokit, graphqlWithAuth } = await authenticateOctokit(req, res);
 
   const user = await octokit.users.getAuthenticated();
   const active = Array.isArray(req.query["active"])
