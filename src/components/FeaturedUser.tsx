@@ -14,6 +14,7 @@ import { renderEmoji } from "../utils/renderEmoji";
 import { Language } from "./Language";
 import { StarCount } from "./StarCount";
 import PopperPopover from "./Popover";
+import { FollowButton } from "./FollowButton";
 
 export const FeaturedUser = (props: FeaturedTrendingUser) => {
   const featuredUserProfileLink = (
@@ -27,8 +28,32 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
     </Link>
   );
 
+  const [isFollowing, isFollowingSet] = React.useState(
+    props.isAuthenticatedUserFollowing
+  );
+
   return (
-    <Card title="Featured User" width="100%">
+    <Card
+      title={
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          color="fg.default"
+        >
+          <Text mr={2} style={{ flex: 1 }}>
+            Featured User
+          </Text>
+          <FollowButton
+            username={props.login}
+            size="small"
+            isFollowing={isFollowing}
+            onFollowChange={isFollowingSet}
+          />
+        </Box>
+      }
+      width="100%"
+    >
       <Box pr={4}>
         <Box display="flex" alignItems="center" mb={6}>
           <Avatar

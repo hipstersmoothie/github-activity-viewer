@@ -22,8 +22,8 @@ import { ActorLink } from "./HomePageLink";
 import PopperPopover, { PopperPopoverProps } from "./Popover";
 import { TrendingActor } from "../utils/types";
 import { TwitterIcon } from "./TwitterIcon";
+import { FollowButton } from "./FollowButton";
 import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
-import { Octokit } from "@octokit/rest";
 
 const DataIcon = ({
   icon,
@@ -223,30 +223,9 @@ export const TrendingUser = (
       id?: string | number;
     }
 ) => {
-  const [supabaseClient] = React.useState(() => createPagesBrowserClient());
   const [isFollowing, isFollowingSet] = React.useState(
     trendingUser.isAuthenticatedUserFollowing
   );
-  const onFollow = async () => {
-    const session = await supabaseClient.auth.getSession();
-
-    if (!session.data) {
-      throw new Error("No session");
-    }
-
-    const accessToken = session.data.session["provider_token"];
-
-    if (!accessToken) {
-      throw new Error("No access token");
-    }
-
-    const octokit = new Octokit({ auth: accessToken });
-
-    await octokit.users.follow({
-      username: trendingUser.login,
-    });
-    isFollowingSet(true);
-  };
 
   return (
     <Box
@@ -287,11 +266,12 @@ export const TrendingUser = (
         <Box display="flex" alignItems="center">
           <TrendingUserName {...trendingUser} />
           <Box flex={1} />
-          {!isFollowing && (
-            <Tooltip aria-label="Follow">
-              <IconButton size="small" icon={PlusIcon} onClick={onFollow} />
-            </Tooltip>
-          )}
+          <FollowButton
+            username={trendingUser.login}
+            size="small"
+            isFollowing={isFollowing}
+            onFollowChange={isFollowingSet}
+          />
         </Box>
 
         {trendingUser.bioHTML && (
