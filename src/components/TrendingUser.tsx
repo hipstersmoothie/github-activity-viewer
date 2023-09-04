@@ -13,6 +13,7 @@ import {
   OrganizationIcon,
   PeopleIcon,
 } from "@primer/styled-octicons";
+import * as HoverCard from "@radix-ui/react-hover-card";
 
 import { ActorAvatar } from "./ActorAvatar";
 import { ActorLink } from "./HomePageLink";
@@ -300,15 +301,26 @@ export const TrendingUser = (
       </PopperPopover>
 
       {(trendingUser.newFollowers || trendingUser.followers?.totalCount) && (
-        <CounterLabel
-          sx={{
-            color: isFollowing ? undefined : "accent.fg",
-            bg: isFollowing ? undefined : "accent.subtle",
-          }}
-        >
-          {trendingUser.newFollowers?.length ||
-            trendingUser.followers?.totalCount}
-        </CounterLabel>
+        <HoverCard.Root>
+          <HoverCard.Trigger>
+            <CounterLabel
+              sx={{
+                color: isFollowing ? undefined : "accent.fg",
+                bg: isFollowing ? undefined : "accent.subtle",
+              }}
+            >
+              {trendingUser.newFollowers?.length ||
+                trendingUser.followers?.totalCount}
+            </CounterLabel>
+          </HoverCard.Trigger>
+          <HoverCard.Content side={trendingUser.placement}>
+            <AvatarStack alignRight>
+              {trendingUser.newFollowers?.map((user) => (
+                <ActorAvatar key={user.id} showTooltip actor={user} size={20} />
+              ))}
+            </AvatarStack>
+          </HoverCard.Content>
+        </HoverCard.Root>
       )}
     </Box>
   );
