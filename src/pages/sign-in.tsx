@@ -13,6 +13,7 @@ const SignIn = () => {
       provider: "github",
       options: {
         redirectTo: "http://localhost:3000/api/auth/callback",
+        scopes: "user",
       },
     });
   };

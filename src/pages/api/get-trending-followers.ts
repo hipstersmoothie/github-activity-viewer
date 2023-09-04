@@ -1,6 +1,7 @@
 import { RestEndpointMethodTypes } from "@octokit/rest";
 import { NextApiRequest, NextApiResponse } from "next";
 import { graphql } from "@octokit/graphql";
+import chunk from "lodash.chunk";
 
 import { GetTrendingFollowersResponse, TrendingActor } from "../../utils/types";
 import { gql } from "../../utils/gql";
@@ -14,7 +15,7 @@ import {
 } from "../../queries/gen-types";
 import { FeaturedUser } from "../../queries/featured-user";
 
-async function getRecentFollowers(
+async function getDataChunk(
   graphqlWithAuth: typeof graphql,
   following: RestEndpointMethodTypes["users"]["listFollowersForUser"]["response"]["data"]
 ) {
@@ -51,9 +52,27 @@ async function getRecentFollowers(
   const fullQuery = `\n{${query}}\n`;
 
   try {
-    const followingData = await graphqlWithAuth<RecentFollowingQuery>(
-      fullQuery
+    return await graphqlWithAuth<RecentFollowingQuery>(fullQuery);
+  } catch (error) {
+    console.log(error);
+    return {} as RecentFollowingQuery;
+  }
+}
+
+async function getRecentFollowers(
+  graphqlWithAuth: typeof graphql,
+  following: RestEndpointMethodTypes["users"]["listFollowersForUser"]["response"]["data"]
+) {
+  try {
+    const allData = await Promise.all(
+      chunk(following, 100).map((c) => getDataChunk(graphqlWithAuth, c))
     );
+    const followingData = allData.reduce((all, data) => {
+      return {
+        ...all,
+        ...data,
+      };
+    }, {} as RecentFollowingQuery);
 
     const trendingActors: TrendingActor[] = [];
 

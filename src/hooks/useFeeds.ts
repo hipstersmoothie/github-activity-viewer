@@ -1,7 +1,7 @@
 import fetch from "isomorphic-fetch";
 import useSWR from "swr";
-import Router from "next/router";
 import join from "url-join";
+import { useRouter } from "next/router";
 
 import { EventMap, GetFeedResponse } from "../utils/types";
 import { useWindowFocus } from "./useWindowFocus";
@@ -10,6 +10,7 @@ const IGNORE_USERS = ["renovate"];
 
 export const useFeeds = (active: "following" | "user") => {
   const windowFocus = useWindowFocus();
+  const router = useRouter();
   const { data } = useSWR(
     `/api/get-feed/${active}`,
     async () => {
@@ -57,8 +58,8 @@ export const useFeeds = (active: "following" | "user") => {
           recentFollowers: json.recentFollowers,
         };
       } catch (error) {
-        console.error(error);
-        Router.push("/sign-in");
+        console.error("useFeeds", error);
+        router.push("/sign-in");
       }
     },
     {

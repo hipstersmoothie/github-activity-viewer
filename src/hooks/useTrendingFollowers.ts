@@ -1,10 +1,10 @@
 import fetch from "isomorphic-fetch";
 import useSWR from "swr";
-import Router from "next/router";
 import join from "url-join";
 
 import { GetTrendingFollowersResponse } from "../utils/types";
 import { useWindowFocus } from "./useWindowFocus";
+import { useRouter } from "next/router";
 
 interface UseTrendingFollowersOptions {
   previousFeaturedUser: {
@@ -15,6 +15,7 @@ interface UseTrendingFollowersOptions {
 
 export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
   const windowFocus = useWindowFocus();
+  const router = useRouter();
   const { data } = useSWR(
     `/api/get-trending-followers`,
     async () => {
@@ -35,7 +36,8 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
 
         return json;
       } catch (error) {
-        Router.push("/sign-in");
+        console.log("useTredingFollowers", error);
+        router.push("/sign-in");
       }
     },
     {

@@ -6,12 +6,15 @@ import {
   Link,
   Box,
   BoxProps,
+  IconButton,
+  Tooltip,
 } from "@primer/react";
 import {
   LinkIcon,
   LocationIcon,
   OrganizationIcon,
   PeopleIcon,
+  PlusIcon,
 } from "@primer/styled-octicons";
 
 import { ActorAvatar } from "./ActorAvatar";
@@ -19,6 +22,8 @@ import { ActorLink } from "./HomePageLink";
 import PopperPopover, { PopperPopoverProps } from "./Popover";
 import { TrendingActor } from "../utils/types";
 import { TwitterIcon } from "./TwitterIcon";
+import { createPagesBrowserClient } from "@supabase/auth-helpers-nextjs";
+import { Octokit } from "@octokit/rest";
 
 const DataIcon = ({
   icon,
@@ -218,6 +223,31 @@ export const TrendingUser = (
       id?: string | number;
     }
 ) => {
+  const [supabaseClient] = React.useState(() => createPagesBrowserClient());
+  const [isFollowing, isFollowingSet] = React.useState(
+    trendingUser.isAuthenticatedUserFollowing
+  );
+  const onFollow = async () => {
+    const session = await supabaseClient.auth.getSession();
+
+    if (!session.data) {
+      throw new Error("No session");
+    }
+
+    const accessToken = session.data.session["provider_token"];
+
+    if (!accessToken) {
+      throw new Error("No access token");
+    }
+
+    const octokit = new Octokit({ auth: accessToken });
+
+    await octokit.users.follow({
+      username: trendingUser.login,
+    });
+    isFollowingSet(true);
+  };
+
   return (
     <Box
       display="flex"
@@ -254,7 +284,15 @@ export const TrendingUser = (
           </Box>
         )}
 
-        <TrendingUserName {...trendingUser} />
+        <Box display="flex" alignItems="center">
+          <TrendingUserName {...trendingUser} />
+          <Box flex={1} />
+          {!isFollowing && (
+            <Tooltip aria-label="Follow">
+              <IconButton size="small" icon={PlusIcon} onClick={onFollow} />
+            </Tooltip>
+          )}
+        </Box>
 
         {trendingUser.bioHTML && (
           <Text
@@ -277,12 +315,8 @@ export const TrendingUser = (
       {(trendingUser.newFollowers || trendingUser.followers?.totalCount) && (
         <CounterLabel
           sx={{
-            color: trendingUser.isAuthenticatedUserFollowing
-              ? undefined
-              : "accent.fg",
-            bg: trendingUser.isAuthenticatedUserFollowing
-              ? undefined
-              : "accent.subtle",
+            color: isFollowing ? undefined : "accent.fg",
+            bg: isFollowing ? undefined : "accent.subtle",
           }}
         >
           {trendingUser.newFollowers?.length ||

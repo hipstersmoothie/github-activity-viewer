@@ -7,8 +7,7 @@ const FollowingFeed = dynamic(() => import("../components/FollowingFeed"), {
   ssr: false,
 });
 
-const Home = (props) => {
-  console.log("Home", props);
+const Home = () => {
   return (
     <>
       <Head>
