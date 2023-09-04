@@ -1,29 +1,24 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 
 import { SidebarLayout } from "../components/Sidebar";
-import { DataContext } from "../contexts/data";
-import { useFeeds } from "../hooks/useFeeds";
-import { GithubActivityViewer } from "../components/GithubActivityViewer";
 
-const App = () => {
-  const { feeds, repoInfo, user, recentFollowers } = useFeeds("following");
+const FollowingFeed = dynamic(() => import("../components/FollowingFeed"), {
+  ssr: false,
+});
 
+const Home = (props) => {
+  console.log("Home", props);
   return (
-    <DataContext.Provider value={{ repoInfo, user }}>
-      <GithubActivityViewer recentFollowers={recentFollowers} {...feeds} />
-    </DataContext.Provider>
+    <>
+      <Head>
+        <title>GitHub Activity</title>
+      </Head>
+      <SidebarLayout>
+        <FollowingFeed />
+      </SidebarLayout>
+    </>
   );
 };
-
-const Home = () => (
-  <>
-    <Head>
-      <title>GitHub Activity</title>
-    </Head>
-    <SidebarLayout>
-      <App />
-    </SidebarLayout>
-  </>
-);
 
 export default Home;
