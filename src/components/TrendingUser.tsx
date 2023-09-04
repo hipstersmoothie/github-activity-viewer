@@ -48,8 +48,14 @@ const DataIcon = ({
 const TrendingUserName = (props: Pick<TrendingActor, "name" | "login">) => {
   if (props.name) {
     return (
-      <Box display="flex" as="p" my={0} alignItems="center">
-        <Text as="span" fontWeight="bold" mr={1}>
+      <Box
+        display="flex"
+        as="a"
+        my={0}
+        alignItems="center"
+        style={{ textDecoration: "none", cursor: "pointer" }}
+      >
+        <Text as="span" color="fg.default" fontWeight="bold" mr={1}>
           {props.name}
         </Text>
         <Text as="span" color="fg.muted" fontSize={14}>
