@@ -30,7 +30,7 @@ export const ReleaseEvent = ({ event }: { event: ReleaseEventType }) => {
   );
 
   return (
-    <PopperPopover interactive trigger={trigger}>
+    <PopperPopover trigger={trigger}>
       <RepoDescription repo={repo} />
 
       <CardDivider my={4} />

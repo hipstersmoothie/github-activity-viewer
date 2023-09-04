@@ -226,7 +226,6 @@ export const TrendingUser = (
       mb={3}
     >
       <PopperPopover
-        interactive
         placement={trendingUser.placement}
         trigger={
           <Box display="flex" alignItems="center">
