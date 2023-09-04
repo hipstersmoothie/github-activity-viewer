@@ -23,7 +23,7 @@ async function getDataChunk(
     .map((user) => {
       return gql`
       ${userQueryId(user)}: user(login: "${user.login}") {
-        following(first: 3) {
+        following(first: 6) {
           totalCount
           nodes {
             login
