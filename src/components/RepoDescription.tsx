@@ -1,4 +1,10 @@
-import { Box, BoxProps, Text, AvatarStack } from "@primer/react";
+import { Box, BoxProps, Text, AvatarStack, Spinner } from "@primer/react";
+import { compiler } from "markdown-to-jsx";
+import useSWR from "swr";
+import { Suspense, cloneElement, createElement } from "react";
+import to from "await-to-js";
+import { useCookies } from "react-cookie";
+
 import { User, ExtendedRepo, Repo } from "../utils/types";
 import { RepoLink } from "./HomePageLink";
 import { renderEmoji } from "../utils/renderEmoji";
@@ -6,6 +12,153 @@ import { ActorAvatar } from "./ActorAvatar";
 import { Language } from "./Language";
 import { StarCount } from "./StarCount";
 import { TwitterIcon } from "./TwitterIcon";
+import PopperPopover from "./Popover";
+import { useOctokit } from "../utils/useOctokit";
+
+const ReadMe = ({ repo }: { repo: ExtendedRepo | Repo }) => {
+  const octokit = useOctokit();
+  const [{ colorMode }] = useCookies(["colorMode"]);
+  const { data: contents } = useSWR(
+    `${repo.name}-readme`,
+    async (): Promise<string | JSX.Element> => {
+      if (!octokit) {
+        return "";
+      }
+
+      const [owner, repoName] = repo.name.split("/") as [string, string];
+      let readmeFileName = "README.md";
+      let [err, res] = await to(
+        octokit.rest.repos.getContent({
+          owner,
+          repo: repoName,
+          path: readmeFileName,
+        })
+      );
+
+      if (err?.message === "Not Found") {
+        readmeFileName = "readme.md";
+        [err, res] = await to(
+          octokit.rest.repos.getContent({
+            owner,
+            repo: repoName,
+            path: readmeFileName,
+          })
+        );
+      }
+
+      if (err?.message === "Not Found") {
+        readmeFileName = "Readme.md";
+        [err, res] = await to(
+          octokit.rest.repos.getContent({
+            owner,
+            repo: repoName,
+            path: readmeFileName,
+          })
+        );
+      }
+
+      if (
+        err ||
+        !res ||
+        !("download_url" in res.data) ||
+        !res.data.download_url ||
+        !("content" in res.data) ||
+        !res.data.content
+      ) {
+        return "No README.md";
+      }
+
+      try {
+        const base = res.data.download_url.replace(`/${readmeFileName}`, "");
+        const text = renderEmoji(window.atob(res.data.content));
+        const jsx = compiler(text, {
+          // eslint-disable-next-line react/no-unstable-nested-components
+          createElement(tag, tagProps, tagChildren) {
+            if (base && tag === "img") {
+              const imgProps = tagProps as React.ComponentProps<"img">;
+
+              if (imgProps.src) {
+                if (imgProps.src.startsWith("./")) {
+                  imgProps.src = `${base}${imgProps.src.replace("./", "/")}`;
+                } else if (!imgProps.src.startsWith("http")) {
+                  imgProps.src = `${base}/${imgProps.src}`;
+                } else if (imgProps.src.startsWith("https//")) {
+                  imgProps.src = imgProps.src.replace("https//", "https://");
+                } else if (imgProps.src.startsWith("http//")) {
+                  imgProps.src = imgProps.src.replace("http//", "http://");
+                } else if (imgProps.src.startsWith("http/")) {
+                  imgProps.src = imgProps.src.replace("http/", "http://");
+                } else if (imgProps.src.startsWith("https/")) {
+                  imgProps.src = imgProps.src.replace("https/", "https://");
+                }
+
+                imgProps.style = {
+                  maxWidth: "100%",
+                  maxHeight: "40vh",
+                  margin: "auto",
+                  display: "block",
+                };
+              }
+            }
+
+            return createElement(tag, tagProps, tagChildren);
+          },
+        });
+
+        const newEl = cloneElement(
+          jsx,
+          {},
+          await Promise.all(
+            jsx.props.children.map(async (child: JSX.Element) => {
+              if (typeof child !== "object" || child.type !== "pre") {
+                return child;
+              }
+
+              const lang = child.props.children.props.className?.replace(
+                "lang-",
+                ""
+              );
+              const code = child.props.children.props.children;
+
+              try {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                const html = await window.codeToHtml(code, {
+                  lang,
+                  theme: colorMode === "day" ? "vitesse-light" : "vitesse-dark",
+                });
+
+                return createElement(
+                  "div",
+                  {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    dangerouslySetInnerHTML: {
+                      __html: html,
+                    },
+                  },
+                  undefined
+                );
+              } catch (error) {
+                console.log(error);
+              }
+            })
+          )
+        );
+
+        return newEl;
+      } catch (error) {
+        console.log(error);
+        return "Failed to load README.md";
+      }
+    },
+    {
+      suspense: true,
+    }
+  );
+
+  return <Text className="markdown-body">{contents}</Text>;
+};
 
 export const RepoDescription = ({
   repo,
@@ -21,58 +174,83 @@ export const RepoDescription = ({
     users.length > 0;
 
   return (
-    <Box display="flex" flexDirection="column" {...props}>
-      <RepoLink repo={repo} mb={1} />
+    <PopperPopover
+      placement="left"
+      maxWidth={500}
+      trigger={
+        <Box display="flex" flexDirection="column" {...props}>
+          <RepoLink repo={repo} />
 
-      {repo.description && (
-        <Text mb={2} color="fg.default">
-          {renderEmoji(repo.description)}
-        </Text>
-      )}
+          {repo.description && (
+            <Text mb={2} color="fg.default">
+              {renderEmoji(repo.description)}
+            </Text>
+          )}
 
-      {hasRepoInfo && (
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Box display="flex">
-            {"languages" in repo && repo.languages.edges[0] && (
-              <Language language={repo.languages.edges[0]} mr={4} />
-            )}
-            {"stargazers" in repo && repo.stargazers && (
-              <StarCount
-                stargazers={repo.stargazers.totalCount}
-                repo={repo.url}
-                mr={3}
-              />
-            )}
-
+          {hasRepoInfo && (
             <Box
-              as="a"
-              target="_blank"
-              rel="noreferrer"
-              href={`https://twitter.com/search?q=${encodeURIComponent(
-                repo.url
-              )}`}
-              sx={{
-                height: "20px",
-                width: "20px",
-                p: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
             >
-              <TwitterIcon />
-            </Box>
-          </Box>
+              <Box display="flex">
+                {"languages" in repo && repo.languages.edges[0] && (
+                  <Language language={repo.languages.edges[0]} mr={4} />
+                )}
+                {"stargazers" in repo && repo.stargazers && (
+                  <StarCount
+                    stargazers={repo.stargazers.totalCount}
+                    repo={repo.url}
+                    mr={3}
+                  />
+                )}
 
-          {users.length > 0 && (
-            <AvatarStack alignRight>
-              {users.map((user) => (
-                <ActorAvatar key={user.id} showTooltip actor={user} size={20} />
-              ))}
-            </AvatarStack>
+                <Box
+                  as="a"
+                  target="_blank"
+                  rel="noreferrer"
+                  href={`https://twitter.com/search?q=${encodeURIComponent(
+                    repo.url
+                  )}`}
+                  sx={{
+                    height: "20px",
+                    width: "20px",
+                    p: 1,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <TwitterIcon />
+                </Box>
+              </Box>
+
+              {users.length > 0 && (
+                <AvatarStack alignRight>
+                  {users.map((user) => (
+                    <ActorAvatar
+                      key={user.id}
+                      showTooltip
+                      actor={user}
+                      size={20}
+                    />
+                  ))}
+                </AvatarStack>
+              )}
+            </Box>
           )}
         </Box>
-      )}
-    </Box>
+      }
+    >
+      <Suspense
+        fallback={
+          <Box width="100%" display="flex" justifyContent="center">
+            <Spinner />
+          </Box>
+        }
+      >
+        <ReadMe repo={repo} />
+      </Suspense>
+    </PopperPopover>
   );
 };

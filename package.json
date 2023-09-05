@@ -12,6 +12,7 @@
     "codegen": "graphql-codegen"
   },
   "dependencies": {
+    "@builder.io/partytown": "^0.8.0",
     "@octokit/graphql": "^7.0.1",
     "@octokit/graphql-schema": "^14.27.3",
     "@octokit/rest": "^20.0.1",
@@ -27,6 +28,7 @@
     "@supabase/auth-helpers-nextjs": "^0.7.4",
     "@supabase/auth-helpers-react": "^0.4.2",
     "@supabase/supabase-js": "^2.33.1",
+    "await-to-js": "^3.0.0",
     "babel-plugin-styled-components": "^2.1.4",
     "dotenv": "^16.0.0",
     "downa": "^1.0.1",
@@ -34,7 +36,7 @@
     "gemoji": "^7.1.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash.chunk": "^4.2.0",
-    "markdown-to-jsx": "^7.1.7",
+    "markdown-to-jsx": "^7.3.2",
     "next": "^13.4.19",
     "popper-max-size-modifier": "^0.2.0",
     "querystring": "^0.2.1",
@@ -45,7 +47,7 @@
     "react-popper": "^2.2.4",
     "s-ago": "^2.2.0",
     "styled-components": "^5.1.1",
-    "swr": "^0.4.2",
+    "swr": "^2.2.2",
     "url-join": "^4.0.1",
     "use-local-storage-state": "^9.0.2"
   },

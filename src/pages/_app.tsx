@@ -1,5 +1,5 @@
 import type { AppContext, AppProps } from "next/app";
-import { ThemeProvider, SSRProvider } from "@primer/react";
+import { ThemeProvider } from "@primer/react";
 import { decode } from "querystring";
 import { CookiesProvider } from "react-cookie";
 import { useCookies } from "react-cookie";
@@ -27,11 +27,9 @@ const MyApp = ({
         supabaseClient={supabaseClient}
         initialSession={pageProps.initialSession}
       >
-        <SSRProvider>
-          <ThemeProvider colorMode={cookies.colorMode || colorMode}>
-            <Component {...pageProps} />
-          </ThemeProvider>
-        </SSRProvider>
+        <ThemeProvider colorMode={cookies.colorMode || colorMode}>
+          <Component {...pageProps} />
+        </ThemeProvider>
       </SessionContextProvider>
     </CookiesProvider>
   );

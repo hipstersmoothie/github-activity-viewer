@@ -7,6 +7,8 @@ export interface PopperPopoverProps {
   children: React.ReactNode;
   maxWidth?: number;
   placement?: "left" | "right";
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const PopperPopover = ({
@@ -14,10 +16,12 @@ const PopperPopover = ({
   children,
   maxWidth = 400,
   placement = "right",
+  open,
+  onOpenChange,
   ...props
 }: PopperPopoverProps & BoxProps) => {
   return (
-    <RadixHoverCard.Root>
+    <RadixHoverCard.Root open={open} onOpenChange={onOpenChange}>
       <RadixHoverCard.Trigger asChild>
         <Box {...props}>{trigger}</Box>
       </RadixHoverCard.Trigger>
@@ -29,13 +33,20 @@ const PopperPopover = ({
             sideOffset={14}
             align="center"
             style={{ outline: "none" }}
+            collisionPadding={16}
           >
             <Popover
               open
               caret={placement === "left" ? "right" : "left"}
               style={{ position: "static" }}
             >
-              <Popover.Content style={{ width: maxWidth }}>
+              <Popover.Content
+                style={{
+                  width: maxWidth,
+                  maxHeight: "calc(100vh - 32px)",
+                  overflow: "auto",
+                }}
+              >
                 {children}
               </Popover.Content>
             </Popover>
