@@ -1,5 +1,6 @@
 import { Box, Button } from "@primer/react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import join from "url-join";
 
 const SignIn = () => {
   const supabase = createClientComponentClient();
@@ -8,7 +9,10 @@ const SignIn = () => {
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "http://localhost:3000/api/auth/callback",
+        redirectTo: join(
+          process.env["SITE"] || "http://localhost:3000",
+          "/api/auth/callback"
+        ),
         scopes: "user",
       },
     });
