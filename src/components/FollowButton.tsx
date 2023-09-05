@@ -19,7 +19,7 @@ export const FollowButton = ({
   const onFollow = async () => {
     const session = await supabaseClient.auth.getSession();
 
-    if (!session.data) {
+    if (!session.data.session) {
       throw new Error("No session");
     }
 
