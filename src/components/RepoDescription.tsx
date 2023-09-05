@@ -2,7 +2,6 @@ import { Box, BoxProps, Text, AvatarStack, Spinner } from "@primer/react";
 import { compiler } from "markdown-to-jsx";
 import useSWR from "swr";
 import { Suspense, cloneElement, createElement } from "react";
-import to from "await-to-js";
 import { useCookies } from "react-cookie";
 
 import { User, ExtendedRepo, Repo } from "../utils/types";
@@ -26,57 +25,37 @@ const ReadMe = ({ repo }: { repo: ExtendedRepo | Repo }) => {
       }
 
       const [owner, repoName] = repo.name.split("/") as [string, string];
-      let readmeFileName = "README.md";
-      let [err, res] = await to(
-        octokit.rest.repos.getContent({
-          owner,
-          repo: repoName,
-          path: readmeFileName,
-        })
-      );
-
-      if (err?.message === "Not Found") {
-        readmeFileName = "readme.md";
-        [err, res] = await to(
-          octokit.rest.repos.getContent({
-            owner,
-            repo: repoName,
-            path: readmeFileName,
-          })
-        );
-      }
-
-      if (err?.message === "Not Found") {
-        readmeFileName = "Readme.md";
-        [err, res] = await to(
-          octokit.rest.repos.getContent({
-            owner,
-            repo: repoName,
-            path: readmeFileName,
-          })
-        );
-      }
-
-      if (
-        err ||
-        !res ||
-        !("download_url" in res.data) ||
-        !res.data.download_url ||
-        !("content" in res.data) ||
-        !res.data.content
-      ) {
-        return "No README.md";
-      }
 
       try {
-        const base = res.data.download_url.replace(`/${readmeFileName}`, "");
-        const text = renderEmoji(window.atob(res.data.content));
-        const jsx = compiler(text, {
+        const [htmlRes, mdRes] = await Promise.all([
+          octokit.rest.repos.getReadme({
+            owner,
+            repo: repoName,
+            mediaType: { format: "html" },
+          }),
+          octokit.rest.repos.getReadme({
+            owner,
+            repo: repoName,
+          }),
+        ]);
+
+        if (
+          !mdRes ||
+          !("download_url" in mdRes.data) ||
+          !mdRes.data.download_url ||
+          !("content" in mdRes.data) ||
+          !mdRes.data.content
+        ) {
+          return "No README.md";
+        }
+
+        const base = mdRes.data.download_url.replace(`/${mdRes.data.name}`, "");
+        // Fix Image URLs
+        const jsx = compiler((htmlRes.data as unknown) as string, {
           // eslint-disable-next-line react/no-unstable-nested-components
           createElement(tag, tagProps, tagChildren) {
             if (base && tag === "img") {
               const imgProps = tagProps as React.ComponentProps<"img">;
-
               if (imgProps.src) {
                 if (imgProps.src.startsWith("./")) {
                   imgProps.src = `${base}${imgProps.src.replace("./", "/")}`;
@@ -104,45 +83,66 @@ const ReadMe = ({ repo }: { repo: ExtendedRepo | Repo }) => {
             return createElement(tag, tagProps, tagChildren);
           },
         });
+        const mdJsx = compiler(window.atob(mdRes.data.content));
+        const pres = await Promise.all(
+          mdJsx.props.children.map(async (child: JSX.Element) => {
+            if (typeof child !== "object" || child.type !== "pre") {
+              return undefined;
+            }
+
+            const lang = child.props.children.props.className?.replace(
+              "lang-",
+              ""
+            );
+            const code = child.props.children.props.children;
+
+            try {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              const html = await window.codeToHtml(code, {
+                lang,
+                theme: colorMode === "day" ? "github-light" : "github-dark",
+              });
+
+              return html;
+            } catch (error) {
+              console.log(error);
+            }
+          })
+        );
 
         const newEl = cloneElement(
           jsx,
           {},
-          await Promise.all(
-            jsx.props.children.map(async (child: JSX.Element) => {
-              if (typeof child !== "object" || child.type !== "pre") {
-                return child;
-              }
+          cloneElement(
+            jsx.props.children[0],
+            {},
+            await Promise.all(
+              jsx.props.children[0].props.children.map(
+                async (child: JSX.Element, index: number) => {
+                  if (
+                    typeof child !== "object" ||
+                    child.type !== "div" ||
+                    !child.props.class?.includes("highlight") ||
+                    child.props.children[0].type !== "pre"
+                  ) {
+                    return child;
+                  }
 
-              const lang = child.props.children.props.className?.replace(
-                "lang-",
-                ""
-              );
-              const code = child.props.children.props.children;
-
-              try {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                const html = await window.codeToHtml(code, {
-                  lang,
-                  theme: colorMode === "day" ? "github-light" : "github-dark",
-                });
-
-                return createElement(
-                  "div",
-                  {
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-ignore
-                    dangerouslySetInnerHTML: {
-                      __html: html,
+                  return createElement(
+                    "div",
+                    {
+                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                      // @ts-ignore
+                      dangerouslySetInnerHTML: {
+                        __html: pres[index],
+                      },
                     },
-                  },
-                  undefined
-                );
-              } catch (error) {
-                console.log(error);
-              }
-            })
+                    undefined
+                  );
+                }
+              )
+            )
           )
         );
 
