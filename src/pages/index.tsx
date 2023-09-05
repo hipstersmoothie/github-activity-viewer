@@ -1,8 +1,8 @@
 import Head from "next/head";
 import dynamic from "next/dynamic";
+import Script from "next/script";
 
 import { SidebarLayout } from "../components/Sidebar";
-import Script from "next/script";
 
 const FollowingFeed = dynamic(() => import("../components/FollowingFeed"), {
   ssr: false,

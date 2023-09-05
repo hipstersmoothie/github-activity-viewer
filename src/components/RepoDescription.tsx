@@ -125,7 +125,7 @@ const ReadMe = ({ repo }: { repo: ExtendedRepo | Repo }) => {
                 // @ts-ignore
                 const html = await window.codeToHtml(code, {
                   lang,
-                  theme: colorMode === "day" ? "vitesse-light" : "vitesse-dark",
+                  theme: colorMode === "day" ? "github-light" : "github-dark",
                 });
 
                 return createElement(

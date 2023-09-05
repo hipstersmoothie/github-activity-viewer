@@ -6,8 +6,8 @@ import { Repo, User } from "../utils/types";
 export const HomePageLink = (props: React.ComponentProps<typeof Link>) => (
   <Link
     color="bodytext"
-    fontWeight="bold"
     sx={{
+      fontWeight: "bold",
       ":hover": {
         textDecoration: "none",
         color: "blue.5",
