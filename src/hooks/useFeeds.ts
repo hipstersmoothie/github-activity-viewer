@@ -58,6 +58,7 @@ export const useFeeds = (active: "following" | "user") => {
           recentFollowers: json.recentFollowers,
         };
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("useFeeds", error);
         router.push("/sign-in");
       }

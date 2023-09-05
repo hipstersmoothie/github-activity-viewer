@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 import { NextApiRequest, NextApiResponse } from "next";
 import { Octokit } from "@octokit/rest";
 import { graphql } from "@octokit/graphql";

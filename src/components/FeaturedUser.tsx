@@ -173,10 +173,10 @@ export const FeaturedUser = (props: FeaturedTrendingUser) => {
                       </Box>
                     )}
                     <div
-                      className="markdown-body"
                       dangerouslySetInnerHTML={{
                         __html: contribution.bodyHTML,
                       }}
+                      className="markdown-body"
                     />
                   </PopperPopover>
                 ) : (

@@ -4,10 +4,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 const SignIn = () => {
   const supabase = createClientComponentClient();
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-  };
-
   const handleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "github",

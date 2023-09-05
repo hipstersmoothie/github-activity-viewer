@@ -1,10 +1,10 @@
 import fetch from "isomorphic-fetch";
 import useSWR from "swr";
 import join from "url-join";
+import { useRouter } from "next/router";
 
 import { GetTrendingFollowersResponse } from "../utils/types";
 import { useWindowFocus } from "./useWindowFocus";
-import { useRouter } from "next/router";
 
 interface UseTrendingFollowersOptions {
   previousFeaturedUser: {
@@ -36,6 +36,7 @@ export const useTrendingFollowers = (options: UseTrendingFollowersOptions) => {
 
         return json;
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.log("useTredingFollowers", error);
         router.push("/sign-in");
       }

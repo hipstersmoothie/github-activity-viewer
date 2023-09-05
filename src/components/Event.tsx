@@ -19,7 +19,7 @@ export const Event = ({
   </Box>
 );
 
-export const GridCard = <T extends unknown>({
+export const GridCard = ({
   title,
   shownFilter = () => true,
   showCount = 5,
@@ -28,9 +28,9 @@ export const GridCard = <T extends unknown>({
   ...props
 }: {
   title: React.ReactNode;
-  shownFilter?: (event: T) => boolean;
+  shownFilter?: (event: JSX.Element) => boolean;
   showCount?: number;
-  rows: T[];
+  rows: JSX.Element[];
   staticRows?: React.ReactNode;
 } & Omit<BoxProps, "title">) => {
   const [expanded, expandedSet] = React.useState(false);

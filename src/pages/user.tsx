@@ -1,3 +1,4 @@
+import React from "react";
 import Head from "next/head";
 
 import { DataContext } from "../contexts/data";
@@ -7,9 +8,10 @@ import { SidebarLayout } from "../components/Sidebar";
 
 const App = () => {
   const { feeds, repoInfo, user } = useFeeds("user");
+  const value = React.useMemo(() => ({ repoInfo, user }), [repoInfo, user]);
 
   return (
-    <DataContext.Provider value={{ repoInfo, user }}>
+    <DataContext.Provider value={value}>
       <GithubActivityViewer {...feeds} />
     </DataContext.Provider>
   );
