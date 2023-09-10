@@ -51,7 +51,7 @@ const ReadMe = ({ repo }: { repo: ExtendedRepo | Repo }) => {
 
         const base = mdRes.data.download_url.replace(`/${mdRes.data.name}`, "");
         // Fix Image URLs
-        const jsx = compiler((htmlRes.data as unknown) as string, {
+        const jsx = compiler(htmlRes.data as unknown as string, {
           // eslint-disable-next-line react/no-unstable-nested-components
           createElement(tag, tagProps, tagChildren) {
             if (base && tag === "img") {
@@ -174,83 +174,109 @@ export const RepoDescription = ({
     users.length > 0;
 
   return (
-    <PopperPopover
-      placement="left"
-      maxWidth={500}
-      trigger={
-        <Box display="flex" flexDirection="column" {...props}>
-          <RepoLink repo={repo} />
-
-          {repo.description && (
-            <Text mb={2} color="fg.default">
-              {renderEmoji(repo.description)}
-            </Text>
-          )}
-
-          {hasRepoInfo && (
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-            >
-              <Box display="flex">
-                {"languages" in repo && repo.languages.edges[0] && (
-                  <Language language={repo.languages.edges[0]} mr={4} />
-                )}
-                {"stargazers" in repo && repo.stargazers && (
-                  <StarCount
-                    stargazers={repo.stargazers.totalCount}
-                    repo={repo.url}
-                    mr={3}
-                  />
-                )}
-
-                <Box
-                  as="a"
-                  target="_blank"
-                  rel="noreferrer"
-                  href={`https://twitter.com/search?q=${encodeURIComponent(
-                    repo.url
-                  )}`}
-                  sx={{
-                    height: "20px",
-                    width: "20px",
-                    p: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <TwitterIcon />
-                </Box>
-              </Box>
-
-              {users.length > 0 && (
-                <AvatarStack alignRight>
-                  {users.map((user) => (
-                    <ActorAvatar
-                      key={user.id}
-                      showTooltip
-                      actor={user}
-                      size={20}
-                    />
-                  ))}
-                </AvatarStack>
-              )}
-            </Box>
-          )}
-        </Box>
-      }
+    <Box
+      display="flex"
+      position="relative"
+      className="group"
+      sx={{ marginLeft: -20 }}
     >
-      <Suspense
-        fallback={
-          <Box width="100%" display="flex" justifyContent="center">
-            <Spinner />
+      <PopperPopover
+        placement="left"
+        maxWidth={500}
+        trigger={
+          <Box
+            className="group-hover:opacity-100"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 12,
+              bg: "canvas.inset",
+              color: "fg.muted",
+              borderTopLeftRadius: 4,
+              borderBottomLeftRadius: 4,
+              px: 2,
+              height: "100%",
+              opacity: 0,
+              mr: 1,
+            }}
+          >
+            ?
           </Box>
         }
       >
-        <ReadMe repo={repo} />
-      </Suspense>
-    </PopperPopover>
+        <Suspense
+          fallback={
+            <Box width="100%" display="flex" justifyContent="center">
+              <Spinner />
+            </Box>
+          }
+        >
+          <ReadMe repo={repo} />
+        </Suspense>
+      </PopperPopover>
+      <Box display="flex" flex="1" flexDirection="column" {...props}>
+        <RepoLink repo={repo} />
+
+        {repo.description && (
+          <Text mb={2} color="fg.default">
+            {renderEmoji(repo.description)}
+          </Text>
+        )}
+
+        {hasRepoInfo && (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Box display="flex">
+              {"languages" in repo && repo.languages.edges[0] && (
+                <Language language={repo.languages.edges[0]} mr={4} />
+              )}
+              {"stargazers" in repo && repo.stargazers && (
+                <StarCount
+                  stargazers={repo.stargazers.totalCount}
+                  repo={repo.url}
+                  mr={3}
+                />
+              )}
+
+              <Box
+                as="a"
+                target="_blank"
+                rel="noreferrer"
+                href={`https://twitter.com/search?q=${encodeURIComponent(
+                  repo.url
+                )}`}
+                sx={{
+                  height: "20px",
+                  width: "20px",
+                  p: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <TwitterIcon />
+              </Box>
+            </Box>
+
+            {users.length > 0 && (
+              <AvatarStack alignRight>
+                {users.map((user) => (
+                  <ActorAvatar
+                    key={user.id}
+                    showTooltip
+                    actor={user}
+                    size={20}
+                  />
+                ))}
+              </AvatarStack>
+            )}
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 };

@@ -17,3 +17,7 @@
 body {
   margin: 0;
 }
+
+.group:hover .group-hover\:opacity-100 {
+  opacity: 1;
+}
