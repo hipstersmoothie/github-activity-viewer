@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Octokit } from "@octokit/rest";
+import type { Octokit } from "@octokit/rest";
 import { useSession } from "@supabase/auth-helpers-react";
 
 export const useOctokit = () => {
@@ -16,7 +16,8 @@ export const useOctokit = () => {
   }
 
   const [octokit] = React.useState<Octokit | null>(() => {
-    return new Octokit({ auth: accessToken });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return new (window as any).Octokit({ auth: accessToken });
   });
 
   return octokit;

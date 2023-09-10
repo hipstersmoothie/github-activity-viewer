@@ -105,18 +105,23 @@ export default async (
 ) => {
   const { octokit, graphqlWithAuth } = await authenticateOctokit(req, res);
 
+  if (!octokit || !graphqlWithAuth) {
+    res.redirect(307, "/sign-in");
+    return;
+  }
+
   const user = await octokit.users.getAuthenticated();
   const active = Array.isArray(req.query["active"])
     ? req.query["active"][0]
     : req.query["active"];
-  const result = ((await octokit.paginate(
+  const result = (await octokit.paginate(
     active === "following"
       ? octokit.activity.listReceivedEventsForUser
       : octokit.activity.listEventsForAuthenticatedUser,
     {
       username: user.data.login,
     }
-  )) as unknown) as GitHubFeedEvent[];
+  )) as unknown as GitHubFeedEvent[];
   const repoInfo = await getRepoInfo(graphqlWithAuth, result);
   const recentFollowers = await getRecentFollowers(
     graphqlWithAuth,

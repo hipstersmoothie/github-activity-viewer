@@ -1,6 +1,5 @@
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import Script from "next/script";
 
 import { SidebarLayout } from "../components/Sidebar";
 
@@ -17,12 +16,6 @@ const Home = () => {
       <SidebarLayout>
         <FollowingFeed />
       </SidebarLayout>
-      <Script type="module">
-        {`
-          import { codeToHtml } from 'https://esm.sh/shikiji@0.5.0'; 
-          window.codeToHtml = codeToHtml;
-        `}
-      </Script>
     </>
   );
 };

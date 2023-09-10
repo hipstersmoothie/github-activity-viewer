@@ -19,13 +19,13 @@ export const authenticateOctokit = async (
   } = await supabaseServerClient.auth.getSession();
 
   if (!session) {
-    throw new Error("No session");
+    return {};
   }
 
   const accessToken = session["provider_token"];
 
   if (!accessToken) {
-    throw new Error("No access token");
+    return {};
   }
 
   const octokit = new Octokit({ auth: accessToken });

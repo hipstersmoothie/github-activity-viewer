@@ -169,17 +169,18 @@ const getFeaturedUserInfo = async (
 
     return {
       pinnedItems: featuredRepos.map((e) => e.node),
-      recentContributions: data.user.contributionsCollection.pullRequestContributions.edges
-        .map((e) => e.node.pullRequest)
-        .filter((e) => {
-          if (seenRepos.has(e.repository.url)) {
-            return false;
-          }
+      recentContributions:
+        data.user.contributionsCollection.pullRequestContributions.edges
+          .map((e) => e.node.pullRequest)
+          .filter((e) => {
+            if (seenRepos.has(e.repository.url)) {
+              return false;
+            }
 
-          seenRepos.add(e.repository.url);
-          return true;
-        })
-        .slice(0, 10),
+            seenRepos.add(e.repository.url);
+            return true;
+          })
+          .slice(0, 10),
     };
   } catch (error) {
     console.log(error);
@@ -201,6 +202,12 @@ export default async (
   res: NextApiResponse<GetTrendingFollowersResponse>
 ) => {
   const { octokit, graphqlWithAuth } = await authenticateOctokit(req, res);
+
+  if (!octokit || !graphqlWithAuth) {
+    res.redirect(307, "/sign-in");
+    return;
+  }
+
   const user = await octokit.users.getAuthenticated();
   const result = await octokit.paginate(octokit.users.listFollowingForUser, {
     username: user.data.login,
@@ -218,7 +225,7 @@ export default async (
   const followersToConsider = filteredFollowers.length
     ? filteredFollowers
     : followersWithoutUser;
-  const query = (req.query as unknown) as QueryType;
+  const query = req.query as unknown as QueryType;
   const hoursSincePreviousFeaturedUser =
     (new Date().getTime() -
       new Date(query.previousFeaturedUserDate).getTime()) /

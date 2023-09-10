@@ -12,6 +12,7 @@ import "../css/main.css";
 // eslint-disable-next-line import/no-unassigned-import
 import "../css/main.scss";
 import App from "next/app";
+import Script from "next/script";
 
 const MyApp = ({
   Component,
@@ -29,6 +30,18 @@ const MyApp = ({
       >
         <ThemeProvider colorMode={cookies.colorMode || colorMode}>
           <Component {...pageProps} />
+          <Script type="module">
+            {`
+              import { codeToHtml } from 'https://esm.sh/shikiji@0.5.0'; 
+              window.codeToHtml = codeToHtml;
+            `}
+          </Script>
+          <Script type="module">
+            {`
+              import { Octokit } from 'https://esm.sh/@octokit/rest'; 
+              window.Octokit = Octokit;
+            `}
+          </Script>
         </ThemeProvider>
       </SessionContextProvider>
     </CookiesProvider>
